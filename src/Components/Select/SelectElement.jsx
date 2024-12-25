@@ -1,0 +1,73 @@
+import React from "react";
+import ReactSelect from "react-select";
+const SelectElement = ({
+  disabled,
+  errorFlag,
+  name,
+  value,
+  onChange,
+  options,
+}) => {
+  const customStyles = {
+    singleValue: (provided, state) => ({
+      ...provided,
+      color: "#7e828e",
+      lineHeight: "32px",
+    }),
+    control: (styles, { isFocused, isHovered }) => ({
+      ...styles,
+      height: "38px",
+      minHeight: "38px",
+      flexWrap: "nowrap",
+      padding: "0px",
+      margin: "0px",
+      boxShadow: "none",
+      backgroundColor: isFocused
+        ? "white"
+        : disabled
+        ? "#e9ecef"
+        : "transparent",
+      borderColor: isFocused
+        ? "var(--theme-color)"
+        : errorFlag
+        ? "red"
+        : "#aeaeae",
+      color: "#e7e828e",
+    }),
+    option: (styles, { isFocused, isDisabled, isSelected }) => ({
+      ...styles,
+      backgroundColor: isDisabled
+        ? undefined
+        : isSelected
+        ? "var(--select-option-color)"
+        : isFocused
+        ? "var(--select-option-hover-color)"
+        : undefined,
+      "&:focus,$:active": {
+        backgroundColor: isSelected
+          ? "var(--select-option-color)"
+          : "var(--select-option-hover-color)",
+      },
+    }),
+    menu: (provided, state) => ({
+      ...provided,
+      zIndex: 999,
+      fontSize: 14,
+    }),
+    menuPortal: (provided) => ({ ...provided, zIndex: 999 }),
+  };
+  return (
+    <ReactSelect
+      className="text-sm"
+      name={name}
+      value={value ?? []}
+      styles={customStyles}
+      options={options}
+      onChange={(data) => onChange(data ?? { value: "" })}
+      isDisabled={disabled}
+      isClearable
+    />
+  );
+};
+
+export default SelectElement;
