@@ -46,6 +46,10 @@ const Page = () => {
       field: "name",
       headerName: "Name",
     },
+    {
+      field: "flag",
+      headerName: "Flag",
+    },
   ];
   const refreshGrid = () => {
     getVariantField(id).then((resp) => setrows(resp));

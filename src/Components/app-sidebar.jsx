@@ -134,7 +134,7 @@ export function AppSidebar({ ...props }) {
           )}
         >
           <img src={Logo} alt="" className="w-auto h-full" />
-          {props.open && <text>E-Cart Solutions</text>}
+          <div className={props.open ? "" : "hidden"}>E-Cart Solutions</div>
         </div>
       </SidebarHeader>
       <SidebarContent>

@@ -14,14 +14,30 @@ import { Button as CustomButton } from "@/Components/ui/button";
 import { useFormik } from "formik";
 import { UpdateVariantField } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
+import SelectElement from "@/Components/Select/SelectElement";
 
 const EditModal = ({ refreshGrid, children, data = {} }) => {
   const [open, setopen] = useState(false);
   const formik = useFormik({
     initialValues: {
       name: "",
+      falg: "",
     },
   });
+  const flagvalues = [
+    {
+      label: "Fill",
+      value: "Fill",
+    },
+    {
+      label: "Initials",
+      value: "Initials",
+    },
+    {
+      label: "Text",
+      value: "Text",
+    },
+  ];
   const submitHandler = (data) => {
     UpdateVariantField(data).then((resp) => {
       GlobalToast({
@@ -52,6 +68,16 @@ const EditModal = ({ refreshGrid, children, data = {} }) => {
               value={formik.values.name}
               name={"name"}
               onChange={formik.handleChange}
+            />
+          </div>
+          <div className="">
+            <Label>Field Style</Label>
+            <SelectElement
+              options={flagvalues}
+              value={flagvalues.find(
+                ({ value }) => value === formik.values.flag
+              )}
+              onChange={(data) => formik.setFieldValue("flag", data.value)}
             />
           </div>
         </div>

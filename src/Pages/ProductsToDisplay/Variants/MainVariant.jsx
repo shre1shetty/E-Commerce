@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { PlusCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-const MainVariant = ({ size, setSizeVariantValues, baseValues }) => {
+const MainVariant = ({ value, field, setSizeVariantValues, baseValues }) => {
   const formik = useFormik({
     initialValues: {},
   });
@@ -12,8 +12,8 @@ const MainVariant = ({ size, setSizeVariantValues, baseValues }) => {
     setSizeVariantValues(formik.values);
   };
   useEffect(() => {
-    if (baseValues[`${size}sizeVariant`]) {
-      formik.setValues(baseValues[`${size}sizeVariant`]);
+    if (baseValues[`${field}${value}Variant`]) {
+      formik.setValues(baseValues[`${field}${value}Variant`]);
     } else {
       formik.setFieldValue("price", baseValues.price);
       formik.setFieldValue("inStock", baseValues.inStock);
@@ -28,7 +28,9 @@ const MainVariant = ({ size, setSizeVariantValues, baseValues }) => {
       className="w-full flex justify-between items-center pr-2"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="font-extrabold text-base">Size : {size}</div>
+      <div className="font-extrabold text-base">
+        {field} : {value}
+      </div>
       <div className="flex items-center gap-4">
         <div className="flex gap-2 items-center">
           <div className="grid grid-cols-2 gap-4">

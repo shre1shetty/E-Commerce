@@ -40,7 +40,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar-header flex h-16 items-center gap-2 text-lg text-[#7e8394]">
         <img src={Logo} alt="" className="w-auto h-full" />
-        <text>E-Cart Solutions</text>
+        <div>E-Cart Solutions</div>
       </div>
       <div className="sidebar-body grow">
         <div className="text-xs font-medium px-2 py-2.5">Main</div>

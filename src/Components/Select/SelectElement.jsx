@@ -51,14 +51,15 @@ const SelectElement = ({
     }),
     menu: (provided, state) => ({
       ...provided,
-      zIndex: 999,
+      "pointer-events": "auto",
+      zIndex: 9999,
       fontSize: 14,
     }),
-    menuPortal: (provided) => ({ ...provided, zIndex: 999 }),
+    menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
   };
   return (
     <ReactSelect
-      className="text-sm"
+      className="text-sm pointer-events-auto"
       name={name}
       value={value ?? []}
       styles={customStyles}
@@ -66,6 +67,7 @@ const SelectElement = ({
       onChange={(data) => onChange(data ?? { value: "" })}
       isDisabled={disabled}
       isClearable
+      menuPortalTarget={document.body}
     />
   );
 };

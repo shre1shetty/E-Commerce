@@ -21,3 +21,9 @@ export const matches = (value, term) => {
     return Object.values(value).some((val) => matches(val, term));
   return false;
 };
+
+export function combineUnique(arr1, arr2, key) {
+  return [
+    ...new Map([...arr1, ...arr2].map((item) => [item[key], item])).values(),
+  ];
+}

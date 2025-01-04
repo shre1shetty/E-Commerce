@@ -13,6 +13,7 @@ import { Button as CustomButton } from "@/Components/ui/button";
 import { useFormik } from "formik";
 import { AddVariantField } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
+import SelectElement from "@/Components/Select/SelectElement";
 
 const AddModal = ({ refreshGrid, id }) => {
   const [open, setopen] = useState(false);
@@ -21,6 +22,20 @@ const AddModal = ({ refreshGrid, id }) => {
       name: "",
     },
   });
+  const flagvalues = [
+    {
+      label: "Fill",
+      value: "Fill",
+    },
+    {
+      label: "Initials",
+      value: "Initials",
+    },
+    {
+      label: "Text",
+      value: "Text",
+    },
+  ];
   const submitHandler = (data) => {
     AddVariantField(data, id).then((resp) => {
       GlobalToast({
@@ -32,6 +47,7 @@ const AddModal = ({ refreshGrid, id }) => {
       setopen(false);
     });
   };
+
   useMemo(() => {
     formik.resetForm();
   }, [open]);
@@ -53,6 +69,16 @@ const AddModal = ({ refreshGrid, id }) => {
           <div className="">
             <Label>Name</Label>
             <Input name={"name"} onChange={formik.handleChange} />
+          </div>
+          <div className="">
+            <Label>Field Style</Label>
+            <SelectElement
+              options={flagvalues}
+              value={flagvalues.find(
+                ({ value }) => value === formik.values.flag
+              )}
+              onChange={(data) => formik.setFieldValue("flag", data.value)}
+            />
           </div>
         </div>
         <DialogFooter>

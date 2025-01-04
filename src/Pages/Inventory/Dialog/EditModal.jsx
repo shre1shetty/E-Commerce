@@ -17,14 +17,23 @@ import { UpdateProduct } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
 import { MultiSelect } from "react-multi-select-component";
 import { isEmpty } from "lodash";
+import { getVariant } from "@/Pages/Variant/service";
+import SelectElement from "@/Components/Select/SelectElement";
 
 const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
   const [open, setopen] = useState(false);
+  const [variants, setvariants] = useState({
+    options: [],
+    fields: [],
+  });
+  const [variantFields, setvariantFields] = useState([]);
+
   const formik = useFormik({
     initialValues: {
       name: "",
       price: "",
       description: "",
+      productType: "",
       inStock: "",
       sold: "",
       category: [],
@@ -33,6 +42,7 @@ const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
       brand: "",
       colors: "",
       fitType: "",
+      variantFields: [],
     },
   });
   const submitHandler = (data) => {
@@ -46,15 +56,39 @@ const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
       setopen(false);
     });
   };
+  function getVariantFields(id) {
+    console.log(id, variants);
+    const selectedVariant = variants.raw?.find((data) => data._id === id);
+    setvariantFields(selectedVariant?.Fields);
+  }
   useEffect(() => {
-    if (!isEmpty(data))
+    if (open) {
+      getVariant().then((resp) => {
+        setvariants({
+          options: resp.map((data) => ({
+            label: data.name,
+            value: data._id,
+          })),
+          raw: resp,
+        });
+        const selectedVariant = resp?.find(
+          (val) => val._id === data.productType
+        );
+        console.log(selectedVariant, resp[0]._id, data.productType);
+        setvariantFields(selectedVariant?.Fields);
+      });
+
       Object.keys(data).forEach((key) => {
         formik.setFieldValue(key, data[key]);
       });
-  }, [data]);
+    }
+  }, [open]);
   //   useMemo(() => {
   //     formik.resetForm();
   //   }, [open]);
+  useEffect(() => {
+    console.log(formik.values);
+  }, [formik.values]);
   return (
     <Dialog open={open} onOpenChange={setopen}>
       <DialogTrigger>{children}</DialogTrigger>
@@ -87,6 +121,20 @@ const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
               value={formik.values.description}
               name={"description"}
               onChange={formik.handleChange}
+            />
+          </div>
+          <div className="">
+            <Label>Product Type</Label>
+            <SelectElement
+              options={variants.options}
+              name={"productType"}
+              value={variants.options?.find(
+                (data) => data.value === formik.values.productType
+              )}
+              onChange={(data) => {
+                formik.setFieldValue("productType", data.value);
+                getVariantFields(data.value);
+              }}
             />
           </div>
           <div className="">
@@ -128,31 +176,11 @@ const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
             />
           </div>
           <div className="">
-            <Label>Sizes</Label>
-            <Input
-              name={"sizes"}
-              value={formik.values.sizes.toString()}
-              onChange={(event) =>
-                formik.setFieldValue("sizes", event.target.value.split(","))
-              }
-            />
-          </div>
-          <div className="">
             <Label>Brand</Label>
             <Input
               value={formik.values.brand}
               name={"brand"}
               onChange={formik.handleChange}
-            />
-          </div>
-          <div className="">
-            <Label>Colors</Label>
-            <Input
-              name={"colors"}
-              value={formik.values.colors.toString()}
-              onChange={(event) =>
-                formik.setFieldValue("colors", event.target.value.split(","))
-              }
             />
           </div>
           <div className="">
@@ -163,6 +191,42 @@ const EditModal = ({ filterTypeOptions, refreshGrid, children, data = {} }) => {
               onChange={formik.handleChange}
             />
           </div>
+          {variantFields?.map((data, index) => (
+            <div className="" key={index}>
+              <Label>{data.name}</Label>
+              <Input
+                name={data.name}
+                value={formik.values.variantFields
+                  ?.find((val) => val.field === data.name)
+                  ?.value?.toString()}
+                onChange={(event) => {
+                  formik.setFieldValue(
+                    "variantFields",
+                    formik.values.variantFields.some(
+                      ({ field }) => field === data.name
+                    )
+                      ? formik.values.variantFields.map((val) =>
+                          val.field === data.name
+                            ? {
+                                field: data.name,
+                                value: event.target.value.split(","),
+                                flag: data.flag,
+                              }
+                            : val
+                        )
+                      : [
+                          ...formik.values.variantFields,
+                          {
+                            field: data.name,
+                            value: event.target.value.split(","),
+                            flag: data.flag,
+                          },
+                        ]
+                  );
+                }}
+              />
+            </div>
+          ))}
         </div>
         <DialogFooter>
           <CustomButton

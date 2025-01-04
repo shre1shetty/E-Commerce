@@ -8,8 +8,10 @@ import React, { useEffect, useState } from "react";
 
 const InnerVariant = ({
   showPreview,
-  color,
-  size,
+  value1,
+  value2,
+  field1,
+  field2,
   setSizeVariantValues,
   baseValues,
 }) => {
@@ -20,8 +22,8 @@ const InnerVariant = ({
     setSizeVariantValues(formik.values);
   };
   useEffect(() => {
-    if (baseValues[`${color}${size}colorVariant`]) {
-      formik.setValues(baseValues[`${color}${size}colorVariant`]);
+    if (baseValues.values) {
+      formik.setValues(baseValues.values);
     } else {
       formik.setFieldValue("price", baseValues.price);
       formik.setFieldValue("inStock", baseValues.inStock);
@@ -35,7 +37,9 @@ const InnerVariant = ({
       className="w-full flex justify-between items-center px-2 py-3 border border-[#d5d5d5] rounded-lg"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="font-bold text-sm">Color : {color}</div>
+      <div className="font-bold text-sm">
+        {field2} : {value2}
+      </div>
       <div className="flex items-center gap-4">
         <div className="flex gap-2 items-center">
           <div className="grid grid-cols-2 gap-4">

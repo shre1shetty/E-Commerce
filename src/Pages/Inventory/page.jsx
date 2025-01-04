@@ -101,22 +101,8 @@ const Page = () => {
         headerName: "Fabric",
       },
       {
-        field: "sizes",
-        headerName: "Sizes",
-        cellRenderer: (params) => (
-          <div className="">{params.data.sizes.toString()}</div>
-        ),
-      },
-      {
         field: "brand",
         headerName: "Brand",
-      },
-      {
-        field: "colors",
-        headerName: "Colors",
-        cellRenderer: (params) => (
-          <div className="">{params.data.colors.toString()}</div>
-        ),
       },
       {
         field: "fitType",
@@ -196,8 +182,9 @@ const Page = () => {
 
       <div className="">
         <div className="filter-list">
-          {filterList.map((category) => (
+          {filterList.map((category, index) => (
             <button
+              key={index}
               className={cn(
                 "filter-option",
                 selectedFilter === category ? "active-option" : ""

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,15 +16,22 @@ import { useFormik } from "formik";
 import { AddProduct } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
 import { MultiSelect } from "react-multi-select-component";
+import { getVariant } from "@/Pages/Variant/service";
+import SelectElement from "@/Components/Select/SelectElement";
 
 const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
   const [open, setopen] = useState(false);
-  const [selectedCategory, setselectedCategory] = useState([]);
+  const [variants, setvariants] = useState({
+    options: [],
+    fields: [],
+  });
+  const [variantFields, setvariantFields] = useState([]);
   const formik = useFormik({
     initialValues: {
       name: "",
       price: "",
       description: "",
+      productType: "",
       inStock: "",
       sold: "",
       category: [],
@@ -33,6 +40,7 @@ const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
       brand: "",
       colors: "",
       fitType: "",
+      variantFields: [],
     },
   });
   const submitHandler = (data) => {
@@ -46,9 +54,34 @@ const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
       setopen(false);
     });
   };
-  useMemo(() => {
+  function getVariantFields(id) {
+    const selectedVariant = variants.raw.find((data) => data._id === id);
+    setvariantFields(selectedVariant.Fields);
+  }
+  useEffect(() => {
     formik.resetForm();
+    setvariantFields([]);
+    setvariants({
+      options: [],
+      fields: [],
+    });
+    if (open) {
+      getVariant().then((resp) => {
+        setvariants({
+          options: resp.map((data) => ({
+            label: data.name,
+            value: data._id,
+          })),
+          raw: resp,
+        });
+      });
+    }
   }, [open]);
+
+  useEffect(() => {
+    console.log(formik.values);
+  }, [formik.values]);
+
   return (
     <Dialog open={open} onOpenChange={setopen}>
       <DialogTrigger>
@@ -82,6 +115,20 @@ const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
             />
           </div>
           <div className="">
+            <Label>Product Type</Label>
+            <SelectElement
+              options={variants.options}
+              name={"productType"}
+              value={variants.options?.find(
+                (data) => data.value === formik.values.productType
+              )}
+              onChange={(data) => {
+                formik.setFieldValue("productType", data.value);
+                getVariantFields(data.value);
+              }}
+            />
+          </div>
+          <div className="">
             <Label>In Stock</Label>
             <Input name={"inStock"} onChange={formik.handleChange} />
           </div>
@@ -104,31 +151,47 @@ const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
             <Input name={"fabric"} onChange={formik.handleChange} />
           </div>
           <div className="">
-            <Label>Sizes</Label>
-            <Input
-              name={"sizes"}
-              onChange={(event) =>
-                formik.setFieldValue("sizes", event.target.value.split(","))
-              }
-            />
-          </div>
-          <div className="">
             <Label>Brand</Label>
             <Input name={"brand"} onChange={formik.handleChange} />
           </div>
-          <div className="">
-            <Label>Colors</Label>
-            <Input
-              name={"colors"}
-              onChange={(event) =>
-                formik.setFieldValue("colors", event.target.value.split(","))
-              }
-            />
-          </div>
+
           <div className="">
             <Label>Fit Type</Label>
             <Input name={"fitType"} onChange={formik.handleChange} />
           </div>
+          {variantFields?.map((data, index) => (
+            <div className="" key={index}>
+              <Label>{data.name}</Label>
+              <Input
+                name={data.name}
+                onChange={(event) => {
+                  formik.setFieldValue(
+                    "variantFields",
+                    formik.values.variantFields.some(
+                      ({ field }) => field === data.name
+                    )
+                      ? formik.values.variantFields.map((val) =>
+                          val.field === data.name
+                            ? {
+                                field: data.name,
+                                value: event.target.value.split(","),
+                                flag: data.flag,
+                              }
+                            : val
+                        )
+                      : [
+                          ...formik.values.variantFields,
+                          {
+                            field: data.name,
+                            value: event.target.value.split(","),
+                            flag: data.flag,
+                          },
+                        ]
+                  );
+                }}
+              />
+            </div>
+          ))}
         </div>
         <DialogFooter>
           <CustomButton

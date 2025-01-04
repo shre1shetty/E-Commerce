@@ -9,30 +9,52 @@ import {
 import { cn } from "@/lib/utils";
 import { isEmpty } from "lodash";
 const Preview = ({ data, showPreview }) => {
-  const [values, setvalues] = useState({});
-  const [colorSize, setcolorSize] = useState({ color: "", size: "" });
+  const [values, setvalues] = useState({ variantFields: [] });
+  const [variantFields, setvariantFields] = useState({
+    varient1: "",
+    varient2: "",
+  });
+  const [field1Field2, setfield1Field2] = useState({ field1: "", field2: "" });
   const [picturesArray, setpicturesArray] = useState([]);
-  const handleChange = ({ color, size, array }) => {
-    setcolorSize({ color, size });
+  const handleChange = ({ field1, field2, array, variantFields }) => {
+    setfield1Field2({ field1, field2 });
     const PictureArray = array.pictures;
-    if (array[`${color}${size}colorVariant`].picture) {
-      PictureArray[0] = array[`${color}${size}colorVariant`].picture;
+    const newImage = array.variantValues.find(
+      (val) =>
+        val.name ===
+        `${variantFields.varient1}${field1}${variantFields.varient2}${field2}Variant`
+    ).values.picture;
+    if (newImage) {
+      PictureArray[0] = newImage;
     }
     setpicturesArray(PictureArray);
   };
   useEffect(() => {
     if (!isEmpty(data)) {
+      setvariantFields({
+        varient1: data.variantFields[0]?.field,
+        varient2: data.variantFields[1]?.field,
+      });
       setvalues(data);
-      if (!isEmpty(data.colors) || !isEmpty(data.sizes))
-        setcolorSize({
-          color: data.colors[0],
-          size: data.sizes[0],
+      if (!isEmpty(data.variantFields[0]) || !isEmpty(data.variantFields[1]))
+        setfield1Field2({
+          field1: data.variantFields[0].value[0],
+          field2: data.variantFields[1].value[0],
         });
       if (data.pictures) {
-        if (data[`${data.colors[0]}${data.sizes[0]}colorVariant`].picture) {
+        if (
+          data.variantValues.find(
+            (val) =>
+              val.name ===
+              `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
+          )?.values.picture
+        ) {
           const PictureArray = data.pictures;
-          PictureArray[0] =
-            data[`${data.colors[0]}${data.sizes[0]}colorVariant`].picture;
+          PictureArray[0] = data.variantValues.find(
+            (val) =>
+              val.name ===
+              `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
+          )?.values.picture;
           setpicturesArray(PictureArray);
         } else {
           setpicturesArray(data.pictures);
@@ -78,27 +100,43 @@ const Preview = ({ data, showPreview }) => {
           {values?.name}
         </label>
         <label htmlFor="" className="form-label">
-          ₹{values[`${colorSize.color}${colorSize.size}colorVariant`]?.price}
+          ₹
+          {
+            values.variantValues?.find(
+              (val) =>
+                val.name ===
+                `${variantFields.varient1}${field1Field2.field1}${variantFields.varient2}${field1Field2.field2}Variant`
+            )?.values?.price
+          }
         </label>
       </div>
       <div className="flex justify-between items-center">
         <div className="">
           <label htmlFor="" className="form-label text-base">
-            Size
+            {variantFields.varient1}
           </label>
           <div className="flex gap-1">
-            {values?.sizes?.map((val, index) => (
+            {values?.variantFields[0]?.value?.map((val, index) => (
               <button
                 className={cn(
-                  "border py-2 px-3 text-sm rounded-lg bg-[#272b3c]",
-                  colorSize.size === val ? "border-gray-200" : "border-gray-600"
+                  field1Field2.field1 === val
+                    ? "border-gray-200"
+                    : "border-gray-600",
+                  values?.variantFields[0].flag === "Fill"
+                    ? "h-3 w-3 p-3 rounded-full"
+                    : "border py-1 px-2 rounded-lg"
                 )}
+                style={{
+                  backgroundColor:
+                    values?.variantFields[0].flag === "Fill" ? val : "#272b3c",
+                }}
                 key={index}
                 onClick={() =>
                   handleChange({
-                    color: colorSize.color,
-                    size: val,
+                    field2: field1Field2.field2,
+                    field1: val,
                     array: values,
+                    variantFields: variantFields,
                   })
                 }
               >
@@ -110,24 +148,30 @@ const Preview = ({ data, showPreview }) => {
 
         <div className="">
           <label htmlFor="" className="form-label text-base">
-            Color
+            {variantFields.varient2}
           </label>
           <div className="flex gap-1">
-            {values?.colors?.map((val, index) => (
+            {values?.variantFields[1]?.value?.map((val, index) => (
               <button
                 className={cn(
-                  `h-3 w-3 p-3 text-sm rounded-full`,
-                  colorSize.color === val
+                  field1Field2.field2 === val
                     ? "border-2 border-gray-200"
-                    : " border border-gray-600"
+                    : " border border-gray-600",
+                  values?.variantFields[1].flag === "Fill"
+                    ? "h-3 w-3 p-3 rounded-full"
+                    : "border py-1 px-2 rounded-lg"
                 )}
                 key={index}
-                style={{ backgroundColor: val }}
+                style={{
+                  backgroundColor:
+                    values?.variantFields[1].flag === "Fill" ? val : "#272b3c",
+                }}
                 onClick={() =>
                   handleChange({
-                    color: val,
-                    size: colorSize.size,
+                    field2: val,
+                    field1: field1Field2.field1,
                     array: values,
+                    variantFields: variantFields,
                   })
                 }
               ></button>

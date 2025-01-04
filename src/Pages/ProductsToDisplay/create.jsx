@@ -2,8 +2,8 @@ import CustomHeader from "@/Components/CustomHeader";
 import SelectElement from "@/Components/Select/SelectElement";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
-import { getInventory } from "./service";
-import { cn, convertForSelect } from "@/lib/utils";
+import { addProduct, getInventory } from "./service";
+import { cn, combineUnique, convertForSelect } from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
 import {
@@ -34,7 +34,9 @@ const Create = () => {
   const [showPreview, setshowPreview] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
-    initialValues: {},
+    initialValues: {
+      variantFields: [],
+    },
   });
   const SpecificationFormik = useFormik({
     initialValues: {
@@ -42,6 +44,53 @@ const Create = () => {
       value: "",
     },
   });
+
+  const handleAdd = (data) => {
+    delete data._id;
+    const formData = new FormData();
+    Object.keys(data).forEach((key, index) => {
+      // console.log(key);
+      if (
+        key === "pictures" ||
+        key === "category" ||
+        key === "variantFields" ||
+        key === "AdditionalSpecification"
+      ) {
+        data[key].forEach((value2, index1) => {
+          Object.keys(value2).forEach((key1) => {
+            let fieldValue = value2[key1];
+
+            // Check if the value is an object or array, and stringify it
+            if (Array.isArray(fieldValue)) {
+              fieldValue.forEach((value, index2) => {
+                formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
+              });
+            } else {
+              formData.append(`${key}[${index1}][${key1}]`, fieldValue);
+            }
+          });
+          // formData.append(key, picture);
+        });
+      } else if (key === "variantValues") {
+        data[key].forEach((variant, index1) => {
+          formData.append(`variantValues[${index1}][name]`, variant.name);
+          Object.keys(variant.values).forEach((key) => {
+            formData.append(
+              `variantValues[${index1}][values][${key}]`,
+              variant.values[key]
+            );
+          });
+        });
+      } else {
+        formData.append(key, data[key]);
+      }
+    });
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+    addProduct(formData).then((resp) => {});
+  };
+
   useEffect(() => {
     getInventory().then((resp) => {
       setInventoryItems(
@@ -59,15 +108,21 @@ const Create = () => {
       Object.keys(selectedOption).forEach((key) =>
         formik.setFieldValue(key, selectedOption[key])
       );
-      selectedOption?.colors.forEach((color) => {
-        selectedOption?.sizes.forEach((size) =>
-          formik.setFieldValue(`${color}${size}colorVariant`, {
-            price: selectedOption?.price,
-            inStock: selectedOption?.inStock,
-            picture: null,
+      const values = [];
+      selectedOption?.variantFields[0].value.forEach((data) => {
+        selectedOption?.variantFields[1].value.forEach((data2) =>
+          values.push({
+            name: `${selectedOption?.variantFields[0].field}${data}${selectedOption?.variantFields[1].field}${data2}Variant`,
+            values: {
+              price: selectedOption?.price,
+              inStock: selectedOption?.inStock,
+              picture: null,
+            },
           })
         );
       });
+
+      formik.setFieldValue("variantValues", values);
     }
   }, [formik.values.Title]);
 
@@ -360,7 +415,7 @@ const Create = () => {
             </TabsContent>
             <TabsContent value="password" className="flex-1 overflow-auto">
               <div className="flex flex-col gap-2 text-sm pr-4 mb-2">
-                {formik.values.sizes?.map((size) => (
+                {formik.values.variantFields[0]?.value?.map((val) => (
                   <Accordion
                     type="single"
                     collapsible
@@ -370,29 +425,61 @@ const Create = () => {
                       <AccordionTrigger className="p-0">
                         <MainVariant
                           baseValues={formik.values}
-                          size={size}
+                          value={val}
+                          field={formik.values.variantFields[0]?.field}
                           setSizeVariantValues={(values) => {
-                            formik.setFieldValue(`${size}sizeVariant`, values);
-                            formik.values.colors.forEach((color) => {
-                              formik.setFieldValue(
-                                `${color}${size}colorVariant`,
-                                values
-                              );
-                            });
+                            formik.setFieldValue(
+                              `${formik.values.variantFields[0]?.field}${val}Variant`,
+                              values
+                            );
+                            let fieldValues = [];
+                            formik.values.variantFields[1]?.value.forEach(
+                              (val1) => {
+                                fieldValues.push({
+                                  name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val1}Variant`,
+                                  values,
+                                });
+                              }
+                            );
+
+                            formik.setFieldValue(
+                              "variantValues",
+                              combineUnique(
+                                formik.values.variantValues ?? [],
+                                fieldValues,
+                                "name"
+                              )
+                            );
                           }}
                         />
                       </AccordionTrigger>
                       <AccordionContent className="flex flex-col gap-2 mt-3">
-                        {formik.values.colors.map((color) => (
+                        {formik.values.variantFields[1]?.value?.map((val2) => (
                           <InnerVariant
                             showPreview={showPreview}
-                            baseValues={formik.values}
-                            color={color}
-                            size={size}
+                            baseValues={
+                              formik.values.variantValues?.find(
+                                (value) =>
+                                  value.name ===
+                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`
+                              ) ?? formik.values
+                            }
+                            value1={val}
+                            value2={val2}
+                            field1={formik.values.variantFields[0]?.field}
+                            field2={formik.values.variantFields[1]?.field}
                             setSizeVariantValues={(values) => {
                               formik.setFieldValue(
-                                `${color}${size}colorVariant`,
-                                values
+                                "variantValues",
+                                formik.values.variantValues.map((value) =>
+                                  value.name ===
+                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`
+                                    ? {
+                                        name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`,
+                                        values: values,
+                                      }
+                                    : value
+                                )
                               );
                             }}
                           />
@@ -406,7 +493,7 @@ const Create = () => {
           </Tabs>
 
           <div className="flex justify-center items-center">
-            <Button>Add</Button>
+            <Button onClick={() => handleAdd({ ...formik.values })}>Add</Button>
           </div>
         </div>
         <Preview data={formik.values} showPreview={showPreview} />
