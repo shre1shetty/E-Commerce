@@ -1,0 +1,10 @@
+* {
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.main-div {
+  background-color: #fbf9f7;
+  display: flex;
+  flex-direction: column;
+}

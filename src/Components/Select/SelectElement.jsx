@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import ReactSelect from "react-select";
 const SelectElement = ({
@@ -7,6 +8,8 @@ const SelectElement = ({
   value,
   onChange,
   options,
+  className = "",
+  placeholder = "Select...",
 }) => {
   const customStyles = {
     singleValue: (provided, state) => ({
@@ -59,7 +62,7 @@ const SelectElement = ({
   };
   return (
     <ReactSelect
-      className="text-sm pointer-events-auto"
+      className={cn("text-sm pointer-events-auto", className)}
       name={name}
       value={value ?? []}
       styles={customStyles}
@@ -68,6 +71,7 @@ const SelectElement = ({
       isDisabled={disabled}
       isClearable
       menuPortalTarget={document.body}
+      placeholder={<div>{placeholder}</div>}
     />
   );
 };

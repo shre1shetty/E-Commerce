@@ -1,33 +1,69 @@
 import React, { useEffect, useState } from "react";
 import { Router } from "./Routes";
-import Sidebar from "../Components/Sidebar/Sidebar";
 import "./Router.scss";
 import { BrowserRouter } from "react-router-dom";
 import { LS } from "@/lib/SecureLocalStorage";
 import { SidebarProvider } from "@/Components/ui/sidebar";
 import { AppSidebar } from "@/Components/app-sidebar";
+import NavBar from "@/Components/NavBar/NavBar";
+import { UserRouter } from "./UserRoutes";
+import { getFooter, getLogo } from "./service";
+import { convertToBase64toFile } from "@/lib/utils";
+import Footer from "@/Components/Footer/Footer";
 const RouteContainer = () => {
   const [open, setopen] = useState(false);
+  const [AdminLogin, setAdminLogin] = useState(true);
+  const [logo, setlogo] = useState(null);
+  const [footerDetails, setfooterDetails] = useState({});
+  useEffect(() => {
+    // console.log(location.pathname);
+    if (LS.get("Role") === "Admin") {
+      setAdminLogin(true);
+    } else {
+      setAdminLogin(false);
+      getLogo().then(({ logo }) => {
+        setlogo(URL.createObjectURL(convertToBase64toFile(logo)));
+      });
+      getFooter().then(({ footerDetails }) => setfooterDetails(footerDetails));
+    }
+  }, []);
+  console.log(footerDetails);
   return (
     <BrowserRouter basename="E-Cart">
       <div className="main-div">
-        <div className="container-div">
-          <div
-            className=""
-            onMouseEnter={() => setopen(true)}
-            onMouseLeave={() => setopen(false)}
-          >
-            <SidebarProvider open={open}>
-              <AppSidebar open={open} />
-            </SidebarProvider>
-          </div>
-          <div className="bg-[#f2f4f7] grow p-3">
-            <div className="bg-white rounded-lg h-full px-[19px]">
-              <Router />
+        {AdminLogin ? (
+          <>
+            <div className="container-div">
+              <div
+                className=""
+                onMouseEnter={() => setopen(true)}
+                onMouseLeave={() => setopen(false)}
+              >
+                <SidebarProvider open={open}>
+                  <AppSidebar open={open} />
+                </SidebarProvider>
+              </div>
+              <div className={"bg-[#f2f4f7] grow p-3"}>
+                <div className={"bg-white rounded-lg h-full px-[19px]"}>
+                  <Router />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            {location.pathname != "/E-Cart" &&
+              location.pathname != "/E-Cart/" && <NavBar logo={logo} />}
+
+            <div className={""}>
+              <div className={"px-[19px]"}>
+                <UserRouter />
+              </div>
+            </div>
+          </>
+        )}
       </div>
+      <Footer logo={logo} footerDetails={footerDetails} />
     </BrowserRouter>
   );
 };

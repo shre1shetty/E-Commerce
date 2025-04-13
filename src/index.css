@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer tailwind-base, primereact, tailwind-utilities;
+
+/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
+@import "primereact/resources/themes/lara-light-blue/theme.css"
+  layer(primereact);
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
 
 @layer utilities {
   .sidebar {
@@ -158,14 +169,14 @@
   }
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 
 .customButton {
   padding: 9px 19px;
@@ -178,7 +189,12 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 5px !important;
+}
+
+::-webkit-scrollbar:horizontal {
+  width: 5px !important;
+  height: 5px;
 }
 
 /* Track */
@@ -200,9 +216,49 @@ body {
   --theme-color: black;
   --select-option-color: black;
   --select-option-hover-color: rgba(0, 0, 0, 0.266);
+  --user-theme: orange;
 }
 
-.ant-input {
-  border-color: #aeaeae !important;
-  box-shadow: none !important;
+.p-inputtext {
+  width: 100%;
+  box-shadow: none;
+  @apply px-3 py-2 text-sm h-10;
+}
+
+.p-button {
+  padding: 6px 12px;
+  font-size: 14px;
+  box-shadow: none;
+  background-color: black;
+  border: 1px solid #ddddde;
+}
+
+.p-stepper-content {
+  padding-left: 1rem !important;
+}
+
+.p-stepper-panels {
+  border: 1px solid lightgray;
+  margin-top: 12px;
+  border-radius: 5px;
+  background: #d3d3d342;
+}
+
+.p-stepper .p-stepper-separator {
+  width: 15px;
+}
+
+.p-stepper-title {
+  font-size: 11px;
+}
+
+.p-stepper-number {
+  height: 25px;
+  min-width: 25px;
+  font-size: 12px;
+}
+
+.p-fileupload-choose {
+  padding: 9px 12px;
+  width: 100%;
 }

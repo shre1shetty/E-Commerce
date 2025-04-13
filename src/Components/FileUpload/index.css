@@ -1,0 +1,16 @@
+.fileUploadDiv {
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+}
+
+.fileUploadInnerDiv {
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.fileUploadInnerDiv span {
+  flex-grow: 1;
+  text-align: center;
+}

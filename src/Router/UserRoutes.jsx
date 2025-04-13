@@ -18,32 +18,17 @@ const CreateProductsToDisplayPage = lazy(() =>
 const EditProductsToDisplayPage = lazy(() =>
   import("../Pages/Admin/ProductsToDisplay/edit")
 );
-const Layout = lazy(() => import("@/Pages/Admin/Layout/Layout"));
-const CreateLayout = lazy(() => import("@/Pages/Admin/Layout/Create"));
-export const Router = () => {
+const HomePage = lazy(() => import("../Pages/User/HomePage/HomePage"));
+export const UserRouter = () => {
   return (
     <Suspense fallback={<>Loading...</>}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        {/* Admin Routes */}
-        <Route path="/OverView" element={<OverViewPage />} />
-        <Route path="/Inventory" element={<InventoryPage />} />
-        <Route path="/Filters" element={<FilterPage />} />
-        <Route path="/Filters/:id" element={<FilterTypePage />} />
-        <Route path="/Variant" element={<VariantPage />} />
-        <Route path="/Variant/:id" element={<VariantFieldPage />} />
-        <Route path="/ProductsToDisplay" element={<ProductsToDisplayPage />} />
-        <Route
-          path="/ProductsToDisplay/Create"
-          element={<CreateProductsToDisplayPage />}
-        />
-        <Route
-          path="/ProductsToDisplay/Edit"
-          element={<EditProductsToDisplayPage />}
-        />
-        <Route path="/Layout" element={<Layout />} />
-        <Route path="/Layout/Create" element={<CreateLayout />} />
-        {/* Admin Routes */}
+
+        {/* User Routes */}
+        <Route path="/Home" element={<HomePage />} />
+
+        {/* User Routes */}
       </Routes>
     </Suspense>
   );

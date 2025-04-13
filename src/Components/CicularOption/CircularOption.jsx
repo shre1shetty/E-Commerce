@@ -1,0 +1,18 @@
+import React from "react";
+
+const CircularOption = ({ onClick, image, children }) => {
+  return (
+    <div className="bg-[#fffaef] border-2 border-b-0 shadow-[0px_0px_8px_2px_lightgray] border-[#a06743] border-e w-[120px] h-[120px] rounded-full relative bg-cover bg-center cursor-pointer p-1 hover:scale-[1.1]">
+      <img
+        src={image}
+        alt={children}
+        className="w-full h-full block rounded-full"
+      />
+      <div className="px-2 py-1 rounded-lg absolute -bottom-4 left-1/2 transform -translate-x-1/2 text-gray-600 font-bold text-sm bg-white bg-opacity-50 border border-[#d2d2d2] text-center">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default CircularOption;

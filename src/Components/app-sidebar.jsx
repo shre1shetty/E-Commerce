@@ -8,6 +8,7 @@ import {
   Frame,
   GalleryVerticalEnd,
   HousePlus,
+  LayoutGrid,
   Map,
   PieChart,
   Settings2,
@@ -112,6 +113,12 @@ const data = {
       title: "Filters",
       url: "Filters",
       icon: Settings2,
+      items: [],
+    },
+    {
+      title: "Layout",
+      url: "Layout",
+      icon: LayoutGrid,
       items: [],
     },
     {

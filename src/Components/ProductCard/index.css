@@ -1,0 +1,58 @@
+.filterdiv {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.activefilter {
+  opacity: 100% !important;
+  font-weight: 900 !important;
+  border-width: 2px !important;
+}
+
+.colorDiv {
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  border-radius: 4px;
+  align-items: center;
+}
+
+.normalDiv {
+  background-color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 4px;
+  opacity: 70%;
+  border-radius: 5px;
+  border: 1px solid #633b22;
+}
+
+.description {
+  font-size: 10px;
+  font-weight: 500;
+  color: #957764;
+  margin-bottom: 6px;
+}
+
+.hidden-div {
+  overflow: hidden;
+  position: absolute;
+  max-height: 23px;
+  width: 100%;
+  background: white;
+  bottom: 1px;
+  opacity: 80%;
+  left: 0px;
+  padding: 0 8px;
+  transition: max-height 1s ease-in-out;
+}
+
+.hidden-div:hover {
+  max-height: 100%;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
