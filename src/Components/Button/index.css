@@ -1,0 +1,13 @@
+.iconButton {
+  padding: 8px;
+  font-size: 10px;
+  background-color: var(--theme-color);
+  color: white;
+  line-height: 14px;
+  border-radius: 8px;
+  /* i {
+    border: 2px solid;
+    border-radius: 999px;
+    padding: 3px;
+  } */
+}

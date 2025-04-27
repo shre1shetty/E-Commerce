@@ -2,7 +2,10 @@ import React from "react";
 
 const CircularOption = ({ onClick, image, children }) => {
   return (
-    <div className="bg-[#fffaef] border-2 border-b-0 shadow-[0px_0px_8px_2px_lightgray] border-[#a06743] border-e w-[120px] h-[120px] rounded-full relative bg-cover bg-center cursor-pointer p-1 hover:scale-[1.1]">
+    <div
+      className="bg-[#fffaef] border-2 border-b-0 shadow-[0px_0px_8px_2px_lightgray] border-[#a06743] border-e w-[120px] h-[120px] rounded-full relative bg-cover bg-center cursor-pointer p-1 hover:scale-[1.1]"
+      onClick={onClick}
+    >
       <img
         src={image}
         alt={children}

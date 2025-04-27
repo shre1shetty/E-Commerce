@@ -22,12 +22,11 @@ const RouteContainer = () => {
     } else {
       setAdminLogin(false);
       getLogo().then(({ logo }) => {
-        setlogo(URL.createObjectURL(convertToBase64toFile(logo)));
+        setlogo(`${import.meta.env.VITE_BASE_URL}/file?id=${logo}`);
       });
       getFooter().then(({ footerDetails }) => setfooterDetails(footerDetails));
     }
   }, []);
-  console.log(footerDetails);
   return (
     <BrowserRouter basename="E-Cart">
       <div className="main-div">
@@ -55,15 +54,15 @@ const RouteContainer = () => {
             {location.pathname != "/E-Cart" &&
               location.pathname != "/E-Cart/" && <NavBar logo={logo} />}
 
-            <div className={""}>
-              <div className={"px-[19px]"}>
+            <div className={"grow"}>
+              <div className={"px-[19px] h-full"}>
                 <UserRouter />
               </div>
             </div>
           </>
         )}
+        <Footer logo={logo} footerDetails={footerDetails} />
       </div>
-      <Footer logo={logo} footerDetails={footerDetails} />
     </BrowserRouter>
   );
 };

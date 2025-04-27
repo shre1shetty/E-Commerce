@@ -10,9 +10,11 @@ import Shoe3 from "@/assets/redShoe.png";
 import DividerWithText from "@/Components/DividerWithText/DividerWithText";
 import HomeProductCard from "@/Components/ProductCard/HomeProductCard";
 import { getLayout } from "./service";
-import { convertToBase64toFile } from "@/lib/utils";
+import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import { LS } from "@/lib/SecureLocalStorage";
+import { useNavigate } from "react-router-dom";
 const HomePage = () => {
+  const navigate = useNavigate();
   const [slides, setslides] = useState([]);
   const [category, setcategory] = useState([]);
   const [stickyPanel, setstickyPanel] = useState({
@@ -32,14 +34,14 @@ const HomePage = () => {
       console.log(topProduct);
       setslides(
         headerElement.rows.map(({ file, url }) => ({
-          file: convertToBase64toFile(file),
+          file,
           url,
         }))
       );
       setcategory(
         category.map((value) => ({
           ...value,
-          image: URL.createObjectURL(convertToBase64toFile(value.image)),
+          image: getFileUrl(value.image),
         }))
       );
       setstickyPanel(stickyPanel);
@@ -62,8 +64,13 @@ const HomePage = () => {
           </text>
           <div className="flex gap-6 mt-4 h-[140px]">
             <CircularOption image={TopDiscount}>Top Discounts</CircularOption>
-            {category.map(({ image, label }) => (
-              <CircularOption image={image}>{label}</CircularOption>
+            {category.map(({ image, label, value }) => (
+              <CircularOption
+                image={image}
+                onClick={() => navigate(`/Category/${value}`)}
+              >
+                {label}
+              </CircularOption>
             ))}
             {/* <CircularOption image={ForMen}>Mens</CircularOption>
             <CircularOption image={Traditional}>Traditional</CircularOption> */}

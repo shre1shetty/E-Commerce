@@ -15,11 +15,15 @@ const ProductsToDisplayPage = lazy(() =>
 const CreateProductsToDisplayPage = lazy(() =>
   import("../Pages/Admin/ProductsToDisplay/create")
 );
+const RawCreateProductsToDisplayPage = lazy(() =>
+  import("../Pages/Admin/ProductsToDisplay/rawCreate")
+);
 const EditProductsToDisplayPage = lazy(() =>
   import("../Pages/Admin/ProductsToDisplay/edit")
 );
 const Layout = lazy(() => import("@/Pages/Admin/Layout/Layout"));
 const CreateLayout = lazy(() => import("@/Pages/Admin/Layout/Create"));
+const Edit = lazy(() => import("@/Pages/Admin/Layout/Edit"));
 export const Router = () => {
   return (
     <Suspense fallback={<>Loading...</>}>
@@ -34,6 +38,10 @@ export const Router = () => {
         <Route path="/Variant/:id" element={<VariantFieldPage />} />
         <Route path="/ProductsToDisplay" element={<ProductsToDisplayPage />} />
         <Route
+          path="/ProductsToDisplay/CreateNew"
+          element={<RawCreateProductsToDisplayPage />}
+        />
+        <Route
           path="/ProductsToDisplay/Create"
           element={<CreateProductsToDisplayPage />}
         />
@@ -43,6 +51,7 @@ export const Router = () => {
         />
         <Route path="/Layout" element={<Layout />} />
         <Route path="/Layout/Create" element={<CreateLayout />} />
+        <Route path="/Layout/Edit/:id" element={<Edit />} />
         {/* Admin Routes */}
       </Routes>
     </Suspense>

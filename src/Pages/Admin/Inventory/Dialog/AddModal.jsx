@@ -56,6 +56,7 @@ const AddModal = ({ refreshGrid, filterTypeOptions = [] }) => {
   };
   function getVariantFields(id) {
     const selectedVariant = variants.raw.find((data) => data._id === id);
+    console.log(selectedVariant);
     setvariantFields(selectedVariant.Fields);
   }
   useEffect(() => {

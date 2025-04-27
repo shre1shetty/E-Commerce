@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import Fuse from "fuse.js";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs) {
@@ -67,3 +68,50 @@ export const convertToFormData = (
 
   return formData;
 };
+
+export const getFileUrl = (id) => {
+  return `${import.meta.env.VITE_BASE_URL}/file?id=${id}`;
+};
+
+export function generateCombinations({
+  data,
+  index = 0,
+  current = "",
+  result = [],
+  price = "0",
+  inStock = 0,
+}) {
+  if (index === data.length) {
+    result.push({
+      name: current + "Variant",
+      values: {
+        price,
+        inStock,
+        picture: null,
+      },
+    });
+    return;
+  }
+  const { field, value } = data[index];
+  for (let i = 0; i < value.length; i++) {
+    generateCombinations({
+      data,
+      index: index + 1,
+      current: current + field + value[i],
+      result,
+      price,
+      inStock,
+    });
+  }
+
+  return result;
+}
+
+export function isMatch(name, searchTerm) {
+  const fuse = new Fuse([name], {
+    threshold: 0.5, // Adjust the threshold for fuzzy matching (0.0 to 1.0)
+  }); // Wrap string in array for Fuse.js
+  const results = fuse.search(searchTerm);
+  // If the search term is close enough to the name, it will return a match
+  return results.length > 0;
+}

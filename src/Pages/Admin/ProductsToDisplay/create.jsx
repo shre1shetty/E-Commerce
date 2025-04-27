@@ -28,6 +28,7 @@ import InnerVariant from "./Variants/InnerVariant";
 import MainVariant from "./Variants/MainVariant";
 import Preview from "./Preview/Preview";
 import { InputTextarea } from "primereact/inputtextarea";
+import GlobalToast from "@/Components/GlobalToast";
 const Create = () => {
   const [InventoryItems, setInventoryItems] = useState([]);
   const [originalInventory, setoriginalInventory] = useState([]);
@@ -89,7 +90,22 @@ const Create = () => {
       }
     });
 
-    addProduct(formData).then((resp) => {});
+    addProduct(formData).then((resp) => {
+      if (resp.statusCode === 200) {
+        GlobalToast({
+          message: resp.statusMsg,
+          messageTimer: 2000,
+          messageType: "success",
+        });
+        navigate(-1);
+      } else {
+        GlobalToast({
+          message: resp.statusMsg,
+          messageTimer: 2000,
+          messageType: "error",
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -428,28 +444,22 @@ const Create = () => {
                           baseValues={formik.values}
                           value={val}
                           field={formik.values.variantFields[0]?.field}
-                          setSizeVariantValues={(values) => {
-                            formik.setFieldValue(
-                              `${formik.values.variantFields[0]?.field}${val}Variant`,
-                              values
-                            );
-                            let fieldValues = [];
-                            formik.values.variantFields[1]?.value.forEach(
-                              (val1) => {
-                                fieldValues.push({
-                                  name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val1}Variant`,
-                                  values,
-                                });
-                              }
-                            );
-
+                          copyToAll={(value) => {
                             formik.setFieldValue(
                               "variantValues",
-                              combineUnique(
-                                formik.values.variantValues ?? [],
-                                fieldValues,
-                                "name"
-                              )
+                              formik.values.variantValues.map((variant) => ({
+                                ...variant,
+                                values: value.find((data) =>
+                                  data.name.includes(
+                                    variant.name.slice(
+                                      variant.name.indexOf(
+                                        formik.values.variantFields[1].field
+                                      ),
+                                      -7
+                                    )
+                                  )
+                                ).values,
+                              }))
                             );
                           }}
                         />

@@ -6,10 +6,11 @@ import "swiper/css/pagination";
 import "./Slider.css";
 import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import { getFileUrl } from "@/lib/utils";
 
 export default function Slider({ slidesPerView = 3, slides = [] }) {
   const navigate = useNavigate();
-
+  console.log(slides);
   return (
     <Swiper
       key={slides.length}
@@ -35,13 +36,9 @@ export default function Slider({ slidesPerView = 3, slides = [] }) {
     >
       {slides.length > 0 ? (
         slides.map(({ file, url }) => {
-          if (!file || !(file instanceof File)) {
-            console.error("Invalid file object:", file);
-            return null;
-          }
           return (
-            <SwiperSlide key={file.filename} onClick={() => navigate(url)}>
-              <img src={URL.createObjectURL(file)} alt="Slide" />
+            <SwiperSlide key={file} onClick={() => navigate(url)}>
+              <img src={getFileUrl(file)} alt="Slide" />
             </SwiperSlide>
           );
         })

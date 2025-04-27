@@ -5,7 +5,7 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "@/Components/ui/button";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LogoPanel from "./Panels/LogoPanel";
 import HeaderElement from "./Panels/HeaderElement";
 import CategoryElement from "./Panels/CategoryElement";
@@ -14,10 +14,10 @@ import FooterElement from "./Panels/FooterElement";
 import StickyElement from "./Panels/StickyElement";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { convertToFormData } from "@/lib/utils";
-import { addLayout } from "./service";
+import { convertToBase64toFile, convertToFormData } from "@/lib/utils";
+import { addLayout, editLayout, updateLayout } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
-const Create = () => {
+const Edit = () => {
   const navigate = useNavigate();
   const stepperRef = useRef(null);
   const formik = useFormik({
@@ -52,13 +52,34 @@ const Create = () => {
       }),
     }),
   });
+  const { id } = useParams();
+  useEffect(() => {
+    editLayout(id).then((res) => {
+      Object.keys(res).forEach((key) => {
+        if (key === "headerElement") {
+          formik.setFieldValue(key, {
+            ...res[key],
+            rows: res[key].rows?.map((val) => ({
+              ...val,
+              file: convertToBase64toFile(val.file),
+            })),
+          });
+        } else if (key === "logo") {
+          formik.setFieldValue(key, convertToBase64toFile(res[key]));
+        } else {
+          formik.setFieldValue(key, res[key]);
+        }
+      });
+    });
+  }, []);
+
   useEffect(() => {
     console.log(formik.values);
   }, [formik.values]);
 
   const submitHandler = (body) => {
     const formData = convertToFormData(body);
-    addLayout(formData).then((resp) => {
+    updateLayout(formData, id).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
           message: resp.statusMsg,
@@ -81,7 +102,7 @@ const Create = () => {
       <CustomHeader title={"Create Layout"}>
         <div className="pl-2 flex items-center gap-3">
           <button
-            className="fa-regular fa-arrow-left"
+            className="fa-solid fa-arrow-left"
             onClick={() => navigate(-1)}
           ></button>
         </div>
@@ -235,4 +256,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Edit;

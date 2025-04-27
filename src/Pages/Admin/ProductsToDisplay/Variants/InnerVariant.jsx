@@ -23,6 +23,7 @@ const InnerVariant = ({
   };
   useEffect(() => {
     if (baseValues.values) {
+      console.log(baseValues.values);
       formik.setValues(baseValues.values);
     } else {
       formik.setFieldValue("price", baseValues.price);
@@ -95,7 +96,17 @@ const InnerVariant = ({
             </div>
           </div>
         </div>
-        <Button onClick={handleClickListener}>Save</Button>
+        {baseValues.price === formik.values.price &&
+        baseValues.inStock === formik.values.inStock &&
+        baseValues.picture &&
+        baseValues.picture[0] === formik.values.picture ? (
+          <div className="flex gap-1 items-center">
+            <X className="text-red-500" />
+            <span className="text-xs text-red-500">No Changes</span>
+          </div>
+        ) : (
+          <Button onClick={handleClickListener}>Save</Button>
+        )}
       </div>
     </div>
   );

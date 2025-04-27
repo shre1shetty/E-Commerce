@@ -28,3 +28,85 @@
   color: #1e223f;
   font-weight: 700;
 }
+
+.hideScrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+.variant-field-value {
+  color: #4444ac;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+.variant-field-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #303030;
+}
+
+.suggestion-item {
+  padding: 6px 5px;
+  border-bottom: 1px solid lightgray;
+  position: relative;
+  cursor: pointer;
+}
+
+.category-value {
+  color: #21c216;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.category-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #303030;
+}
+
+.brand-value {
+  color: #c21616;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.brand-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #303030;
+}
+
+.fabric-value {
+  color: #b4a60c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.fabric-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #303030;
+}
+
+.fitType-value {
+  color: #b4a60c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.fitType-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #303030;
+}
+
+.product-label {
+  color: #8d8d8d;
+  font-weight: 500;
+  font-size: 12px;
+}

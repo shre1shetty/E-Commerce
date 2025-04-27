@@ -1,27 +1,15 @@
 import CustomHeader from "@/Components/CustomHeader";
 import SelectElement from "@/Components/Select/SelectElement";
 import React, { useEffect, useState } from "react";
-import {
-  addProduct,
-  getInventory,
-  getProductById,
-  updateProduct,
-} from "./service";
+import { addProduct, getInventory } from "./service";
 import {
   cn,
   combineUnique,
   convertForSelect,
-  convertToBase64toFile,
+  generateCombinations,
 } from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -29,25 +17,35 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 import { ArrowLeft, Eye, PlusCircle, Trash2, X } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import "./main.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import InnerVariant from "./Variants/InnerVariant";
 import MainVariant from "./Variants/MainVariant";
 import Preview from "./Preview/Preview";
 import { InputTextarea } from "primereact/inputtextarea";
 import GlobalToast from "@/Components/GlobalToast";
-const EditPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+import { getVariant } from "../Variant/service";
+import { MultiSelect } from "react-multi-select-component";
+import { getFilterType } from "../FilterType/service";
+const RawCreate = () => {
   const [InventoryItems, setInventoryItems] = useState([]);
   const [originalInventory, setoriginalInventory] = useState([]);
+  const [filterOptions, setfilterOptions] = useState([]);
   const [showPreview, setshowPreview] = useState(false);
+  const [variants, setvariants] = useState({
+    options: [],
+    raw: [],
+  });
+  const [variantFields, setvariantFields] = useState([]);
+
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       variantFields: [],
+      variantValues: [],
+      category: [],
     },
   });
   const SpecificationFormik = useFormik({
@@ -57,7 +55,20 @@ const EditPage = () => {
     },
   });
 
-  const handleUpdate = (data) => {
+  function getVariantFields(id) {
+    const selectedVariant = variants.raw.find((data) => data._id === id);
+    setvariantFields(selectedVariant.Fields);
+    formik.setFieldValue(
+      "variantFields",
+      selectedVariant.Fields.map((field) => ({
+        field: field.name,
+        value: [],
+        flag: field.flag,
+      }))
+    );
+  }
+
+  const handleAdd = (data) => {
     delete data._id;
     const formData = new FormData();
     Object.keys(data).forEach((key, index) => {
@@ -100,10 +111,8 @@ const EditPage = () => {
         formData.append(key, data[key]);
       }
     });
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-    updateProduct(searchParams.get("id"), formData).then((resp) => {
+
+    addProduct(formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
           message: resp.statusMsg,
@@ -128,37 +137,38 @@ const EditPage = () => {
       );
       setoriginalInventory(resp);
     });
-    getProductById(searchParams.get("id")).then((resp) => {
-      console.log(resp);
-      Object.keys(resp).forEach((key) => {
-        if (key === "variantValues") {
-          formik.setFieldValue(
-            key,
-            resp[key].map((value) => {
-              return {
-                ...value,
-                values: {
-                  ...value.values,
-                  picture: convertToBase64toFile(value.values.picture),
-                },
-              };
-            })
-          );
-        } else if (key === "pictures") {
-          formik.setFieldValue(
-            key,
-            resp[key].map((picture) => convertToBase64toFile(picture))
-          );
-        } else {
-          formik.setFieldValue(key, resp[key]);
-        }
+    getVariant().then((resp) => {
+      setvariants({
+        options: resp.map((data) => ({
+          label: data.name,
+          value: data._id,
+        })),
+        raw: resp,
       });
+    });
+    getFilterType().then((resp) => {
+      setfilterOptions(
+        convertForSelect({ data: resp, label: "name", value: "_id" })
+      );
     });
   }, []);
 
   useEffect(() => {
     console.log(formik.values);
   }, [formik.values]);
+
+  useEffect(() => {
+    if (formik.values.variantFields[0]?.value.length > 0) {
+      formik.setFieldValue(
+        "variantValues",
+        generateCombinations({
+          data: formik.values.variantFields,
+          price: formik.values.price,
+          inStock: formik.values.inStock,
+        })
+      );
+    }
+  }, [formik.values.variantFields, formik.values.price, formik.values.inStock]);
 
   const handleAddSpecifiction = ({ field, value }) => {
     formik.setFieldValue(
@@ -172,7 +182,7 @@ const EditPage = () => {
 
   return (
     <>
-      <CustomHeader title={"Edit Product"}>
+      <CustomHeader title={"Add New Product"}>
         <div className="flex gap-1">
           <Button onClick={() => setshowPreview((prev) => !prev)}>
             <Eye />
@@ -204,20 +214,36 @@ const EditPage = () => {
                   Base Information
                 </label>
                 <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 flex flex-col gap-2">
-                  <div className="w-1/3">
-                    <label htmlFor="" className="form-label">
-                      Title
-                    </label>
-                    <SelectElement
-                      options={InventoryItems}
-                      value={InventoryItems.find(
-                        (data) => data.value === formik.values.Title
-                      )}
-                      disabled
-                      onChange={(data) =>
-                        formik.setFieldValue("Title", data.value)
-                      }
-                    />
+                  <div className="flex gap-2">
+                    <div className="w-1/3">
+                      <label htmlFor="" className="form-label">
+                        Name
+                      </label>
+                      <Input
+                        type="text"
+                        className="form-control"
+                        value={formik.values.name}
+                        name="name"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                    </div>
+                    <div className="w-1/3">
+                      <label htmlFor="" className="form-label">
+                        Product Type
+                      </label>
+                      <SelectElement
+                        options={variants.options}
+                        name={"productType"}
+                        value={variants.options?.find(
+                          (data) => data.value === formik.values.productType
+                        )}
+                        onChange={(data) => {
+                          formik.setFieldValue("productType", data.value);
+                          getVariantFields(data.value);
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className="w-2/3">
                     <label htmlFor="" className="form-label">
@@ -320,6 +346,19 @@ const EditPage = () => {
                     />
                   </div>
                   <div className="">
+                    <label htmlFor="" className="form-label">
+                      Category
+                    </label>
+                    <MultiSelect
+                      options={filterOptions}
+                      value={formik.values.category}
+                      onChange={(data) =>
+                        formik.setFieldValue("category", data)
+                      }
+                      labelledBy="Select"
+                    />
+                  </div>
+                  <div className="">
                     <label htmlFor="brand" className="form-label">
                       Brand
                     </label>
@@ -351,6 +390,59 @@ const EditPage = () => {
                   </div>
                 </div>
                 {/*Details*/}
+
+                {/*Variants */}
+                <label htmlFor="" className="form-label">
+                  Variants
+                </label>
+                <div
+                  className={cn(
+                    "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
+                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                  )}
+                >
+                  {variantFields?.map((data, index) => (
+                    <div className="" key={index}>
+                      <label htmlFor="" className="form-label">
+                        {data.name}
+                      </label>
+                      <Input
+                        name={data.name}
+                        value={
+                          formik.values.variantFields
+                            .find((val) => val.field === data.name)
+                            ?.value.join(",") ?? ""
+                        }
+                        onChange={(event) => {
+                          formik.setFieldValue(
+                            "variantFields",
+                            formik.values.variantFields.some(
+                              ({ field }) => field === data.name
+                            )
+                              ? formik.values.variantFields.map((val) =>
+                                  val.field === data.name
+                                    ? {
+                                        field: data.name,
+                                        value: event.target.value.split(","),
+                                        flag: data.flag,
+                                      }
+                                    : val
+                                )
+                              : [
+                                  ...formik.values.variantFields,
+                                  {
+                                    field: data.name,
+                                    value: event.target.value.split(","),
+                                    flag: data.flag,
+                                  },
+                                ]
+                          );
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/*Variants */}
 
                 {/*Additional Specifications*/}
                 <label htmlFor="" className="form-label">
@@ -458,28 +550,22 @@ const EditPage = () => {
                           baseValues={formik.values}
                           value={val}
                           field={formik.values.variantFields[0]?.field}
-                          setSizeVariantValues={(values) => {
-                            formik.setFieldValue(
-                              `${formik.values.variantFields[0]?.field}${val}Variant`,
-                              values
-                            );
-                            let fieldValues = [];
-                            formik.values.variantFields[1]?.value.forEach(
-                              (val1) => {
-                                fieldValues.push({
-                                  name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val1}Variant`,
-                                  values,
-                                });
-                              }
-                            );
-
+                          copyToAll={(value) => {
                             formik.setFieldValue(
                               "variantValues",
-                              combineUnique(
-                                formik.values.variantValues ?? [],
-                                fieldValues,
-                                "name"
-                              )
+                              formik.values.variantValues.map((variant) => ({
+                                ...variant,
+                                values: value.find((data) =>
+                                  data.name.includes(
+                                    variant.name.slice(
+                                      variant.name.indexOf(
+                                        formik.values.variantFields[1].field
+                                      ),
+                                      -7
+                                    )
+                                  )
+                                ).values,
+                              }))
                             );
                           }}
                         />
@@ -524,9 +610,7 @@ const EditPage = () => {
           </Tabs>
 
           <div className="flex justify-center items-center">
-            <Button onClick={() => handleUpdate({ ...formik.values })}>
-              Update
-            </Button>
+            <Button onClick={() => handleAdd({ ...formik.values })}>Add</Button>
           </div>
         </div>
         <Preview data={formik.values} showPreview={showPreview} />
@@ -535,4 +619,4 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;
+export default RawCreate;

@@ -4,7 +4,32 @@
 }
 
 .main-div {
-  background-color: #fbf9f7;
+  background-color: white;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+.small-checkbox .p-checkbox-box,
+.p-checkbox {
+  height: 16px;
+  width: 16px;
+}
+
+.small-checkbox .p-checkbox-icon {
+  width: 10px;
+  height: 10px;
+}
+
+.p-slider .p-slider-range {
+  background: var(--user-theme);
+}
+
+.p-slider:not(.p-disabled) .p-slider-handle:hover {
+  background: var(--user-theme);
+  border-color: var(--user-theme);
+}
+
+.p-slider .p-slider-handle {
+  border-color: var(--user-theme);
 }

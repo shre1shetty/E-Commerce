@@ -1,8 +1,8 @@
 import { ceil } from "lodash";
 import React, { useEffect, useState } from "react";
 import "./index.css";
-import { convertToBase64toFile } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
+import { Check, Heart, ShoppingBag, Star } from "lucide-react";
 const HomeProductCard = ({
   id,
   label,
@@ -11,50 +11,22 @@ const HomeProductCard = ({
   discountPrice = 0,
   filters,
   description,
-  variantValues,
+  variantValues = [],
+  preview = false,
 }) => {
   const [productImage, setproductImage] = useState(null);
   const [variant1, setvariant1] = useState({ name: null, value: null });
   const [variant2, setvariant2] = useState({ name: null, value: null });
   const handleFilterChange = (color, variantValues, variant1, variant2) => {
-    console.log(variant1, variant2);
     const val = variantValues.find(({ name }) =>
       name.includes(
         `${variant1.name}${variant1.value}${variant2.name}${variant2.value}`
       )
     );
-    setproductImage(convertToBase64toFile(val?.values.picture));
-  };
-
-  const getColorDiv = (color, variantValues, index) => {
-    return (
-      <span
-        className="colorDiv"
-        style={{ backgroundColor: color }}
-        onClick={() => {
-          if (index === 0) {
-            setvariant1({ name: filters[0]?.field, value: color });
-            handleFilterChange(
-              color,
-              variantValues,
-              { name: "Colors", value: color },
-              variant2
-            );
-          } else {
-            setvariant2({ name: filters[1]?.field, value: color });
-            handleFilterChange(color, variantValues, variant1, {
-              name: "Colors",
-              value: color,
-            });
-          }
-        }}
-      >
-        {variant1.value === color || variant2.value === color ? (
-          <Check size={12} color="white" />
-        ) : (
-          "\u00A0"
-        )}
-      </span>
+    setproductImage(
+      preview
+        ? URL.createObjectURL(val?.values.picture)
+        : getFileUrl(val?.values.picture)
     );
   };
 
@@ -67,78 +39,95 @@ const HomeProductCard = ({
       name: filters[1]?.field,
       value: filters[1]?.value[0],
     });
-    console.log(
-      `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`,
-      variantValues.find(({ name }) =>
-        name.includes(
-          `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
-        )
-      )
-    );
+
     setproductImage(
-      convertToBase64toFile(
-        variantValues.find(({ name }) =>
-          name.includes(
-            `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
+      preview && variantValues[0]?.values?.picture
+        ? URL.createObjectURL(
+            variantValues.find(({ name }) =>
+              name.includes(
+                `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
+              )
+            ).values?.picture
           )
-        ).values?.picture
-      )
+        : getFileUrl(
+            variantValues.find(({ name }) =>
+              name.includes(
+                `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
+              )
+            )?.values?.picture
+          )
+      // )
     );
   }, [filters]);
-
-  // useEffect(() => {
-  //   setproductImage(image);
-  // }, [image]);
 
   return (
     <div
       key={id}
-      className="border-[1px] bg-white border-[#a06743] rounded-[2px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden"
+      className="bg-[#f5f4f7] h-[290px] rounded-[25px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden"
     >
-      <div className="w-full h-[250px] hover:scale-[1.02] relative mb-6">
+      <div className="w-full h-[200px] hover:scale-[1.02] relative">
         <img
-          src={productImage ? URL.createObjectURL(productImage) : ""}
+          src={productImage ? productImage : ""}
           alt=""
-          className="h-full w-full block rounded-md"
+          className="h-full w-full block rounded-md card-image"
         />
       </div>
-      <div className="hidden-div">
-        <div className="flex justify-between w-full pb-1 rounded-lg text-[#633b22] font-bold text-base/4 name">
-          <text className="text-nowrap w-full block">{label}</text>
-          <span className="text-green-600 flex gap-1">
-            ₹{discountPrice}
-            {"   "}
-            <del className="text-red-400 text-[9px]">₹{price}</del>
-          </span>
-        </div>
-        <div className="description">
-          <text className="">{description}</text>
-        </div>
-        <div className="filterdiv">
-          {filters?.map(({ field, value }, index) => (
-            <div className="flex gap-1">
-              {value.map((value) =>
-                field === "Colors" ? (
-                  getColorDiv(value, variantValues, index)
-                ) : (
-                  <span
-                    className={`normalDiv text-xs text-[#7a4e33] font-bold ${
-                      variant1.value === value || variant2.value === value
-                        ? "activefilter"
-                        : ""
-                    }`}
-                  >
-                    {value}
-                  </span>
-                )
-              )}
-            </div>
-          ))}
+      <div className="flex justify-center absolute bottom-[98px] left-[45%] z-20">
+        <div className="flex overflow-hidden rounded-lg items-end ">
+          {filters
+            .find(({ field }) => field === "Colors")
+            ?.value.map((color) => (
+              <div
+                className="h-1 min-w-3 hover:h-1.5"
+                style={{ backgroundColor: color }}
+                onClick={() => {
+                  if (
+                    filters.findIndex(({ field }) => field === "Colors") === 0
+                  ) {
+                    setvariant1({ name: filters[0]?.field, value: color });
+                    handleFilterChange(
+                      color,
+                      variantValues,
+                      { name: "Colors", value: color },
+                      variant2
+                    );
+                  } else {
+                    setvariant2({ name: filters[1]?.field, value: color });
+                    handleFilterChange(color, variantValues, variant1, {
+                      name: "Colors",
+                      value: color,
+                    });
+                  }
+                }}
+              ></div>
+            ))}
         </div>
       </div>
-
-      <div className="absolute bg-[#a06743] text-white font-bold text-sm px-9 py-1.5 top-1 -right-[21px] rotate-[31deg] text-center">
-        {ceil(((price - discountPrice) / price) * 100)}% Off
+      <div className="addtoCart">
+        <button className="">
+          <ShoppingBag size={14} />
+        </button>
+      </div>
+      <div className="top-product-name">
+        <p className="">{label}</p>
+        <p className="top-product-description">
+          {description.length > 30
+            ? description.substring(0, 30) + "..."
+            : description}
+        </p>
+      </div>
+      <div className="top-product-price">
+        <span className="currency">₹</span>
+        <span className="">{price}</span>
+      </div>
+      <div className="wishlist">
+        <button className="">
+          <Heart />
+        </button>
+      </div>
+      <div className="flex text-xs items-center font-extrabold text-blue-950 gap-1 absolute top-4 left-4">
+        <Star fill="gold" size={12} color="gold" />
+        <div className="">4.5</div>
       </div>
     </div>
   );

@@ -136,12 +136,18 @@ export function AppSidebar({ ...props }) {
       <SidebarHeader>
         <div
           className={cn(
-            "sidebar-header flex  items-center gap-2 text-lg text-[#7e8394]",
+            "sidebar-header flex  items-center gap-2 text-lg text-[#7e8394] overflow-hidden",
             props.open ? "h-16" : "h-8"
           )}
         >
           <img src={Logo} alt="" className="w-auto h-full" />
-          <div className={props.open ? "" : "hidden"}>E-Cart Solutions</div>
+          <div
+            className={
+              props.open ? "whitespace-nowrap" : "whitespace-nowrap hidden"
+            }
+          >
+            E-Cart Solutions
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>

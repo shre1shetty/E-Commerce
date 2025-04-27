@@ -3,6 +3,8 @@ import CustomHeader from "@/Components/CustomHeader";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts } from "./service";
+import IconButton from "@/Components/Button/IconButton";
+import { CirclePlus, PackagePlus } from "lucide-react";
 
 const Page = () => {
   const navigate = useNavigate();
@@ -69,11 +71,13 @@ const Page = () => {
   return (
     <>
       <CustomHeader title={"Products To Display"}>
-        <div className="pl-2 flex items-center gap-3">
-          <button
-            className="fa-regular fa-plus"
-            onClick={() => navigate("Create")}
-          ></button>
+        <div className="pl-2 flex items-center gap-2">
+          <IconButton onClick={() => navigate(`CreateNew`)}>
+            <CirclePlus size={16} />
+          </IconButton>
+          <IconButton onClick={() => navigate(`Create`)}>
+            <PackagePlus size={16} />
+          </IconButton>
         </div>
       </CustomHeader>
       <div className="mt-4">

@@ -6,9 +6,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { PrimeReactProvider } from "primereact/api";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    {/* <PrimeReactProvider> */}
-    <App />
-    {/* </PrimeReactProvider> */}
-  </StrictMode>
+  // <StrictMode>
+  <App />
+  // </StrictMode>
 );
