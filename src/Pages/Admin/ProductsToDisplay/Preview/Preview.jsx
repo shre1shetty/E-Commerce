@@ -19,49 +19,46 @@ const Preview = ({ data, showPreview }) => {
   });
   const [field1Field2, setfield1Field2] = useState({ field1: "", field2: "" });
   const [picturesArray, setpicturesArray] = useState([]);
-  const handleChange = ({ field1, field2, array, variantFields }) => {
-    setfield1Field2({ field1, field2 });
-    const PictureArray = array.pictures;
-    const newImage = array.variantValues.find(
-      (val) =>
-        val.name ===
-        `${variantFields.varient1}${field1}${variantFields.varient2}${field2}Variant`
-    ).values.picture;
-    if (newImage) {
-      PictureArray[0] = newImage;
-    }
-    setpicturesArray(PictureArray);
-  };
+
   useEffect(() => {
     if (!isEmpty(data)) {
-      setvariantFields({
-        varient1: data.variantFields[0]?.field,
-        varient2: data.variantFields[1]?.field,
-      });
+      setvariantFields(
+        data.variantFields.reduce(
+          (acc, cur, index) => ({
+            ...acc,
+            [`varient${index + 1}`]: cur.field,
+          }),
+          {}
+        )
+      );
+      // setvariantFields({
+      //   varient1: data.variantFields[0]?.field,
+      //   varient2: data.variantFields[1]?.field,
+      // });
       setvalues(data);
-      if (!isEmpty(data.variantFields[0]) || !isEmpty(data.variantFields[1]))
-        setfield1Field2({
-          field1: data.variantFields[0].value[0],
-          field2: data.variantFields[1].value[0],
-        });
+      // if (!isEmpty(data.variantFields[0]) || !isEmpty(data.variantFields[1]))
+      //   setfield1Field2({
+      //     field1: data.variantFields[0].value[0],
+      //     field2: data.variantFields[1].value[0],
+      //   });
       // if (data.pictures) {
-      if (
-        data.variantValues?.find(
-          (val) =>
-            val.name ===
-            `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
-        )?.values.picture
-      ) {
-        const PictureArray = data.pictures ?? [];
-        PictureArray[0] = data.variantValues.find(
-          (val) =>
-            val.name ===
-            `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
-        )?.values.picture;
-        setpicturesArray(PictureArray);
-      } else {
-        setpicturesArray(data.pictures);
-      }
+      // if (
+      //   data.variantValues?.find(
+      //     (val) =>
+      //       val.name ===
+      //       `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
+      //   )?.values.picture
+      // ) {
+      //   const PictureArray = data.pictures ?? [];
+      //   PictureArray[0] = data.variantValues.find(
+      //     (val) =>
+      //       val.name ===
+      //       `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
+      //   )?.values.picture;
+      //   setpicturesArray(PictureArray);
+      // } else {
+      setpicturesArray(data.pictures);
+      // }
       // }
     }
   }, [data]);
@@ -90,7 +87,6 @@ const Preview = ({ data, showPreview }) => {
               filters={values.variantFields}
               variantValues={values.variantValues}
               price={values.price}
-              preview={true}
             />
           </div>
         </TabsContent>

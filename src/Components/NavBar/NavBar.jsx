@@ -9,14 +9,23 @@ import {
 import NavbarSearch from "./NavbarSearch";
 import { Heart, ShoppingBag, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import LoginModal from "@/Pages/Login/LoginModal";
+import { LS } from "@/lib/SecureLocalStorage";
 const NavBar = ({ logo }) => {
   const navigate = useNavigate();
+  const count = useSelector((state) => state.count.count.count);
+  const [open, setopen] = useState(false);
   return (
-    <div className="navBar flex bg-white border border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
-      <div className="h-full">
+    <div className="navBar flex bg-white  border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
+      <div
+        className="h-full cursor-pointer px-3 py-1.5"
+        onClick={() => navigate("/")}
+      >
         <img src={logo} alt="Logo" className="w-full h-full" />
       </div>
-      <div className="flex gap-4 h-full items-center">
+      <div className="navbar-content">
+        <NavbarSearch />
         <HoverCard>
           <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-orange-500 h-full flex items-center navbarText">
             Men
@@ -85,16 +94,28 @@ const NavBar = ({ logo }) => {
           </HoverCardContent>
         </HoverCard>
       </div>
+
       <div className="flex gap-3 items-center">
-        <NavbarSearch />
-        <User
-          className="cursor-pointer"
-          type="button"
-          onClick={() => navigate("/")}
-        />
-        <Heart />
-        <ShoppingBag />
+        <button
+          className="navbar-button"
+          onClick={() =>
+            LS.get("userId") ? navigate("userDetails") : setopen(true)
+          }
+        >
+          <User size={16} strokeWidth={3} />
+        </button>
+        <button className="navbar-button">
+          <Heart size={16} strokeWidth={3} />
+        </button>
+        <button
+          className="navbar-button relative shopping-bag"
+          data-count={count}
+          onClick={() => navigate("/Cart")}
+        >
+          <ShoppingBag size={16} strokeWidth={3} />
+        </button>
       </div>
+      <LoginModal open={open} setopen={setopen} />
     </div>
   );
 };

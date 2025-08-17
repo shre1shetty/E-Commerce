@@ -12,6 +12,9 @@ import {
   combineUnique,
   convertForSelect,
   convertToBase64toFile,
+  convertToFormData,
+  fetchImageWithMetadata,
+  getFileUrl,
 } from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
@@ -59,50 +62,50 @@ const EditPage = () => {
 
   const handleUpdate = (data) => {
     delete data._id;
-    const formData = new FormData();
-    Object.keys(data).forEach((key, index) => {
-      // console.log(key);
-      if (
-        key === "category" ||
-        key === "variantFields" ||
-        key === "AdditionalSpecification"
-      ) {
-        data[key].forEach((value2, index1) => {
-          Object.keys(value2).forEach((key1) => {
-            let fieldValue = value2[key1];
+    const formData = convertToFormData(data);
+    // Object.keys(data).forEach((key, index) => {
+    //   // console.log(key);
+    //   if (
+    //     key === "category" ||
+    //     key === "variantFields" ||
+    //     key === "AdditionalSpecification"
+    //   ) {
+    //     data[key].forEach((value2, index1) => {
+    //       Object.keys(value2).forEach((key1) => {
+    //         let fieldValue = value2[key1];
 
-            // Check if the value is an object or array, and stringify it
-            if (Array.isArray(fieldValue)) {
-              fieldValue.forEach((value, index2) => {
-                formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
-              });
-            } else {
-              formData.append(`${key}[${index1}][${key1}]`, fieldValue);
-            }
-          });
-          // formData.append(key, picture);
-        });
-      } else if (key === "variantValues") {
-        data[key].forEach((variant, index1) => {
-          formData.append(`variantValues[${index1}][name]`, variant.name);
-          Object.keys(variant.values).forEach((key) => {
-            formData.append(
-              `variantValues[${index1}][values][${key}]`,
-              variant.values[key]
-            );
-          });
-        });
-      } else if (key === "pictures") {
-        data[key].forEach((picture, index) => {
-          formData.append(`pictures[${index}]`, picture);
-        });
-      } else {
-        formData.append(key, data[key]);
-      }
-    });
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    //         // Check if the value is an object or array, and stringify it
+    //         if (Array.isArray(fieldValue)) {
+    //           fieldValue.forEach((value, index2) => {
+    //             formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
+    //           });
+    //         } else {
+    //           formData.append(`${key}[${index1}][${key1}]`, fieldValue);
+    //         }
+    //       });
+    //       // formData.append(key, picture);
+    //     });
+    //   } else if (key === "variantValues") {
+    //     data[key].forEach((variant, index1) => {
+    //       formData.append(`variantValues[${index1}][name]`, variant.name);
+    //       Object.keys(variant.values).forEach((key) => {
+    //         formData.append(
+    //           `variantValues[${index1}][values][${key}]`,
+    //           variant.values[key]
+    //         );
+    //       });
+    //     });
+    //   } else if (key === "pictures") {
+    //     data[key].forEach((picture, index) => {
+    //       formData.append(`pictures[${index}]`, picture);
+    //     });
+    //   } else {
+    //     formData.append(key, data[key]);
+    //   }
+    // });
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
     updateProduct(searchParams.get("id"), formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
@@ -129,26 +132,28 @@ const EditPage = () => {
       setoriginalInventory(resp);
     });
     getProductById(searchParams.get("id")).then((resp) => {
-      console.log(resp);
-      Object.keys(resp).forEach((key) => {
+      Object.keys(resp).forEach(async (key) => {
         if (key === "variantValues") {
-          formik.setFieldValue(
-            key,
-            resp[key].map((value) => {
+          const newValues = await Promise.all(
+            resp[key].map(async (value) => {
+              const pictureArray = await Promise.all(
+                value.values.picture.map(async (fileId) => {
+                  const response = await fetchImageWithMetadata(
+                    `${import.meta.env.VITE_BASE_URL}/file?id=${fileId}`
+                  );
+                  return response;
+                })
+              );
               return {
                 ...value,
                 values: {
                   ...value.values,
-                  picture: convertToBase64toFile(value.values.picture),
+                  picture: pictureArray,
                 },
               };
             })
           );
-        } else if (key === "pictures") {
-          formik.setFieldValue(
-            key,
-            resp[key].map((picture) => convertToBase64toFile(picture))
-          );
+          formik.setFieldValue(key, newValues);
         } else {
           formik.setFieldValue(key, resp[key]);
         }
@@ -206,17 +211,16 @@ const EditPage = () => {
                 <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 flex flex-col gap-2">
                   <div className="w-1/3">
                     <label htmlFor="" className="form-label">
-                      Title
+                      Name
                     </label>
-                    <SelectElement
-                      options={InventoryItems}
-                      value={InventoryItems.find(
-                        (data) => data.value === formik.values.Title
-                      )}
+                    <Input
+                      type="text"
+                      className="form-control"
+                      value={formik.values.name}
+                      name="name"
                       disabled
-                      onChange={(data) =>
-                        formik.setFieldValue("Title", data.value)
-                      }
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                   </div>
                   <div className="w-2/3">
@@ -458,28 +462,22 @@ const EditPage = () => {
                           baseValues={formik.values}
                           value={val}
                           field={formik.values.variantFields[0]?.field}
-                          setSizeVariantValues={(values) => {
-                            formik.setFieldValue(
-                              `${formik.values.variantFields[0]?.field}${val}Variant`,
-                              values
-                            );
-                            let fieldValues = [];
-                            formik.values.variantFields[1]?.value.forEach(
-                              (val1) => {
-                                fieldValues.push({
-                                  name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val1}Variant`,
-                                  values,
-                                });
-                              }
-                            );
-
+                          copyToAll={(value) => {
                             formik.setFieldValue(
                               "variantValues",
-                              combineUnique(
-                                formik.values.variantValues ?? [],
-                                fieldValues,
-                                "name"
-                              )
+                              formik.values.variantValues.map((variant) => ({
+                                ...variant,
+                                values: value.find((data) =>
+                                  data.name.includes(
+                                    variant.name.slice(
+                                      variant.name.indexOf(
+                                        formik.values.variantFields[1].field
+                                      ),
+                                      -7
+                                    )
+                                  )
+                                ).values,
+                              }))
                             );
                           }}
                         />

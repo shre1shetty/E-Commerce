@@ -1,8 +1,9 @@
-import { ceil } from "lodash";
+import { ceil, isString } from "lodash";
 import React, { useEffect, useState } from "react";
 import "./index.css";
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import { Check, Heart, ShoppingBag, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const HomeProductCard = ({
   id,
   label,
@@ -12,8 +13,8 @@ const HomeProductCard = ({
   filters,
   description,
   variantValues = [],
-  preview = false,
 }) => {
+  const navigate = useNavigate();
   const [productImage, setproductImage] = useState(null);
   const [variant1, setvariant1] = useState({ name: null, value: null });
   const [variant2, setvariant2] = useState({ name: null, value: null });
@@ -24,9 +25,9 @@ const HomeProductCard = ({
       )
     );
     setproductImage(
-      preview
-        ? URL.createObjectURL(val?.values.picture)
-        : getFileUrl(val?.values.picture)
+      isString(val?.values.picture[0])
+        ? getFileUrl(val?.values.picture[0])
+        : URL.createObjectURL(val?.values.picture[0])
     );
   };
 
@@ -40,24 +41,16 @@ const HomeProductCard = ({
       value: filters[1]?.value[0],
     });
 
-    setproductImage(
-      preview && variantValues[0]?.values?.picture
-        ? URL.createObjectURL(
-            variantValues.find(({ name }) =>
-              name.includes(
-                `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
-              )
-            ).values?.picture
-          )
-        : getFileUrl(
-            variantValues.find(({ name }) =>
-              name.includes(
-                `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
-              )
-            )?.values?.picture
-          )
-      // )
-    );
+    if (variantValues[0]?.values?.picture.length > 0) {
+      let image = variantValues.find(({ name }) =>
+        name.includes(
+          `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
+        )
+      )?.values?.picture[0];
+      setproductImage(
+        isString(image) ? getFileUrl(image) : URL.createObjectURL(image)
+      );
+    }
   }, [filters]);
 
   return (
@@ -105,7 +98,7 @@ const HomeProductCard = ({
       </div>
       <div className="addtoCart">
         <button className="">
-          <ShoppingBag size={14} />
+          <ShoppingBag size={14} onClick={() => navigate(`/Product/${id}`)} />
         </button>
       </div>
       <div className="top-product-name">

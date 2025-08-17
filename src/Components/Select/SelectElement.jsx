@@ -25,13 +25,9 @@ const SelectElement = ({
       padding: "0px",
       margin: "0px",
       boxShadow: "none",
-      backgroundColor: isFocused
-        ? "white"
-        : disabled
-        ? "#e9ecef"
-        : "transparent",
+      backgroundColor: isFocused ? "white" : disabled ? "#e9ecef" : "white",
       borderColor: isFocused
-        ? "var(--theme-color)"
+        ? "var(--user-theme)"
         : errorFlag
         ? "red"
         : "#aeaeae",

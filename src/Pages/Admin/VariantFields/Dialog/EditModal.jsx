@@ -21,7 +21,7 @@ const EditModal = ({ refreshGrid, children, data = {} }) => {
   const formik = useFormik({
     initialValues: {
       name: "",
-      falg: "",
+      flag: "",
     },
   });
   const flagvalues = [

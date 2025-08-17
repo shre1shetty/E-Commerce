@@ -6,6 +6,7 @@ import {
   cn,
   combineUnique,
   convertForSelect,
+  convertToFormData,
   generateCombinations,
 } from "@/lib/utils";
 import { useFormik } from "formik";
@@ -30,8 +31,6 @@ import { getVariant } from "../Variant/service";
 import { MultiSelect } from "react-multi-select-component";
 import { getFilterType } from "../FilterType/service";
 const RawCreate = () => {
-  const [InventoryItems, setInventoryItems] = useState([]);
-  const [originalInventory, setoriginalInventory] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
   const [showPreview, setshowPreview] = useState(false);
   const [variants, setvariants] = useState({
@@ -70,48 +69,48 @@ const RawCreate = () => {
 
   const handleAdd = (data) => {
     delete data._id;
-    const formData = new FormData();
-    Object.keys(data).forEach((key, index) => {
-      // console.log(key);
-      if (
-        key === "category" ||
-        key === "variantFields" ||
-        key === "AdditionalSpecification"
-      ) {
-        data[key].forEach((value2, index1) => {
-          Object.keys(value2).forEach((key1) => {
-            let fieldValue = value2[key1];
+    // const formData = new FormData();
+    // Object.keys(data).forEach((key, index) => {
+    //   // console.log(key);
+    //   if (
+    //     key === "category" ||
+    //     key === "variantFields" ||
+    //     key === "AdditionalSpecification"
+    //   ) {
+    //     data[key].forEach((value2, index1) => {
+    //       Object.keys(value2).forEach((key1) => {
+    //         let fieldValue = value2[key1];
 
-            // Check if the value is an object or array, and stringify it
-            if (Array.isArray(fieldValue)) {
-              fieldValue.forEach((value, index2) => {
-                formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
-              });
-            } else {
-              formData.append(`${key}[${index1}][${key1}]`, fieldValue);
-            }
-          });
-          // formData.append(key, picture);
-        });
-      } else if (key === "variantValues") {
-        data[key].forEach((variant, index1) => {
-          formData.append(`variantValues[${index1}][name]`, variant.name);
-          Object.keys(variant.values).forEach((key) => {
-            formData.append(
-              `variantValues[${index1}][values][${key}]`,
-              variant.values[key]
-            );
-          });
-        });
-      } else if (key === "pictures") {
-        data[key].forEach((picture, index) => {
-          formData.append(`pictures[${index}]`, picture);
-        });
-      } else {
-        formData.append(key, data[key]);
-      }
-    });
-
+    //         // Check if the value is an object or array, and stringify it
+    //         if (Array.isArray(fieldValue)) {
+    //           fieldValue.forEach((value, index2) => {
+    //             formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
+    //           });
+    //         } else {
+    //           formData.append(`${key}[${index1}][${key1}]`, fieldValue);
+    //         }
+    //       });
+    //       // formData.append(key, picture);
+    //     });
+    //   } else if (key === "variantValues") {
+    //     data[key].forEach((variant, index1) => {
+    //       formData.append(`variantValues[${index1}][name]`, variant.name);
+    //       Object.keys(variant.values).forEach((key) => {
+    //         formData.append(
+    //           `variantValues[${index1}][values][${key}]`,
+    //           variant.values[key]
+    //         );
+    //       });
+    //     });
+    //   } else if (key === "pictures") {
+    //     data[key].forEach((picture, index) => {
+    //       formData.append(`pictures[${index}]`, picture);
+    //     });
+    //   } else {
+    //     formData.append(key, data[key]);
+    //   }
+    // });
+    const formData = convertToFormData(data);
     addProduct(formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
@@ -131,12 +130,6 @@ const RawCreate = () => {
   };
 
   useEffect(() => {
-    getInventory().then((resp) => {
-      setInventoryItems(
-        convertForSelect({ data: resp, label: "name", value: "_id" })
-      );
-      setoriginalInventory(resp);
-    });
     getVariant().then((resp) => {
       setvariants({
         options: resp.map((data) => ({
@@ -259,61 +252,6 @@ const RawCreate = () => {
                   </div>
                 </div>
                 {/*Base Information */}
-
-                {/*Pictures*/}
-                <label htmlFor="" className="form-label">
-                  Pictures
-                </label>
-                <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid grid-cols-11 gap-4 overflow-hidden">
-                  {formik.values.pictures?.map((picture) => (
-                    <div className="relative">
-                      <div className="border border-dashed border-black flex justify-center items-center h-full rounded-md overflow-hidden">
-                        <img
-                          className="h-[72px] w-full"
-                          src={URL.createObjectURL(picture)}
-                          alt=""
-                        />
-                      </div>
-                      <button
-                        className="absolute flex items-center justify-center h-full w-full top-0 opacity-0 left-1/2 transform -translate-x-1/2 translate-y-0 hover:opacity-80"
-                        onClick={() =>
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures?.filter(
-                              (data) => data !== picture
-                            )
-                          )
-                        }
-                      >
-                        <X />
-                      </button>
-                    </div>
-                  ))}
-                  <div className="relative">
-                    <div className="border border-dashed border-black flex justify-center items-center py-6">
-                      <PlusCircle />
-                    </div>
-                    <input
-                      type="file"
-                      className="absolute opacity-0 top-0 left-0 right-0 bottom-0"
-                      accept=".png"
-                      onChange={(event) => {
-                        event.target.files[0] &&
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures
-                              ? [
-                                  ...formik.values.pictures,
-                                  event.target.files[0],
-                                ]
-                              : [event.target.files[0]]
-                          );
-                        event.target.value = null;
-                      }}
-                    />
-                  </div>
-                </div>
-                {/*Pictures*/}
 
                 {/*Details*/}
                 <label htmlFor="" className="form-label">

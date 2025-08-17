@@ -10,12 +10,12 @@ import { getFileUrl } from "@/lib/utils";
 
 export default function Slider({ slidesPerView = 3, slides = [] }) {
   const navigate = useNavigate();
-  console.log(slides);
+  // console.log(slides);
   return (
     <Swiper
       key={slides.length}
       effect={"coverflow"}
-      centeredSlides={true}
+      // centeredSlides={true}
       autoplay={{
         delay: 1200,
         disableOnInteraction: false,
@@ -23,15 +23,15 @@ export default function Slider({ slidesPerView = 3, slides = [] }) {
       }}
       loop
       slidesPerView={slidesPerView}
-      coverflowEffect={{
-        rotate: -10,
-        stretch: 10,
-        depth: 100,
-        modifier: -1,
-        slideShadows: true,
-      }}
+      // coverflowEffect={{
+      //   rotate: -10,
+      //   stretch: 10,
+      //   depth: 100,
+      //   modifier: -1,
+      //   slideShadows: true,
+      // }}
       pagination={true}
-      modules={[EffectCoverflow, Pagination, Autoplay]}
+      modules={[Pagination, Autoplay]}
       className="mySwiper"
     >
       {slides.length > 0 ? (

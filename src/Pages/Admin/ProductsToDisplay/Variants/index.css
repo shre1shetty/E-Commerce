@@ -1,0 +1,9 @@
+.image-container:hover {
+  .cancel-button {
+    display: block;
+  }
+}
+
+.cancel-button {
+  display: none;
+}

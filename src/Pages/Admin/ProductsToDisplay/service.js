@@ -48,3 +48,14 @@ export const getProductById = async (id) => {
     console.log(error);
   }
 };
+
+export const getRatingsByproductId = async (id) => {
+  try {
+    const res = await AxiosInstance.get(
+      `/Rating/getRatingsByproductId?productId=${id}`
+    );
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -2,14 +2,18 @@ import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import React from "react";
 import "./index.css";
 import { Heart, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const RegularProductCard = ({
+  _id,
   name,
   picture,
   description,
   price,
   variantFields,
+  variantValues,
 }) => {
+  const navigate = useNavigate();
   const getVariantField = ({ flag, value }) => {
     if (flag === "Fill") {
       return (
@@ -37,8 +41,9 @@ const RegularProductCard = ({
       );
     }
   };
+  console.log(variantValues);
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={() => navigate(`/Product/${_id}`)}>
       <div className="ratings">
         <Star fill="gold" color="gold" size={15} />
         <span className="">4.5</span>

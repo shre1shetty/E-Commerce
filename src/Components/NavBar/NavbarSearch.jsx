@@ -7,20 +7,28 @@ import HomeProductCard from "../ProductCard/HomeProductCard";
 import "./index.css";
 import Fuse from "fuse.js";
 import { isMatch } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 const NavbarSearch = () => {
   const [open, setopen] = useState(false);
   const [Products, setProducts] = useState([]);
   const [searchOptions, setsearchOptions] = useState({});
-
+  const navigate = useNavigate();
   const ref = useRef(null);
+  const navigateToSearch = (event) => {
+    setopen(false);
+    navigate("Search?" + event);
+  };
   const optionsList = (items) => {
-    console.log(items);
+    // console.log(items);
     return (
       <ul className="">
         {items.brand.length > 0 &&
           items.brand.map((item) => {
             return (
-              <li className="suggestion-item">
+              <li
+                className="suggestion-item"
+                onClick={() => navigateToSearch("brand=" + item)}
+              >
                 <div className="brand-value">{item}</div>
                 <div className="brand-label">In Brands</div>
                 <ArrowUpRight
@@ -33,7 +41,10 @@ const NavbarSearch = () => {
         {items.fabric.length > 0 &&
           items.fabric.map((item) => {
             return (
-              <li className="suggestion-item">
+              <li
+                className="suggestion-item"
+                onClick={() => navigateToSearch("fabric=" + item)}
+              >
                 <div className="fabric-value">{item}</div>
                 <div className="fabric-label">In Fabric</div>
                 <ArrowUpRight
@@ -46,7 +57,10 @@ const NavbarSearch = () => {
         {items.fitType.length > 0 &&
           items.fitType.map((item) => {
             return (
-              <li className="suggestion-item">
+              <li
+                className="suggestion-item"
+                onClick={() => navigateToSearch("fitType=" + item)}
+              >
                 <div className="fitType-value">{item}</div>
                 <div className="fitType-label">In Fit Type</div>
                 <ArrowUpRight
@@ -59,7 +73,10 @@ const NavbarSearch = () => {
         {items.category.length > 0 &&
           items.category.map((item) => {
             return (
-              <li className="suggestion-item">
+              <li
+                className="suggestion-item"
+                onClick={() => navigateToSearch("category=" + item)}
+              >
                 <div className="category-value">{item}</div>
                 <div className="category-label">In Categories</div>
                 <ArrowUpRight
@@ -72,7 +89,10 @@ const NavbarSearch = () => {
         {items.variantFields.length > 0 &&
           items.variantFields.map((item) => {
             return (
-              <li className="suggestion-item">
+              <li
+                className="suggestion-item"
+                onClick={() => navigateToSearch("variantFields=" + item.value)}
+              >
                 <div className="variant-field-value">{item.value}</div>
                 <div className="variant-field-label">In {item.label}</div>
                 <ArrowUpRight
@@ -204,8 +224,8 @@ const NavbarSearch = () => {
   return (
     <Dialog open={open} onOpenChange={setopen} className="">
       <DialogTrigger>
-        <div className="flex gap-2 items-center text-sm border-2 pl-2 pr-12 py-2 rounded-lg">
-          <Search size={18} className="text-gray-500" />
+        <div className="flex gap-2 items-center text-xs pl-2 pr-56 py-2 rounded-full bg-white">
+          <Search size={16} className="text-gray-500" />
           Search
         </div>
       </DialogTrigger>

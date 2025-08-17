@@ -24,11 +24,17 @@ const EditProductsToDisplayPage = lazy(() =>
 const Layout = lazy(() => import("@/Pages/Admin/Layout/Layout"));
 const CreateLayout = lazy(() => import("@/Pages/Admin/Layout/Create"));
 const Edit = lazy(() => import("@/Pages/Admin/Layout/Edit"));
+const Stage = lazy(() => import("@/Pages/Admin/Administration/Stages/page"));
+const WorkFlowDefination = lazy(() =>
+  import("@/Pages/Admin/Administration/WorflowDefination/page")
+);
+const Orders = lazy(() => import("@/Pages/Admin/Orders/page"));
+
 export const Router = () => {
   return (
     <Suspense fallback={<>Loading...</>}>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* <Route path="/" element={<LoginPage />} /> */}
         {/* Admin Routes */}
         <Route path="/OverView" element={<OverViewPage />} />
         <Route path="/Inventory" element={<InventoryPage />} />
@@ -52,6 +58,12 @@ export const Router = () => {
         <Route path="/Layout" element={<Layout />} />
         <Route path="/Layout/Create" element={<CreateLayout />} />
         <Route path="/Layout/Edit/:id" element={<Edit />} />
+        <Route path="/Administration/Stages" element={<Stage />} />
+        <Route
+          path="/Administration/WorkFlowDefination"
+          element={<WorkFlowDefination />}
+        />
+        <Route path="/Orders" element={<Orders />} />
         {/* Admin Routes */}
       </Routes>
     </Suspense>

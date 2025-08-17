@@ -262,3 +262,76 @@ body {
   padding: 9px 12px;
   width: 100%;
 }
+
+.ant-steps-icon,
+.ant-steps-item-title {
+  color: color-mix(in oklab, var(--user-theme), black 25%) !important;
+  font-weight: 600;
+}
+
+.ant-steps-item-wait {
+  .ant-steps-icon,
+  .ant-steps-item-title {
+    color: #969696a6 !important;
+  }
+}
+
+.ant-steps-item-title::after {
+  height: 3px !important;
+}
+
+.ant-steps-item-finish {
+  .ant-steps-item-title::after {
+    background-color: color-mix(
+      in oklab,
+      var(--user-theme),
+      transparent 70%
+    ) !important;
+  }
+}
+
+.ant-steps-item-container {
+  display: flex;
+  align-items: center;
+}
+
+.p-disabled {
+  background-color: #efefef;
+  color: #555;
+}
+
+.p-inputtext:enabled:hover,
+.p-inputtext:enabled:active,
+.p-inputtext:enabled:focus {
+  border-color: var(--user-theme);
+}
+
+.fa-classic,
+.fa-regular,
+.fa-solid,
+.far,
+.fas {
+  font-family: "Font Awesome 6 Free" !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--user-theme) !important;
+}
+
+.mandatory::after {
+  content: "*";
+  color: red;
+  margin-left: 4px;
+}
+
+.p-highlight .p-inputswitch-slider {
+  background: var(--theme-color);
+}
+
+.ag-icon {
+  font-family: var(--ag-icon-font-family) !important;
+}
+
+.ag-cell-wrapper {
+  min-height: 100%;
+}

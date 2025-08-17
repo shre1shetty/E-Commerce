@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { getCategory, getProductsByCategory } from "./service";
 import RegularProductCard from "@/Components/ProductCard/RegularProductCard";
 import "./index.css";
@@ -12,7 +12,7 @@ const CategoryPage = () => {
   const { id: categoryId } = useParams();
   const [products, setproducts] = useState([]);
   const [filteredProducts, setfilteredProducts] = useState([]);
-  const [showFilter, setshowFilter] = useState(false);
+  const [showFilter, setshowFilter] = useState(true);
   const [maxValue, setmaxValue] = useState(0);
   const [value, setvalue] = useState([0, 100]);
   const [category, setcategory] = useState([]);
@@ -47,7 +47,6 @@ const CategoryPage = () => {
       )
     );
   }, [filters, products, value]);
-
   return (
     <div>
       <div className="category-header">
@@ -78,7 +77,11 @@ const CategoryPage = () => {
             <RegularProductCard
               key={product._id}
               {...product}
-              picture={getFileUrl(product.pictures[0])}
+              picture={
+                product.variantValues?.length > 0
+                  ? getFileUrl(product.variantValues[0]?.values.picture[0])
+                  : ""
+              }
             />
           ))}
         </div>

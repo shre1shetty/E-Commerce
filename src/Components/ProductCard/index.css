@@ -195,7 +195,7 @@
 .background-circle {
   height: 50%;
   width: 100%;
-  background-color: #ebebff;
+  background-color: color-mix(in oklab, var(--user-theme), transparent 85%);
   border-radius: 16px 16px 0px 0px;
 }
 
@@ -205,7 +205,9 @@
   top: 13%;
   right: 5%;
   width: 90%;
-  filter: drop-shadow(4px 9px 0px #ebebff);
+  filter: drop-shadow(
+    4px 9px 0px color-mix(in oklab, var(--user-theme), transparent 85%)
+  );
   display: flex;
   justify-content: center;
   height: 185px;

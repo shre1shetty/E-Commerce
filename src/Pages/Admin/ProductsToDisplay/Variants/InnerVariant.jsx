@@ -1,10 +1,12 @@
+import GlobalToast from "@/Components/GlobalToast";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
 import { useFormik } from "formik";
-import { PlusCircle, X } from "lucide-react";
-
+import { PlusCircle, X, XIcon } from "lucide-react";
+import "./index.css";
 import React, { useEffect, useState } from "react";
+import { isString } from "lodash";
 
 const InnerVariant = ({
   showPreview,
@@ -16,23 +18,29 @@ const InnerVariant = ({
   baseValues,
 }) => {
   const formik = useFormik({
-    initialValues: {},
+    initialValues: {
+      picture: [],
+    },
   });
   const handleClickListener = () => {
     setSizeVariantValues(formik.values);
+    GlobalToast({
+      message: "Saved Successfully",
+      messageType: "success",
+      messageTimer: 2000,
+    });
   };
   useEffect(() => {
     if (baseValues.values) {
-      console.log(baseValues.values);
-      formik.setValues(baseValues.values);
-    } else {
-      formik.setFieldValue("price", baseValues.price);
-      formik.setFieldValue("inStock", baseValues.inStock);
-      if (baseValues.pictures?.length > 0) {
-        formik.setFieldValue("picture", baseValues.pictures[0]);
-      }
+      formik.setFieldValue("price", baseValues.values.price);
+      formik.setFieldValue("inStock", baseValues.values.inStock);
+      formik.setFieldValue("picture", baseValues.values.picture ?? []);
     }
   }, [baseValues]);
+  useEffect(() => {
+    console.log(formik.values);
+  }, [formik.values]);
+
   return (
     <div
       className="w-full flex justify-between items-center px-2 py-3 border border-[#d5d5d5] rounded-lg"
@@ -67,15 +75,15 @@ const InnerVariant = ({
           </div>
           <div className="relative">
             <div className="border border-dashed border-black flex justify-center items-center p-2">
-              {formik.values.picture ? (
+              {/* {formik.values.picture?.length > 0 ? (
                 <img
                   className="h-[30px] w-full"
-                  src={URL.createObjectURL(formik.values.picture)}
+                  src={URL.createObjectURL(formik.values.picture[0])}
                   alt=""
                 />
-              ) : (
-                <PlusCircle />
-              )}
+              ) : ( */}
+              <PlusCircle />
+              {/* )} */}
             </div>
             <div
               className=""
@@ -89,24 +97,44 @@ const InnerVariant = ({
                 accept=".png"
                 onChange={(event) => {
                   event.target.files[0] &&
-                    formik.setFieldValue("picture", event.target.files[0]);
+                    formik.setFieldValue("picture", [
+                      ...formik.values.picture,
+                      event.target.files[0],
+                    ]);
                   event.target.value = null;
                 }}
               />
             </div>
           </div>
+          {formik.values.picture?.map((image, index) => (
+            <div className="relative border border-dashed border-black flex justify-center items-center p-2 image-container">
+              <img
+                className="h-[30px] w-full"
+                src={
+                  isString(image)
+                    ? getFileUrl(image)
+                    : URL.createObjectURL(image)
+                }
+                alt=""
+              />
+              <button
+                className="cancel-button absolute z-10 top-0 right-0"
+                onClick={() =>
+                  formik.setFieldValue(
+                    "picture",
+                    formik.values.picture.filter(
+                      (val, index1) => index1 !== index
+                    )
+                  )
+                }
+              >
+                <XIcon className="" />
+              </button>
+            </div>
+          ))}
         </div>
-        {baseValues.price === formik.values.price &&
-        baseValues.inStock === formik.values.inStock &&
-        baseValues.picture &&
-        baseValues.picture[0] === formik.values.picture ? (
-          <div className="flex gap-1 items-center">
-            <X className="text-red-500" />
-            <span className="text-xs text-red-500">No Changes</span>
-          </div>
-        ) : (
-          <Button onClick={handleClickListener}>Save</Button>
-        )}
+
+        <Button onClick={handleClickListener}>Save</Button>
       </div>
     </div>
   );

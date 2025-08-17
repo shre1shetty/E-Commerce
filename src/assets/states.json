@@ -1,0 +1,143 @@
+[
+  {
+    "value": 4023,
+    "label": "Andaman and Nicobar Islands",
+    "state_code": "AN",
+    "hasCities": true
+  },
+  {
+    "value": 4017,
+    "label": "Andhra Pradesh",
+    "state_code": "AP",
+    "hasCities": true
+  },
+  {
+    "value": 4024,
+    "label": "Arunachal Pradesh",
+    "state_code": "AR",
+    "hasCities": true
+  },
+  { "value": 4027, "label": "Assam", "state_code": "AS", "hasCities": true },
+  { "value": 4037, "label": "Bihar", "state_code": "BR", "hasCities": true },
+  {
+    "value": 4031,
+    "label": "Chandigarh",
+    "state_code": "CH",
+    "hasCities": true
+  },
+  {
+    "value": 4040,
+    "label": "Chhattisgarh",
+    "state_code": "CT",
+    "hasCities": true
+  },
+  {
+    "value": 4033,
+    "label": "Dadra and Nagar Haveli and Daman and Diu",
+    "state_code": "DH",
+    "hasCities": true
+  },
+  { "value": 4021, "label": "Delhi", "state_code": "DL", "hasCities": true },
+  { "value": 4009, "label": "Goa", "state_code": "GA", "hasCities": true },
+  { "value": 4030, "label": "Gujarat", "state_code": "GJ", "hasCities": true },
+  { "value": 4007, "label": "Haryana", "state_code": "HR", "hasCities": true },
+  {
+    "value": 4020,
+    "label": "Himachal Pradesh",
+    "state_code": "HP",
+    "hasCities": true
+  },
+  {
+    "value": 4029,
+    "label": "Jammu and Kashmir",
+    "state_code": "JK",
+    "hasCities": true
+  },
+  {
+    "value": 4025,
+    "label": "Jharkhand",
+    "state_code": "JH",
+    "hasCities": true
+  },
+  {
+    "value": 4026,
+    "label": "Karnataka",
+    "state_code": "KA",
+    "hasCities": true
+  },
+  { "value": 4028, "label": "Kerala", "state_code": "KL", "hasCities": true },
+  { "value": 4852, "label": "Ladakh", "state_code": "LA", "hasCities": true },
+  {
+    "value": 4019,
+    "label": "Lakshadweep",
+    "state_code": "LD",
+    "hasCities": true
+  },
+  {
+    "value": 4039,
+    "label": "Madhya Pradesh",
+    "state_code": "MP",
+    "hasCities": true
+  },
+  {
+    "value": 4008,
+    "label": "Maharashtra",
+    "state_code": "MH",
+    "hasCities": true
+  },
+  { "value": 4010, "label": "Manipur", "state_code": "MN", "hasCities": true },
+  {
+    "value": 4006,
+    "label": "Meghalaya",
+    "state_code": "ML",
+    "hasCities": true
+  },
+  { "value": 4036, "label": "Mizoram", "state_code": "MZ", "hasCities": true },
+  { "value": 4018, "label": "Nagaland", "state_code": "NL", "hasCities": true },
+  { "value": 4013, "label": "Odisha", "state_code": "OR", "hasCities": true },
+  {
+    "value": 4011,
+    "label": "Puducherry",
+    "state_code": "PY",
+    "hasCities": true
+  },
+  { "value": 4015, "label": "Punjab", "state_code": "PB", "hasCities": true },
+  {
+    "value": 4014,
+    "label": "Rajasthan",
+    "state_code": "RJ",
+    "hasCities": true
+  },
+  { "value": 4034, "label": "Sikkim", "state_code": "SK", "hasCities": true },
+  {
+    "value": 4035,
+    "label": "Tamil Nadu",
+    "state_code": "TN",
+    "hasCities": true
+  },
+  {
+    "value": 4012,
+    "label": "Telangana",
+    "state_code": "TG",
+    "hasCities": true
+  },
+  { "value": 4038, "label": "Tripura", "state_code": "TR", "hasCities": true },
+  {
+    "value": 4022,
+    "label": "Uttar Pradesh",
+    "state_code": "UP",
+    "hasCities": true
+  },
+  {
+    "value": 4016,
+    "label": "Uttarakhand",
+    "state_code": "UT",
+    "hasCities": true
+  },
+  {
+    "value": 4853,
+    "label": "West Bengal",
+    "state_code": "WB",
+    "hasCities": true
+  }
+]

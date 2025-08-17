@@ -1,3 +1,4 @@
+import GlobalToast from "@/Components/GlobalToast";
 import { Button } from "@/Components/ui/button";
 import React, { useEffect, useState } from "react";
 
@@ -8,6 +9,11 @@ const MainVariant = ({ value, field, baseValues, copyToAll }) => {
         val.name.includes(`${field}${value}`)
       )
     );
+    GlobalToast({
+      message: "Saved Successfully",
+      messageType: "success",
+      messageTimer: 2000,
+    });
   };
 
   return (

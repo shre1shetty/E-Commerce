@@ -1,0 +1,24 @@
+.mask {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  transform: translateX(100%);
+  background-color: var(--user-theme);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mask[data-state="signup"] {
+  transform: translateX(0);
+}
+
+.login-signup-button {
+  background: white;
+  color: var(--user-theme);
+  padding: 8px 42px;
+  border-radius: 23px;
+  font-size: 14px;
+  margin-top: 18px;
+}

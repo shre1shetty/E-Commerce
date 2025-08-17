@@ -87,7 +87,7 @@ export function generateCombinations({
       values: {
         price,
         inStock,
-        picture: null,
+        picture: [],
       },
     });
     return;
@@ -114,4 +114,64 @@ export function isMatch(name, searchTerm) {
   const results = fuse.search(searchTerm);
   // If the search term is close enough to the name, it will return a match
   return results.length > 0;
+}
+
+export async function fetchImageWithMetadata(imageUrl) {
+  try {
+    const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+
+    // Get MIME type from headers
+    const contentType =
+      response.headers.get("Content-Type") || "application/octet-stream";
+
+    // Get filename from Content-Disposition header (if available)
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = "default-filename.png"; // Fallback filename
+    console.log(contentDisposition);
+    if (contentDisposition && contentDisposition.includes("filename=")) {
+      filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+    }
+
+    // Convert response to ArrayBuffer
+    const arrayBuffer = await response.arrayBuffer();
+
+    // Create a File object
+    const file = new File([arrayBuffer], filename, { type: contentType });
+
+    return file;
+  } catch (error) {
+    console.error("Error fetching image with metadata:", error);
+    return null;
+  }
+}
+
+export function parseValueMap(mapping, valueString) {
+  const result = {};
+  const fields = Object.values(mapping);
+
+  for (let i = 0; i < fields.length; i++) {
+    const currentKey = fields[i];
+    const nextKey = fields[i + 1];
+
+    const startIndex = valueString.indexOf(currentKey) + currentKey.length;
+
+    let endIndex;
+    if (nextKey) {
+      endIndex = valueString.indexOf(nextKey);
+    } else {
+      endIndex = valueString.length;
+    }
+
+    if (startIndex >= currentKey.length && endIndex > startIndex) {
+      result[currentKey] = valueString.substring(startIndex, endIndex);
+    } else {
+      result[currentKey] = "";
+    }
+  }
+
+  return result;
 }

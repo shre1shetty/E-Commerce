@@ -1,0 +1,256 @@
+.cart-page {
+  padding: 0px 40px;
+
+  .cart-label {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: color-mix(in oklab, var(--user-theme), black 35%);
+    font-family: "gf_Libertinus_Mono variant0", Tofu !important;
+  }
+  .cart-item {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid brown;
+    padding-bottom: 16px;
+  }
+  .cart-image-container {
+    height: 100px;
+    width: 100px;
+    padding: 10px;
+    background-color: color-mix(in oklab, var(--user-theme) 10%, white);
+    border-radius: 12px;
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .cart-product-details {
+    .name {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+    .description {
+      font-size: 10px;
+      color: color-mix(in oklab, var(--user-theme), black 50%);
+      margin: 4px;
+    }
+    .variant {
+      font-size: 12px;
+      color: color-mix(in oklab, var(--user-theme), black 28%);
+      margin-left: 4px;
+      font-weight: 800;
+    }
+    .price {
+      font-size: 19px;
+      font-weight: 600;
+      color: color-mix(in oklab, var(--user-theme), black 55% 55%);
+      margin-top: 0.5rem;
+    }
+  }
+
+  .quantity-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-top: 10px;
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      button {
+        padding: 4px;
+        border: 1px solid #cdcdcd;
+        border-radius: 6px;
+        background: white;
+      }
+    }
+  }
+
+  .blur-container {
+    @apply backdrop-blur-sm;
+    border: 1px solid color-mix(in oklab, var(--user-theme), white 69%);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .order-summary {
+    padding: 24px 30px;
+    background-color: color-mix(in oklab, var(--user-theme) 3%, transparent);
+    .order-summary-label {
+      font-size: 20px;
+      font-weight: 600;
+      color: color-mix(in oklab, var(--user-theme), black);
+    }
+    .sub-total,
+    .discount,
+    .tax,
+    .shipping,
+    .total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      .label {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .value {
+        font-weight: 600;
+      }
+    }
+
+    .shipping-value {
+      color: darkorange;
+      font-weight: 600;
+    }
+    .toCheckout {
+      background-color: color-mix(in oklab, var(--user-theme), black 20%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      width: 100%;
+      margin-top: 23px;
+      font-weight: 700;
+    }
+    .expected-delivery {
+      margin-top: 20px;
+      font-size: 14px;
+      color: color-mix(in oklab, var(--user-theme), black 60%);
+      padding-top: 10px;
+      border-top: 1px solid black;
+      text-align: center;
+      font-weight: 500;
+      span {
+        font-weight: 600;
+        color: color-mix(in oklab, var(--user-theme), black);
+      }
+    }
+  }
+
+  .account-details-label,
+  .account-address-label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .account-details-content,
+  .account-address-content {
+    @apply grid grid-cols-4 gap-2;
+    padding-top: 14px;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 28px;
+
+    .account-detail-item,
+    .account-address-item {
+      label {
+        font-size: 14px;
+        color: #6a6a6a;
+      }
+    }
+  }
+
+  .checkout-order-summary {
+    background-color: color-mix(in oklab, var(--user-theme), white 90%);
+    padding: 20px 30px;
+    label {
+      font-size: 18px;
+      font-weight: 600;
+      color: color-mix(in oklab, var(--user-theme), black 30%);
+    }
+  }
+
+  .product-list {
+    max-height: 116px;
+    overflow: auto;
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    .product-item {
+      padding: 8px 7px;
+      display: flex;
+      justify-content: space-between;
+
+      img {
+        height: 70px;
+        width: 70px;
+        background: color-mix(in oklab, var(--user-theme), transparent 84%);
+        padding: 10px;
+        border-radius: 20px;
+      }
+      h3 {
+        font-size: 18px;
+        font-weight: 500;
+        color: color-mix(in oklab, var(--user-theme), black 55%);
+      }
+      p {
+        span {
+          color: color-mix(in oklab, var(--user-theme), black 60%);
+        }
+        color: gray;
+        font-size: 10px;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .toPayment {
+    background-color: color-mix(in oklab, var(--user-theme), black 20%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    width: fit-content;
+    margin-top: 23px;
+    font-weight: 700;
+    display: flex;
+    gap: 6px;
+  }
+
+  .payment-method-radio-container {
+    display: flex;
+    font-size: 12px;
+    align-items: center;
+    gap: 8px;
+  }
+  .payment-method-tab {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid lightgray;
+  }
+
+  .payment-div {
+    margin-top: 10px;
+    padding: 6px 18px;
+    border: 1px solid lightgray;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 4px;
+    align-items: center;
+    .div-container {
+      label {
+        font-size: 12px;
+        line-height: 12px;
+      }
+      img {
+        height: 30px;
+      }
+    }
+  }
+}
+
+.cart-page[data-tab="1"] {
+  background-image: url(/E-Cart/src/assets/CartImage.png);
+  background-repeat: no-repeat;
+  border-radius: 11px;
+  background-position-x: 111%;
+  background-position-y: 100%;
+}
+
+.cart-page[data-tab="2"] {
+  background-image: url(/E-Cart/src/assets/shoppingBackground.png);
+  background-repeat: no-repeat;
+  border-radius: 11px;
+  background-position-x: -13%;
+  background-position-y: 145%;
+}

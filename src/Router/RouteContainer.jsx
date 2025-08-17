@@ -10,27 +10,24 @@ import { UserRouter } from "./UserRoutes";
 import { getFooter, getLogo } from "./service";
 import { convertToBase64toFile } from "@/lib/utils";
 import Footer from "@/Components/Footer/Footer";
+import { useSelector } from "react-redux";
 const RouteContainer = () => {
   const [open, setopen] = useState(false);
   const [AdminLogin, setAdminLogin] = useState(true);
   const [logo, setlogo] = useState(null);
   const [footerDetails, setfooterDetails] = useState({});
+  const role = useSelector((state) => state.count.role.role);
   useEffect(() => {
-    // console.log(location.pathname);
-    if (LS.get("Role") === "Admin") {
-      setAdminLogin(true);
-    } else {
-      setAdminLogin(false);
-      getLogo().then(({ logo }) => {
-        setlogo(`${import.meta.env.VITE_BASE_URL}/file?id=${logo}`);
-      });
-      getFooter().then(({ footerDetails }) => setfooterDetails(footerDetails));
-    }
+    getLogo().then(({ logo }) => {
+      setlogo(`${import.meta.env.VITE_BASE_URL}/file?id=${logo}`);
+    });
+    getFooter().then(({ footerDetails }) => setfooterDetails(footerDetails));
   }, []);
+
   return (
     <BrowserRouter basename="E-Cart">
       <div className="main-div">
-        {AdminLogin ? (
+        {role === "admin" ? (
           <>
             <div className="container-div">
               <div
@@ -51,9 +48,7 @@ const RouteContainer = () => {
           </>
         ) : (
           <>
-            {location.pathname != "/E-Cart" &&
-              location.pathname != "/E-Cart/" && <NavBar logo={logo} />}
-
+            <NavBar logo={logo} />
             <div className={"grow"}>
               <div className={"px-[19px] h-full"}>
                 <UserRouter />

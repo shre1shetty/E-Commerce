@@ -1,6 +1,8 @@
 * {
-  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif,
+  /* font-family: "Poppins", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+     */
+  font-family: "Source Sans Pro", sans-serif !important;
 }
 
 .main-div {
@@ -32,4 +34,35 @@
 
 .p-slider .p-slider-handle {
   border-color: var(--user-theme);
+}
+
+.p-rating-icon {
+  color: gold !important;
+}
+
+.success-chip {
+  background-color: #e0ffe0;
+  color: #33bd33;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 8px 18px;
+}
+
+.error-chip {
+  background-color: #ffe0e0;
+  color: #d96f6f;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 8px 18px;
+}
+
+.regular-chip {
+  background-color: #eee0ff;
+  color: #5f33bd;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 8px 18px;
 }

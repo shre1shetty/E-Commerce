@@ -5,12 +5,14 @@ import {
   BookOpen,
   Bot,
   Command,
+  Dot,
   Frame,
   GalleryVerticalEnd,
   HousePlus,
   LayoutGrid,
   Map,
   PieChart,
+  Settings,
   Settings2,
   SquareTerminal,
   SquareUser,
@@ -76,7 +78,7 @@ const data = {
     },
     {
       title: "Orders",
-      url: "#",
+      url: "Orders",
       icon: BookOpen,
       // items: [
       //   {
@@ -126,6 +128,22 @@ const data = {
       url: "Variant",
       icon: Settings2,
       items: [],
+    },
+    {
+      title: "Administration",
+      icon: Settings,
+      items: [
+        {
+          title: "Stages",
+          url: "Administration/Stages",
+          icon: Dot,
+        },
+        {
+          title: "WorkFlow Defination",
+          url: "Administration/WorkFlowDefination",
+          icon: Dot,
+        },
+      ],
     },
   ],
 };

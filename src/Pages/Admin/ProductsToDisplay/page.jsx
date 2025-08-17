@@ -34,6 +34,13 @@ const Page = () => {
     {
       field: "description",
       headerName: "Description",
+      cellRenderer: ({ data }) => (
+        <span className="">
+          {data.description.length > 30
+            ? data.description.slice(0, 30) + "..."
+            : data.description}
+        </span>
+      ),
     },
     {
       field: "inStock",
