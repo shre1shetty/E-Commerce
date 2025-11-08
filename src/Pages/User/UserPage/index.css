@@ -1,0 +1,119 @@
+.user-header {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: normal;
+  border-top: 1px solid gray;
+  padding-top: 24px;
+}
+
+.user-sub-header {
+  color: rgb(98, 111, 125);
+}
+
+.user-menu-list {
+  li {
+    display: flex;
+    gap: 16px;
+    cursor: pointer;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    i {
+      font-size: 14px;
+      color: var(--user-theme);
+      padding: 8px;
+      height: 34px;
+      width: 34px;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      border-radius: 5px;
+      box-shadow: 0px 0px 2px 1px #c7c7c7;
+      background: white;
+    }
+    p {
+      font-weight: 600;
+      color: #1a1e2e;
+    }
+    hr {
+      height: 1px;
+      background-color: #e5e5e5;
+      width: 100%;
+    }
+  }
+  li.active {
+    background-color: color-mix(in oklab, var(--user-theme), white 85%);
+    p {
+      color: var(--user-theme);
+    }
+  }
+}
+
+.order-container {
+  border: 2px solid #e3e3e3;
+  padding: 26px 30px;
+  border-radius: 10px;
+  margin-top: 15px;
+  .title {
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 12px;
+    h1 {
+      font-size: 21px;
+      font-weight: 600;
+      line-height: normal;
+      color: #303866;
+    }
+    span {
+      color: slategrey;
+      font-size: 14px;
+    }
+  }
+  .section-container {
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 12px;
+    margin-top: 12px;
+    .section-name {
+      color: slategray;
+      font-weight: 500;
+    }
+    .status-name {
+      color: var(--user-theme);
+      font-weight: 600;
+      line-height: normal;
+    }
+    .section-value {
+      color: rgb(94, 106, 118);
+      line-height: normal;
+    }
+    .section-total {
+      color: #333365;
+      font-weight: 600;
+    }
+  }
+}
+
+.image-container {
+  height: 70px;
+  width: 70px;
+  background-color: #eeeeee;
+  border-radius: 8px;
+  box-shadow: 1px 1px 2px #cacaca;
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.product-details {
+  h1 {
+    color: #333365;
+    font-weight: 600;
+  }
+  div {
+    font-size: 14px;
+    color: #909090;
+    line-height: 18px;
+  }
+}

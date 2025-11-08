@@ -99,7 +99,7 @@ const NavBar = ({ logo }) => {
         <button
           className="navbar-button"
           onClick={() =>
-            LS.get("userId") ? navigate("userDetails") : setopen(true)
+            LS.get("userId") ? navigate("userDetails/Orders") : setopen(true)
           }
         >
           <User size={16} strokeWidth={3} />

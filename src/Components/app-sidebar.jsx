@@ -159,13 +159,13 @@ export function AppSidebar({ ...props }) {
           )}
         >
           <img src={Logo} alt="" className="w-auto h-full" />
-          <div
+          {/* <div
             className={
               props.open ? "whitespace-nowrap" : "whitespace-nowrap hidden"
             }
           >
             E-Cart Solutions
-          </div>
+          </div> */}
         </div>
       </SidebarHeader>
       <SidebarContent>

@@ -175,3 +175,25 @@ export function parseValueMap(mapping, valueString) {
 
   return result;
 }
+
+export function formatNumber(num) {
+  if (num === null || num === undefined || isNaN(num)) return "0";
+
+  const absNum = Math.abs(num);
+  let formatted;
+
+  if (absNum >= 1_00_00_000) {
+    // Crores
+    formatted = (num / 1_00_00_000).toFixed(1).replace(/\.0$/, "") + "Cr";
+  } else if (absNum >= 1_00_000) {
+    // Lakhs
+    formatted = (num / 1_00_000).toFixed(1).replace(/\.0$/, "") + "L";
+  } else if (absNum >= 1_000) {
+    // Thousands
+    formatted = (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+  } else {
+    formatted = num.toString();
+  }
+
+  return formatted;
+}

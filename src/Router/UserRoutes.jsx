@@ -6,6 +6,7 @@ const HomePage = lazy(() => import("../Pages/User/HomePage/HomePage"));
 const Search = lazy(() => import("@/Pages/User/Search/Search"));
 const ProductPage = lazy(() => import("@/Pages/User/ProductPage/page"));
 const CartPage = lazy(() => import("@/Pages/User/Cart/page"));
+const UserDetailsPage = lazy(() => import("@/Pages/User/UserPage/page"));
 export const UserRouter = () => {
   return (
     <Suspense fallback={<>Loading...</>}>
@@ -18,6 +19,7 @@ export const UserRouter = () => {
         <Route path="/Search" element={<Search />} />
         <Route path="/Product/:id" element={<ProductPage />} />
         <Route path="/Cart" element={<CartPage />} />
+        <Route path="/userDetails/*" element={<UserDetailsPage />} />
         <Route path="*" element={<div>No page found</div>} />
         {/* User Routes */}
       </Routes>

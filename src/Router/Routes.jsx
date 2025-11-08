@@ -29,6 +29,7 @@ const WorkFlowDefination = lazy(() =>
   import("@/Pages/Admin/Administration/WorflowDefination/page")
 );
 const Orders = lazy(() => import("@/Pages/Admin/Orders/page"));
+const EditOrder = lazy(() => import("@/Pages/Admin/Orders/Edit/page"));
 
 export const Router = () => {
   return (
@@ -64,6 +65,7 @@ export const Router = () => {
           element={<WorkFlowDefination />}
         />
         <Route path="/Orders" element={<Orders />} />
+        <Route path="/Orders/Edit/:id" element={<EditOrder />} />
         {/* Admin Routes */}
       </Routes>
     </Suspense>

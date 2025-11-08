@@ -10,8 +10,9 @@ import HomeProductCard from "@/Components/ProductCard/HomeProductCard";
 import { getLayout } from "./service";
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import { LS } from "@/lib/SecureLocalStorage";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import NewCollection from "@/assets/NewCollection.png";
+import ReactGA from "react-ga4";
 import "./index.css";
 import { ArrowUpRightIcon } from "lucide-react";
 const HomePage = () => {
@@ -30,7 +31,10 @@ const HomePage = () => {
     field2: "",
     value2: "",
   });
+
+  const location = useLocation();
   useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
     getLayout().then(({ headerElement, category, stickyPanel, topProduct }) => {
       console.log(topProduct);
       setslides(
@@ -48,7 +52,7 @@ const HomePage = () => {
       setstickyPanel(stickyPanel);
       settopProduct(topProduct);
     });
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="relative min-h-[calc(100vh-80px)]">
@@ -105,7 +109,7 @@ const HomePage = () => {
                   id={product._id}
                   image={Shoe1}
                   label={product.name}
-                  price={parseInt(product.price) + 1000}
+                  price={parseInt(product.price)}
                   discountPrice={product.price}
                   filters={product.variantFields}
                   description={product.description}

@@ -24,5 +24,6 @@ export const confirmOrder = async (data) => {
     return resp.data;
   } catch (error) {
     console.log(error);
+    throw new Error("Order confirmation failed");
   }
 };

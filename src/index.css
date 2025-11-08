@@ -15,7 +15,7 @@
 
 @layer utilities {
   .sidebar {
-    @apply w-[275px] h-screen text-[#969aa8] bg-[#181c2a] flex flex-col gap-1 font-medium text-base p-3;
+    @apply w-[275px] h-screen text-[#969aa8] bg-[var(--theme-color)] flex flex-col gap-1 font-medium text-base p-3;
   }
   .header {
     @apply flex justify-between text-[#070b51] font-bold text-2xl  py-[19px] items-center;
@@ -215,6 +215,7 @@
 body {
   --theme-color: black;
   --select-option-color: black;
+  --sidebar-background: 0, 0%, 0%;
   --select-option-hover-color: rgba(0, 0, 0, 0.266);
   --user-theme: orange;
 }
@@ -275,6 +276,9 @@ body {
     color: #969696a6 !important;
   }
 }
+.ant-segmented {
+  background-color: #eef0f2;
+}
 
 .ant-steps-item-title::after {
   height: 3px !important;
@@ -324,6 +328,17 @@ body {
   margin-left: 4px;
 }
 
+.errorClass {
+  border: 1px solid red;
+}
+
+.errorClass.p-inputwrapper {
+  border: none;
+  .p-inputnumber-input {
+    border: 1px solid red;
+  }
+}
+
 .p-highlight .p-inputswitch-slider {
   background: var(--theme-color);
 }
@@ -334,4 +349,18 @@ body {
 
 .ag-cell-wrapper {
   min-height: 100%;
+}
+
+.p-accordion-header-link {
+  padding: 16px;
+  background: #ffffff;
+}
+
+.p-accordion-header-link[aria-expanded="true"] {
+  border-bottom: 0;
+  padding: 16px 16px 4px 16px;
+}
+
+.p-accordion-tab {
+  margin-bottom: 16px;
 }

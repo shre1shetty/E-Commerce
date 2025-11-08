@@ -16,6 +16,7 @@ import CheckoutTab from "./CheckoutTab/page";
 import PaymentTab from "./PaymentTab/page";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 const page = () => {
   const [products, setproducts] = useState([]);
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const page = () => {
   const formik = useFormik({
     initialValues: {
       userId: LS.get("userId"),
+      currentState: 1,
       products: [],
       address: "",
       state: "",
@@ -62,6 +64,32 @@ const page = () => {
         total: 0,
       },
     },
+    // enableReinitialize: true,
+    handleSubmit: () => {},
+    validationSchema: Yup.object({
+      address: Yup.string()
+        .when("currentState", {
+          is: (val) => val === 2,
+          then: (schema) => schema.required("Address is required"),
+          otherwise: (schema) => schema.notRequired(),
+        })
+        .min(10, "Address must be at least 10 characters"),
+      state: Yup.string().when("currentState", {
+        is: (val) => val === 2,
+        then: (schema) => schema.required("State is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+      city: Yup.string().when("currentState", {
+        is: (val) => val === 2,
+        then: (schema) => schema.required("City is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+      pincode: Yup.string().when("currentState", {
+        is: (val) => val === 2,
+        then: (schema) => schema.required("Pincode is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    }),
   });
 
   const backButtonHandler = (current) => {
@@ -115,6 +143,10 @@ const page = () => {
     formik.setFieldValue("summary.total", total);
     formik.setFieldValue("amount", total);
   }, [formik.values.summary]);
+
+  useEffect(() => {
+    formik.setFieldValue("currentState", current);
+  }, [current]);
 
   useEffect(() => {
     console.log(formik.values);

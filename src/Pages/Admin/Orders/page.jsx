@@ -3,16 +3,21 @@ import CustomHeader from "@/Components/CustomHeader";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { getOrders } from "./service";
+import { useNavigate } from "react-router-dom";
 
 const page = () => {
+  const navigate = useNavigate();
   const [rows, setrows] = useState([]);
   const columnDefs = [
     {
       field: "Action",
       headerName: "Action",
-      cellRenderer: (params) => (
+      cellRenderer: ({ data }) => (
         <>
-          <button className="fa-regular fa-pen-to-square m-1 text-base"></button>
+          <button
+            className="fa-regular fa-pen-to-square m-1 text-base"
+            onClick={() => navigate(`Edit/${data._id}`)}
+          ></button>
           <button className="fa-regular fa-trash-can m-1 text-base"></button>
         </>
       ),
@@ -23,7 +28,7 @@ const page = () => {
       cellRenderer: ({ data }) => (
         <div className="py-1.5">
           <div className="leading-snug">
-            {data.products.map((val) => val.name).toString()}
+            {data.products.map((val) => val.productId.name).toString()}
           </div>
           <div className="text-[10px] text-slate-500 leading-snug">
             # {data.orderId}

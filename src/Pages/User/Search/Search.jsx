@@ -19,7 +19,7 @@ const Search = () => {
           <RegularProductCard
             key={product._id}
             {...product}
-            picture={getFileUrl(product.pictures[0])}
+            picture={getFileUrl(product.variantValues[0].values.picture[0])}
           />
         ))}
       </div>

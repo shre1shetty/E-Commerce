@@ -1,0 +1,18 @@
+.address-container {
+  border: 1px solid lightgray;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  position: relative;
+  .form-label {
+    color: gray;
+    font-size: 15px;
+  }
+  .save-button {
+    padding: 7px 14px;
+    background-color: var(--user-theme);
+    color: white;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+}

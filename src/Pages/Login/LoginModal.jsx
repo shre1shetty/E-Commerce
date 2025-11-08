@@ -6,11 +6,13 @@ import "./index.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import GlobalToast from "@/Components/GlobalToast";
-import { LoginUser } from "./service";
+import { addUser, LoginUser } from "./service";
 import { LS } from "@/lib/SecureLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setRole } from "@/Redux/Slice/UserSlice";
+import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
+import { AxiosInstance } from "@/lib/AxiosInstance";
 const LoginModal = ({ open, setopen }) => {
   const navigate = useNavigate();
   const [loginSignup, setloginSignup] = useState("login");
@@ -25,6 +27,30 @@ const LoginModal = ({ open, setopen }) => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: () => {},
+  });
+  const userFormik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+      email: "",
+      contactNumber: "",
+      address: "",
+      pincode: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required("Username is required"),
+      password: Yup.string().required("Password is required"),
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
+      contactNumber: Yup.string()
+        .matches(/^[0-9]{10}$/, "Contact Number must be 10 digits")
+        .required("Contact Number is required"),
+      address: Yup.string().max(50).required("Address is required"),
+      pincode: Yup.string()
+        .matches(/^[0-9]{6}$/, "Pincode must be 6 digits")
+        .required("Pincode is required"),
+    }),
   });
   const handleLogin = (values) => {
     loginFormik.submitForm();
@@ -41,6 +67,12 @@ const LoginModal = ({ open, setopen }) => {
             LS.set("username", values.username);
             LS.set("email", values.email);
             LS.set("contactNumber", values.contactNumber);
+            if (import.meta.env.DEV) {
+              LS.set("refreshToken", values.refreshToken);
+            }
+            AxiosInstance.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${values.accessToken}`;
             if (values.role === "admin") {
               dispatch(setRole("admin"));
               LS.set("Role", "admin");
@@ -62,6 +94,47 @@ const LoginModal = ({ open, setopen }) => {
           messageType: "error",
         });
         console.log("Login failed", errors);
+      }
+    });
+  };
+  const handleSignUp = (values) => {
+    userFormik.submitForm();
+    userFormik.validateForm().then((errors) => {
+      if (Object.keys(errors).length === 0) {
+        addUser(values).then((values) => {
+          if (values.statusCode === 200) {
+            GlobalToast({
+              message: "SignUp successful",
+              messageTimer: 2000,
+              messageType: "success",
+            });
+            LS.set("userId", values.user._id);
+            LS.set("username", values.user.username);
+            LS.set("email", values.user.email);
+            LS.set("contactNumber", values.user.contactNumber);
+            AxiosInstance.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${res.data.accessToken}`;
+            if (values.user.role === "admin") {
+              dispatch(setRole("admin"));
+              LS.set("Role", "admin");
+              navigate("/Overview");
+            }
+            setopen(false);
+          } else {
+            GlobalToast({
+              message: values.user.message || "SignUp failed",
+              messageTimer: 2000,
+              messageType: "error",
+            });
+          }
+        });
+      } else {
+        GlobalToast({
+          message: "Please fill all the fields",
+          messageTimer: 2000,
+          messageType: "error",
+        });
       }
     });
   };
@@ -149,7 +222,20 @@ const LoginModal = ({ open, setopen }) => {
             <div className="grid grid-cols-2 gap-2">
               <div className="mt-3">
                 <Label className="">Username</Label>
-                <Input className="" placeholder="Enter username" />
+                <Input
+                  className=""
+                  placeholder="Enter username"
+                  name="username"
+                  value={userFormik.values.username}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.username}
+                  isVisible={
+                    userFormik.touched.username && userFormik.errors.username
+                  }
+                />
               </div>
               <div className="mt-3">
                 <Label className="">Password</Label>
@@ -157,29 +243,92 @@ const LoginModal = ({ open, setopen }) => {
                   className=""
                   placeholder="Enter password"
                   type="password"
+                  name="password"
+                  value={userFormik.values.password}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.password}
+                  isVisible={
+                    userFormik.touched.password && userFormik.errors.password
+                  }
                 />
               </div>
               <div className="mt-3">
                 <Label className="">Email</Label>
-                <Input className="" placeholder="Enter email" />
+                <Input
+                  className=""
+                  placeholder="Enter email"
+                  name="email"
+                  value={userFormik.values.email}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.email}
+                  isVisible={
+                    userFormik.touched.email && userFormik.errors.email
+                  }
+                />
               </div>
               <div className="mt-3">
                 <Label className="">Phone Number</Label>
-                <Input className="" placeholder="Enter phone number" />
+                <Input
+                  className=""
+                  placeholder="Enter phone number"
+                  name="contactNumber"
+                  value={userFormik.values.contactNumber}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.contactNumber}
+                  isVisible={
+                    userFormik.touched.contactNumber &&
+                    userFormik.errors.contactNumber
+                  }
+                />
               </div>
               <div className="mt-3">
                 <Label>Address</Label>
-                <Input className="" placeholder="Enter address" />
+                <Input
+                  className=""
+                  placeholder="Enter address"
+                  name="address"
+                  value={userFormik.values.address}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.address}
+                  isVisible={
+                    userFormik.touched.address && userFormik.errors.address
+                  }
+                />
               </div>
               <div className="mt-3">
                 <Label className="">Pincode</Label>
-                <Input className="" placeholder="Enter pincode" />
+                <Input
+                  className=""
+                  placeholder="Enter pincode"
+                  name="pincode"
+                  value={userFormik.values.pincode}
+                  onChange={userFormik.handleChange}
+                  onBlur={userFormik.handleBlur}
+                />
+                <ErrorMessage
+                  message={userFormik.errors.pincode}
+                  isVisible={
+                    userFormik.touched.pincode && userFormik.errors.pincode
+                  }
+                />
               </div>
             </div>
             <div className="flex items-center justify-center mt-6">
               <button
                 className="bg-[var(--user-theme)] text-white px-28 py-2 rounded-full"
-                // onClick={() => setopen(false)}
+                onClick={() => handleSignUp(userFormik.values)}
               >
                 SignUp
               </button>

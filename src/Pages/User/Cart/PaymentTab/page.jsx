@@ -8,8 +8,12 @@ import { RadioButton } from "primereact/radiobutton";
 import RazorPayImage from "@/assets/razorpay.png";
 import React, { useCallback } from "react";
 import { confirmOrder } from "../service";
+import { Button } from "@/Components/ui/button";
+import GlobalToast from "@/Components/GlobalToast";
+import { useNavigate } from "react-router-dom";
 
 const PaymentTab = ({ products, summary, formik }) => {
+  const navigate = useNavigate();
   const getVariantName = ({ variantFields, variantValues, variant }) => {
     const variantField = variantValues.find(({ _id }) => _id === variant).name;
     const name = parseValueMap(
@@ -32,13 +36,64 @@ const PaymentTab = ({ products, summary, formik }) => {
       confirmOrder({
         ...formik.values,
         status: "paid",
-        products: formik.values.products.map((product) => product.productId),
+        products: formik.values.products.map(
+          ({ productId, variant, quantity }) => ({
+            productId,
+            variant,
+            quantity,
+          })
+        ),
         paymentId,
         orderId,
-      });
+      })
+        .then(({ message }) => {
+          GlobalToast({
+            message: message || "Order placed successfully",
+            messageType: "success",
+            messageTimer: 2000,
+          });
+          navigate(-1);
+        })
+        .catch((error) => {
+          GlobalToast({
+            message: error.message || "Order placement failed",
+            messageType: "error",
+            messageTimer: 2000,
+          });
+        });
     },
     [formik.values]
   );
+
+  const submitCodOrder = useCallback(() => {
+    confirmOrder({
+      ...formik.values,
+      products: formik.values.products.map(
+        ({ productId, variant, quantity }) => ({
+          productId,
+          variant,
+          quantity,
+        })
+      ),
+      paymentId: "COD",
+      orderId: "COD",
+    })
+      .then(({ message }) => {
+        GlobalToast({
+          message: message || "Order placed successfully",
+          messageType: "success",
+          messageTimer: 2000,
+        });
+        navigate(-1);
+      })
+      .catch((error) => {
+        GlobalToast({
+          message: error.message || "Order placement failed",
+          messageType: "error",
+          messageTimer: 2000,
+        });
+      });
+  }, [formik.values]);
 
   return (
     <div className="grid grid-cols-3 h-[555px] gap-4 mt-6">
@@ -84,6 +139,7 @@ const PaymentTab = ({ products, summary, formik }) => {
             <div className="payment-method-radio-container">
               <RadioButton
                 inputId="paymentMethod1"
+                autoFocus
                 name="paymentMethod"
                 value="PayNow"
                 onChange={(e) => formik.setFieldValue("paymentMethod", e.value)}
@@ -120,6 +176,16 @@ const PaymentTab = ({ products, summary, formik }) => {
             <label htmlFor="paymentMethod2" className="ml-2">
               Cash on Delivery
             </label>
+            {formik.values.paymentMethod === "COD" && (
+              <div className="payment-div">
+                <div className="div-container">
+                  <label htmlFor="" className="">
+                    Pay on Delivery
+                  </label>
+                </div>
+                <Button onClick={submitCodOrder}>Submit</Button>
+              </div>
+            )}
           </div>
         </div>
         <div className=""></div>

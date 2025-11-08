@@ -1,5 +1,5 @@
 .ag-theme-quartz {
-  --ag-header-background-color: rgb(24 28 42);
+  --ag-header-background-color: var(--theme-color);
   --ag--ag-header-height: 18px;
   --ag-header-foreground-color: white;
   --ag-grid-size: 6px;

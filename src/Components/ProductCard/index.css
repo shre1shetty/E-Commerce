@@ -190,6 +190,7 @@
   height: 300px;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .background-circle {

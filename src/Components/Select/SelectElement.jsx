@@ -19,19 +19,22 @@ const SelectElement = ({
     }),
     control: (styles, { isFocused, isHovered }) => ({
       ...styles,
-      height: "38px",
-      minHeight: "38px",
+      height: "40px",
+      minHeight: "40px",
       flexWrap: "nowrap",
       padding: "0px",
       margin: "0px",
       boxShadow: "none",
-      backgroundColor: isFocused ? "white" : disabled ? "#e9ecef" : "white",
+      backgroundColor: isFocused ? "white" : disabled ? "#efefef" : "white",
       borderColor: isFocused
         ? "var(--user-theme)"
+        : disabled
+        ? "#d1d5db"
         : errorFlag
         ? "red"
         : "#aeaeae",
       color: "#e7e828e",
+      opacity: disabled ? 0.6 : 1,
     }),
     option: (styles, { isFocused, isDisabled, isSelected }) => ({
       ...styles,

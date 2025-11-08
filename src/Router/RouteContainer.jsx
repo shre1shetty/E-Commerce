@@ -54,9 +54,9 @@ const RouteContainer = () => {
                 <UserRouter />
               </div>
             </div>
+            <Footer logo={logo} footerDetails={footerDetails} />
           </>
         )}
-        <Footer logo={logo} footerDetails={footerDetails} />
       </div>
     </BrowserRouter>
   );
