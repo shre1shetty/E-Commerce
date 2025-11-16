@@ -17,15 +17,24 @@ import * as Yup from "yup";
 import { convertToBase64toFile, convertToFormData } from "@/lib/utils";
 import { addLayout, editLayout, updateLayout } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
+import { Label } from "@/Components/ui/label";
+import { ColorPicker } from "antd";
+import SectionMapping from "./Panels/SectionMapping";
 const Edit = () => {
   const navigate = useNavigate();
   const stepperRef = useRef(null);
   const formik = useFormik({
     initialValues: {
       layoutName: "",
+      themeColor: "#fff",
       logo: "",
       headerElement: {
         headerType: null,
+        size: 100,
+        rows: [],
+      },
+      subHeaderElement: {
+        size: 100,
         rows: [],
       },
       category: [],
@@ -56,7 +65,7 @@ const Edit = () => {
   useEffect(() => {
     editLayout(id).then((res) => {
       Object.keys(res).forEach((key) => {
-        if (key === "headerElement") {
+        if (key === "headerElement" || key === "subHeaderElement") {
           formik.setFieldValue(key, {
             ...res[key],
             rows: res[key].rows?.map((val) => ({
@@ -114,7 +123,7 @@ const Edit = () => {
           // orientation="vertical"
         >
           <StepperPanel header="Layout Name">
-            <div className="grid grid-cols-4 py-4">
+            <div className="grid grid-cols-4 gap-2 py-4">
               <FloatLabel>
                 <InputText
                   id="layoutName"
@@ -128,6 +137,20 @@ const Edit = () => {
                   Name
                 </label>
               </FloatLabel>
+              <div className="relative">
+                <Label className="absolute -top-6 text-xs">Theme Color</Label>
+                <div className="flex gap-2">
+                  <ColorPicker
+                    value={formik.values.themeColor}
+                    showText
+                    allowClear
+                    className="!p-1.5"
+                    onChange={(val) =>
+                      formik.setFieldValue("themeColor", val.toHexString())
+                    }
+                  />
+                </div>
+              </div>
             </div>
             <Button
               className="h-fit px-4 py-2 text-xs"
@@ -160,6 +183,10 @@ const Edit = () => {
                 headerElement={formik.values.headerElement}
                 setHeaderValues={(values) =>
                   formik.setFieldValue("headerElement", values)
+                }
+                subHeaderElement={formik.values.subHeaderElement}
+                setSubHeaderElement={(values) =>
+                  formik.setFieldValue("subHeaderElement", values)
                 }
               />
               <div className="flex gap-2">
@@ -196,9 +223,9 @@ const Edit = () => {
             </div>
           </StepperPanel>
 
-          <StepperPanel header="Top Products">
+          <StepperPanel header="Section Mapping">
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
+              {/* <div className="flex flex-col gap-2">
                 <label htmlFor="" className="text-sm font-semibold">
                   Select Top Products To Display
                 </label>
@@ -208,7 +235,8 @@ const Edit = () => {
                     formik.setFieldValue("topProduct", value)
                   }
                 />
-              </div>
+              </div> */}
+              <SectionMapping />
               <div className="flex gap-2">
                 <Button onClick={() => stepperRef.current.prevCallback()}>
                   Prev

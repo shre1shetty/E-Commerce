@@ -20,7 +20,7 @@
 }
 
 .category-context span {
-  color: orange;
+  color: var(--user-theme);
   font-size: 14px;
   font-weight: 700;
   cursor: default;

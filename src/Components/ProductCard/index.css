@@ -135,11 +135,18 @@
   font-weight: 600;
   color: #161616;
   line-height: 18px;
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 90%;
+    overflow: hidden;
+  }
 }
 
 .top-product-description {
   font-size: 10px;
   color: #a8a8a8;
+  width: 60% !important;
 }
 
 .top-product-price {

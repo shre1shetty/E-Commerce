@@ -158,7 +158,7 @@
 }
 .product-page-review-images {
   font-size: 12px;
-  color: color-mix(in oklab, #ffa500, #ffffff 30%);
+  color: color-mix(in oklab, var(--user-theme), #ffffff 30%);
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none; /* IE and Edge */
@@ -169,17 +169,16 @@
 .review-images-container {
   @apply flex gap-2;
   padding: 10px;
-  background-color: color-mix(in oklab, #ffa500, #ffffff 90%);
+  background-color: color-mix(in oklab, var(--user-theme), #ffffff 90%);
   border: 1px solid var(--user-theme);
   margin-top: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
   border-radius: 4px;
 }
 
 .review-messages {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .review-message {

@@ -17,17 +17,17 @@ const NavBar = ({ logo }) => {
   const count = useSelector((state) => state.count.count.count);
   const [open, setopen] = useState(false);
   return (
-    <div className="navBar flex bg-white  border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
+    <div className="navBar flex bg-white gap-1 border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
       <div
-        className="h-full cursor-pointer px-3 py-1.5"
+        className="h-full cursor-pointer px-3 py-1.5 shrink-0"
         onClick={() => navigate("/")}
       >
         <img src={logo} alt="Logo" className="w-full h-full" />
       </div>
-      <div className="navbar-content">
+      <div className="navbar-content  max-w-[650px] grow ">
         <NavbarSearch />
         <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-orange-500 h-full flex items-center navbarText">
+          <HoverCardTrigger className=" cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
             Men
           </HoverCardTrigger>
           <HoverCardContent className="grid grid-cols-4 gap-6 w-fit">
@@ -70,7 +70,7 @@ const NavBar = ({ logo }) => {
           </HoverCardContent>
         </HoverCard>
         <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-orange-500 h-full flex items-center navbarText">
+          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
             Women
           </HoverCardTrigger>
           <HoverCardContent>
@@ -78,7 +78,7 @@ const NavBar = ({ logo }) => {
           </HoverCardContent>
         </HoverCard>
         <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-orange-500 h-full flex items-center navbarText">
+          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
             Sports
           </HoverCardTrigger>
           <HoverCardContent>
@@ -86,7 +86,7 @@ const NavBar = ({ logo }) => {
           </HoverCardContent>
         </HoverCard>
         <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-orange-500 h-full flex items-center navbarText">
+          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
             Casual
           </HoverCardTrigger>
           <HoverCardContent>
@@ -95,7 +95,7 @@ const NavBar = ({ logo }) => {
         </HoverCard>
       </div>
 
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-1 md:gap-3 items-center shrink-0">
         <button
           className="navbar-button"
           onClick={() =>

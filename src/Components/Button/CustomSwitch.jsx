@@ -7,8 +7,10 @@ const CustomSwitch = ({ checked, onChange, label, className }) => {
     <div
       className={cn("flex items-center gap-2 text-sm font-medium ", className)}
     >
-      <InputSwitch checked={checked} onChange={onChange} />
-      <span className="">{label}</span>
+      <InputSwitch id="cswitch" checked={checked} onChange={onChange} />
+      <label htmlFor="cswitch" className="">
+        {label}
+      </label>
     </div>
   );
 };

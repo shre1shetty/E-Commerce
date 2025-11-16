@@ -4,7 +4,7 @@ import {
   getRatingsByproductId,
 } from "@/Pages/Admin/ProductsToDisplay/service";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./index.css";
 import { Rating } from "primereact/rating";
 import {
@@ -35,7 +35,7 @@ const page = () => {
   const [reviews, setreviews] = useState([]);
   const [open, setopen] = useState(false);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const [product, setproduct] = useState({
     name: "",
     brand: "",
@@ -98,17 +98,28 @@ const page = () => {
 
   function addToCartHandler({ userId, productId, quantity, price, variant }) {
     if (!userId || userId === "") {
-      console.log("");
       setopen(true);
       return;
     } else {
-      // console.log({ userId, productId, quantity, price, variant });
       addToCart({ userId, productId, quantity, price, variant }).then(
         (resp) => {
-          // console.log(resp);
           dispatch(setCount(resp.products.length));
         }
       );
+    }
+  }
+
+  function buyNowHandler({ userId, productId, quantity, price, variant }) {
+    if (!userId || userId === "") {
+      setopen(true);
+      return;
+    } else {
+      addToCart({ userId, productId, quantity, price, variant }).then(
+        (resp) => {
+          dispatch(setCount(resp.products.length));
+        }
+      );
+      navigate("/Cart");
     }
   }
 
@@ -143,44 +154,10 @@ const page = () => {
   return (
     <div>
       <div className=""></div>
-      <div className="grid grid-cols-5 gap-4">
-        <div className="col-span-2 flex flex-col gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-5 sm:grid-cols-1 gap-4">
+        <div className="col lg:col-span-2 sm:col flex flex-col gap-2">
           <div className="p-2.5 rounded-md bg-[#f6f6f6] relative flex justify-center">
-            {/* <ReactImageMagnify
-              {...{
-                smallImage: {
-                  alt: "Wristwatch by Ted Baker London",
-                  isFluidWidth: true,
-                  src,
-                  height: 470,
-                },
-                largeImage: {
-                  src,
-                  width: 900,
-                  height: 700,
-                },
-                enlargedImageContainerStyle: {
-                  zIndex: "1500",
-                  backgroundColor: "#80808078",
-                },
-                enlargedImageContainerDimensions: {
-                  width: "100%",
-                  height: "100%",
-                },
-                // enlargedImageStyle: {
-                //   objectFit: "contain",
-                // },
-                enlargedImagePosition: "beside",
-                isHintEnabled: true,
-                shouldUsePositiveSpaceLens: true,
-              }}
-            /> */}
             <ImageMagnifier src={src} height={480} width={"auto"} />
-            {/* <img
-              src={selectedImage ? getFileUrl(selectedImage) : ""}
-              alt=""
-              className="selectedImageContainer"
-            /> */}
             <button className="product-page-wishlist-button">
               <HeartIcon size={16} />
             </button>
@@ -220,13 +197,24 @@ const page = () => {
               Add To Cart
             </button>
 
-            <button className="product-page-buyNow-button">
+            <button
+              className="product-page-buyNow-button"
+              onClick={() =>
+                buyNowHandler({
+                  userId: LS.get("userId"),
+                  productId: product._id,
+                  quantity: 1,
+                  price: selectedVariant.values.price,
+                  variant: selectedVariant._id,
+                })
+              }
+            >
               <Zap fill="white" />
               Buy Now
             </button>
           </div>
         </div>
-        <div className="col-span-3 relative">
+        <div className="col lg:col-span-3 sm:col relative">
           <div className="flex justify-between">
             <div className="product-page-name">{product.name} </div>
             <button className="">
@@ -327,7 +315,13 @@ const page = () => {
                         </span>
                         <span className="flex text-sm font-semibold items-center">
                           [ {review.rating}
-                          <Star size={16} fill="#f59e0b" /> ]
+                          <Star
+                            size={16}
+                            strokeWidth={0}
+                            stroke=""
+                            fill="#f59e0b"
+                          />{" "}
+                          ]
                         </span>
                       </div>
                       <p className="text-xs text-slate-400">{review.comment}</p>

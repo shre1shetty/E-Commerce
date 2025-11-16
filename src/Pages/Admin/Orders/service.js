@@ -1,5 +1,5 @@
 import GlobalToast from "@/Components/GlobalToast";
-import { AxiosInstance } from "@/lib/AxiosInstance";
+import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
 
 export const getOrders = async () => {
   try {

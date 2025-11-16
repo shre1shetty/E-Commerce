@@ -220,61 +220,6 @@ const Create = () => {
                 </div>
                 {/*Base Information */}
 
-                {/*Pictures*/}
-                <label htmlFor="" className="form-label">
-                  Pictures
-                </label>
-                <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid grid-cols-11 gap-4 overflow-hidden">
-                  {formik.values.pictures?.map((picture) => (
-                    <div className="relative">
-                      <div className="border border-dashed border-black flex justify-center items-center h-full rounded-md overflow-hidden">
-                        <img
-                          className="h-[72px] w-full"
-                          src={URL.createObjectURL(picture)}
-                          alt=""
-                        />
-                      </div>
-                      <button
-                        className="absolute flex items-center justify-center h-full w-full top-0 opacity-0 left-1/2 transform -translate-x-1/2 translate-y-0 hover:opacity-80"
-                        onClick={() =>
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures?.filter(
-                              (data) => data !== picture
-                            )
-                          )
-                        }
-                      >
-                        <X />
-                      </button>
-                    </div>
-                  ))}
-                  <div className="relative">
-                    <div className="border border-dashed border-black flex justify-center items-center py-6">
-                      <PlusCircle />
-                    </div>
-                    <input
-                      type="file"
-                      className="absolute opacity-0 top-0 left-0 right-0 bottom-0"
-                      accept=".png"
-                      onChange={(event) => {
-                        event.target.files[0] &&
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures
-                              ? [
-                                  ...formik.values.pictures,
-                                  event.target.files[0],
-                                ]
-                              : [event.target.files[0]]
-                          );
-                        event.target.value = null;
-                      }}
-                    />
-                  </div>
-                </div>
-                {/*Pictures*/}
-
                 {/*Details*/}
                 <label htmlFor="" className="form-label">
                   Details

@@ -18,6 +18,7 @@ import { ArrowUpRightIcon } from "lucide-react";
 const HomePage = () => {
   const navigate = useNavigate();
   const [slides, setslides] = useState([]);
+  const [subHeader, setsubHeader] = useState([]);
   const [category, setcategory] = useState([]);
   const [stickyPanel, setstickyPanel] = useState({
     text: "",
@@ -31,48 +32,71 @@ const HomePage = () => {
     field2: "",
     value2: "",
   });
+  const [sizes, setsizes] = useState({ header1: 70, header2: 30 });
 
   const location = useLocation();
   useEffect(() => {
     ReactGA.send({ hitType: "pageview", page: location.pathname });
-    getLayout().then(({ headerElement, category, stickyPanel, topProduct }) => {
-      console.log(topProduct);
-      setslides(
-        headerElement.rows.map(({ file, url }) => ({
-          file,
-          url,
-        }))
-      );
-      setcategory(
-        category.map((value) => ({
-          ...value,
-          image: getFileUrl(value.image),
-        }))
-      );
-      setstickyPanel(stickyPanel);
-      settopProduct(topProduct);
-    });
+    getLayout().then(
+      ({
+        headerElement,
+        subHeaderElement,
+        category,
+        stickyPanel,
+        topProduct,
+      }) => {
+        setsizes({
+          header1: headerElement.size,
+          header2: subHeaderElement.size,
+        });
+        setsubHeader(subHeaderElement.rows);
+        setslides(
+          headerElement.rows.map(({ file, url }) => ({
+            file,
+            url,
+          }))
+        );
+        setcategory(
+          category.map((value) => ({
+            ...value,
+            image: getFileUrl(value.image),
+          }))
+        );
+        setstickyPanel(stickyPanel);
+        settopProduct(topProduct);
+      }
+    );
   }, [location.pathname]);
 
   return (
     <div className="relative min-h-[calc(100vh-80px)]">
       <div className="mb-8 flex flex-col gap-4">
-        <div className="flex gap-4 h-[500px]">
-          <div className="w-3/4">
+        <div className="flex gap-1 md:gap-4 h-[360px] md:h-[420px] lg:h-[500px]">
+          <div style={{ width: `${sizes.header1}%` }}>
             <Slider slidesPerView={1} slides={slides} />
           </div>
-          <div className="w-1/4">
-            <img src={NewCollection} alt="" className="h-full" />
+          <div
+            className="flex flex-col gap-2"
+            style={{ width: `${sizes.header2}%` }}
+          >
+            {subHeader.map(({ file, size, url }) => (
+              <img
+                key={url}
+                src={getFileUrl(file)}
+                alt=""
+                style={{ height: `${size}%` }}
+                className="w-full"
+                onClick={() => navigate(url)}
+              />
+            ))}
           </div>
         </div>
-        <DividerWithText textColor={"orange"}>
-          Top Sales On Top Products
-        </DividerWithText>
+        <DividerWithText>Top Sales On Top Products</DividerWithText>
         <div className=" ">
           <text className="text-2xl font-bold text-[#353434]">
             Our Category
           </text>
-          <div className="flex gap-6 mt-4 h-[140px]">
+          <div className="flex gap-1 md:gap-4 lg:gap-6 mt-4 h-[90px] md:h-[110px] lg:h-[140px] overflow-hidden overflow-x-auto">
             <CircularOption image={TopDiscount}>Top Discounts</CircularOption>
             {category.map(({ image, label, value }) => (
               <CircularOption
@@ -85,7 +109,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="bento-1">
             <img src={NewArrival} alt="" className="" />
             <div className="transparent-overlay">
@@ -103,7 +127,7 @@ const HomePage = () => {
             <text className="text-2xl font-bold text-[#353434]">
               Trendy Products
             </text>
-            <div className="grid grid-cols-4 gap-2 mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 lg:gap-2 mt-4">
               {topProduct.map((product) => (
                 <HomeProductCard
                   id={product._id}
@@ -120,7 +144,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div className="fixed bg-gray-600 z-[999] bottom-[190px] right-0 h-[260px] flex items-center text-center">
+      <div className="hidden fixed bg-gray-600 z-[999] bottom-[190px] right-0 h-[260px] md:flex items-center text-center">
         <p className="rotate-[-180deg]  text-white px-2 font-bold text-sm [writing-mode:vertical-rl] ">
           {stickyPanel.text}
         </p>

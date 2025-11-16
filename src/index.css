@@ -217,7 +217,7 @@ body {
   --select-option-color: black;
   --sidebar-background: 0, 0%, 0%;
   --select-option-hover-color: rgba(0, 0, 0, 0.266);
-  --user-theme: orange;
+  /* --user-theme: orange; */
 }
 
 .p-inputtext {

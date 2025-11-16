@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setRole } from "@/Redux/Slice/UserSlice";
 import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
-import { AxiosInstance } from "@/lib/AxiosInstance";
+import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
+import { AdminAxiosInstanceforUpload as AxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
 const LoginModal = ({ open, setopen }) => {
   const navigate = useNavigate();
   const [loginSignup, setloginSignup] = useState("login");
@@ -70,12 +71,15 @@ const LoginModal = ({ open, setopen }) => {
             if (import.meta.env.DEV) {
               LS.set("refreshToken", values.refreshToken);
             }
-            AxiosInstance.defaults.headers.common[
-              "Authorization"
-            ] = `Bearer ${values.accessToken}`;
             if (values.role === "admin") {
               dispatch(setRole("admin"));
               LS.set("Role", "admin");
+              AxiosInstance.defaults.headers.common[
+                "Authorization"
+              ] = `Bearer ${values.accessToken}`;
+              AxiosInstanceforUpload.defaults.headers.common[
+                "Authorization"
+              ] = `Bearer ${values.accessToken}`;
               navigate("/Overview");
             }
             setopen(false);
@@ -112,10 +116,10 @@ const LoginModal = ({ open, setopen }) => {
             LS.set("username", values.user.username);
             LS.set("email", values.user.email);
             LS.set("contactNumber", values.user.contactNumber);
-            AxiosInstance.defaults.headers.common[
-              "Authorization"
-            ] = `Bearer ${res.data.accessToken}`;
             if (values.user.role === "admin") {
+              AxiosInstance.defaults.headers.common[
+                "Authorization"
+              ] = `Bearer ${res.data.accessToken}`;
               dispatch(setRole("admin"));
               LS.set("Role", "admin");
               navigate("/Overview");

@@ -41,7 +41,6 @@ const RegularProductCard = ({
       );
     }
   };
-  console.log(variantValues);
   return (
     <div className="product-card" onClick={() => navigate(`/Product/${_id}`)}>
       <div className="ratings">

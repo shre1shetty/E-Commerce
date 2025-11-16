@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Search } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 import { getProducts } from "./service";
 import { debounce, sortBy, uniqWith } from "lodash";
@@ -223,8 +223,8 @@ const NavbarSearch = () => {
 
   return (
     <Dialog open={open} onOpenChange={setopen} className="">
-      <DialogTrigger>
-        <div className="flex gap-2 items-center text-xs pl-2 pr-56 py-2 rounded-full bg-white">
+      <DialogTrigger className="w-full">
+        <div className="flex gap-2 items-center text-xs pl-2 w-full py-2 rounded-full bg-white">
           <Search size={16} className="text-gray-500" />
           Search
         </div>
@@ -247,7 +247,7 @@ const NavbarSearch = () => {
               Products.length > 0 ? "" : "hidden"
             }`}
           >
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <div className="min-w-[250px]">
                 <span className="text-xs font-medium text-slate-600">
                   Suggestions
@@ -255,7 +255,18 @@ const NavbarSearch = () => {
                 {Object.values(searchOptions).length > 0 &&
                   optionsList(searchOptions)}
               </div>
-              <div ref={ref} className="flex gap-1 overflow-auto hideScrollbar">
+              <div
+                ref={ref}
+                className="grow relative flex gap-1 overflow-auto hideScrollbar"
+              >
+                <div
+                  className="fixed left-[calc(250px + 6px)] top-[65%] md:top-[50%] z-50 p-2 bg-white rounded-full shadow-md flex items-center justify-center scroll"
+                  onClick={() => {
+                    ref.current.scrollLeft -= 50;
+                  }}
+                >
+                  <ArrowLeft size={18} />
+                </div>
                 {Products?.map(
                   ({
                     name,
@@ -279,14 +290,8 @@ const NavbarSearch = () => {
                   )
                 )}
                 <div
-                  className="absolute right-3 top-[50%] z-50 p-2 bg-white rounded-full shadow-md flex items-center justify-center scroll"
+                  className="fixed right-3 top-[65%] md:top-[50%] z-50 p-2 bg-white rounded-full shadow-md flex items-center justify-center scroll"
                   onClick={() => {
-                    console.log(
-                      ref.current.scrollWidth,
-                      ref.current.offsetWidth,
-                      ref.current.clientWidth,
-                      100 + ref.current.clientWidth
-                    );
                     ref.current.scrollLeft += 50;
                   }}
                 >

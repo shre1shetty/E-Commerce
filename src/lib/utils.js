@@ -197,3 +197,11 @@ export function formatNumber(num) {
 
   return formatted;
 }
+
+export const handleResize = (pixelSizes, containerWidth) => {
+  if (!containerWidth) return;
+
+  const percentSizes = pixelSizes.map((px) => (px / containerWidth) * 100);
+
+  return percentSizes;
+};

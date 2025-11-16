@@ -25,7 +25,7 @@ const RouteContainer = () => {
   }, []);
 
   return (
-    <BrowserRouter basename="E-Cart">
+    <BrowserRouter basename="E-Cart/">
       <div className="main-div">
         {role === "admin" ? (
           <>

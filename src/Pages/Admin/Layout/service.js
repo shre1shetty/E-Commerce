@@ -1,5 +1,5 @@
-import { AxiosInstance } from "@/lib/AxiosInstance";
-import { AxiosInstanceUpload } from "@/lib/AxiosInstanceforUpload";
+import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
+import { AdminAxiosInstanceforUpload as AxiosInstanceUpload } from "@/lib/AdminAxiosInstanceforUpload";
 
 export const addLayout = async (body) => {
   try {

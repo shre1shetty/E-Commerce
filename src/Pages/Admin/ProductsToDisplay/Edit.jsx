@@ -18,13 +18,6 @@ import {
 } from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -50,6 +43,7 @@ const EditPage = () => {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      tags: [],
       variantFields: [],
     },
   });
@@ -63,49 +57,6 @@ const EditPage = () => {
   const handleUpdate = (data) => {
     delete data._id;
     const formData = convertToFormData(data);
-    // Object.keys(data).forEach((key, index) => {
-    //   // console.log(key);
-    //   if (
-    //     key === "category" ||
-    //     key === "variantFields" ||
-    //     key === "AdditionalSpecification"
-    //   ) {
-    //     data[key].forEach((value2, index1) => {
-    //       Object.keys(value2).forEach((key1) => {
-    //         let fieldValue = value2[key1];
-
-    //         // Check if the value is an object or array, and stringify it
-    //         if (Array.isArray(fieldValue)) {
-    //           fieldValue.forEach((value, index2) => {
-    //             formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
-    //           });
-    //         } else {
-    //           formData.append(`${key}[${index1}][${key1}]`, fieldValue);
-    //         }
-    //       });
-    //       // formData.append(key, picture);
-    //     });
-    //   } else if (key === "variantValues") {
-    //     data[key].forEach((variant, index1) => {
-    //       formData.append(`variantValues[${index1}][name]`, variant.name);
-    //       Object.keys(variant.values).forEach((key) => {
-    //         formData.append(
-    //           `variantValues[${index1}][values][${key}]`,
-    //           variant.values[key]
-    //         );
-    //       });
-    //     });
-    //   } else if (key === "pictures") {
-    //     data[key].forEach((picture, index) => {
-    //       formData.append(`pictures[${index}]`, picture);
-    //     });
-    //   } else {
-    //     formData.append(key, data[key]);
-    //   }
-    // });
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
     updateProduct(searchParams.get("id"), formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
@@ -169,8 +120,8 @@ const EditPage = () => {
     formik.setFieldValue(
       "AdditionalSpecification",
       formik.values.AdditionalSpecification
-        ? [...formik.values.AdditionalSpecification, { [field]: value }]
-        : [{ [field]: value }]
+        ? [...formik.values.AdditionalSpecification, { key: field, value }]
+        : [{ key: field, value }]
     );
     SpecificationFormik.resetForm();
   };
@@ -238,61 +189,6 @@ const EditPage = () => {
                 </div>
                 {/*Base Information */}
 
-                {/*Pictures*/}
-                <label htmlFor="" className="form-label">
-                  Pictures
-                </label>
-                <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid grid-cols-11 gap-4 overflow-hidden">
-                  {formik.values.pictures?.map((picture) => (
-                    <div className="relative">
-                      <div className="border border-dashed border-black flex justify-center items-center h-full rounded-md overflow-hidden">
-                        <img
-                          className="h-[72px] w-full"
-                          src={URL.createObjectURL(picture)}
-                          alt=""
-                        />
-                      </div>
-                      <button
-                        className="absolute flex items-center justify-center h-full w-full top-0 opacity-0 left-1/2 transform -translate-x-1/2 translate-y-0 hover:opacity-80"
-                        onClick={() =>
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures?.filter(
-                              (data) => data !== picture
-                            )
-                          )
-                        }
-                      >
-                        <X />
-                      </button>
-                    </div>
-                  ))}
-                  <div className="relative">
-                    <div className="border border-dashed border-black flex justify-center items-center py-6">
-                      <PlusCircle />
-                    </div>
-                    <input
-                      type="file"
-                      className="absolute opacity-0 top-0 left-0 right-0 bottom-0"
-                      accept=".png"
-                      onChange={(event) => {
-                        event.target.files[0] &&
-                          formik.setFieldValue(
-                            "pictures",
-                            formik.values.pictures
-                              ? [
-                                  ...formik.values.pictures,
-                                  event.target.files[0],
-                                ]
-                              : [event.target.files[0]]
-                          );
-                        event.target.value = null;
-                      }}
-                    />
-                  </div>
-                </div>
-                {/*Pictures*/}
-
                 {/*Details*/}
                 <label htmlFor="" className="form-label">
                   Details
@@ -353,6 +249,21 @@ const EditPage = () => {
                       onChange={formik.handleChange}
                     />
                   </div>
+                  <div className="">
+                    <label htmlFor="tags" className="form-label">
+                      Tags
+                    </label>
+                    <Input
+                      name="tags"
+                      value={formik.values.tags.toString() ?? ""}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "tags",
+                          event.target.value.split(",")
+                        );
+                      }}
+                    />
+                  </div>
                 </div>
                 {/*Details*/}
 
@@ -399,27 +310,24 @@ const EditPage = () => {
                       )}
                     >
                       {formik.values.AdditionalSpecification?.map(
-                        (data, index) => (
+                        ({ key, value }, index) => (
                           <div className="" key={index}>
-                            <label
-                              htmlFor={Object.keys(data)[0]}
-                              className="form-label"
-                            >
-                              {Object.keys(data)[0]}
+                            <label htmlFor={key} className="form-label">
+                              {key}
                             </label>
                             <div className="flex justify-between gap-1">
                               <Input
-                                name={Object.keys(data)[0]}
-                                value={data[Object.keys(data)[0]] ?? ""}
+                                name={key}
+                                value={value ?? ""}
                                 onChange={(event) => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.map(
                                       (val) =>
-                                        val == data
+                                        val.key == key
                                           ? {
-                                              [Object.keys(data)[0]]:
-                                                event.target.value,
+                                              key,
+                                              value: event.target.value,
                                             }
                                           : val
                                     )
@@ -427,11 +335,12 @@ const EditPage = () => {
                                 }}
                               />
                               <Button
+                                className={"!h-10"}
                                 onClick={() => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.filter(
-                                      (val) => val !== data
+                                      (val) => val.key !== key
                                     )
                                   );
                                 }}

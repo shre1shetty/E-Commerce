@@ -18,6 +18,7 @@ const CategoryPage = () => {
   const [category, setcategory] = useState([]);
   const [filters, setfilters] = useState([]);
   const [openCategory, setopenCategory] = useState({});
+  const [label, setlabel] = useState("");
   useEffect(() => {
     getProductsByCategory(categoryId).then((resp) => {
       setproducts(resp);
@@ -32,6 +33,14 @@ const CategoryPage = () => {
     });
     getCategory().then(({ data }) => {
       setcategory(data);
+      const categoryElem = data.reduce((acc, { name, subFilter }) => {
+        const val = subFilter.find(({ _id }) => _id === categoryId);
+        if (val) {
+          return (acc += name + " : " + val.name);
+        }
+        return acc;
+      }, "");
+      setlabel(categoryElem);
     });
   }, []);
 
@@ -39,9 +48,8 @@ const CategoryPage = () => {
     setfilteredProducts(
       products.filter(
         ({ category, price }) =>
-          category.some(
-            ({ value }) => filters.includes(value) || value === categoryId
-          ) &&
+          (filters.length === 0 ||
+            category.some(({ value }) => filters.includes(value))) &&
           price >= value[0] &&
           price <= value[1]
       )
@@ -51,7 +59,8 @@ const CategoryPage = () => {
     <div>
       <div className="category-header">
         <label htmlFor="" className="">
-          Mens
+          Showing search results for{" "}
+          <span className="text-[var(--user-theme)]">{label}</span>
         </label>
         <div className="button-section">
           <div className="label-select">
@@ -88,7 +97,7 @@ const CategoryPage = () => {
         <div
           className={`${
             showFilter
-              ? "w-1/5 border-l pl-4 border-slate-600 text-[#00003b]"
+              ? "w-[40%] min-w-[220px] md:w-1/5 border-l pl-4 border-slate-600 text-[#00003b]"
               : "w-0"
           } overflow-x-hidden transition-all duration-300 min-h-[560px]`}
         >

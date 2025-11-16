@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import "./index.css";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { LS } from "@/lib/SecureLocalStorage";
 const OrdersPage = React.lazy(() => import("./Order/page"));
 const AddressPage = React.lazy(() => import("./Address/page"));
 const page = () => {
@@ -55,7 +56,13 @@ const page = () => {
               <i class="fa-solid fa-comment-dots"></i>
               <p className="">Customer Support</p>
             </li>
-            <li className="">
+            <li
+              className=""
+              onClick={() => {
+                LS.clear();
+                navigate("/");
+              }}
+            >
               <i class="fa-solid fa-arrow-right-from-bracket"></i>
               <p className="">Logout</p>
             </li>

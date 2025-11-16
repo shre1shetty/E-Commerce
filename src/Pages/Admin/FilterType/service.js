@@ -1,4 +1,4 @@
-import { AxiosInstance } from "@/lib/AxiosInstance";
+import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
 
 export const getFilterType = async (id = null) => {
   try {

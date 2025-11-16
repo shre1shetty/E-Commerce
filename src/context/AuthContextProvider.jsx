@@ -1,3 +1,5 @@
+import { AdminAxiosInstance } from "@/lib/AdminAxiosInstance";
+import { AdminAxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
 import { AxiosInstance } from "@/lib/AxiosInstance";
 import { LS } from "@/lib/SecureLocalStorage";
 import React, { createContext, useLayoutEffect, useState } from "react";
@@ -14,10 +16,16 @@ const AuthContextProvider = ({ children }) => {
         { withCredentials: true }
       )
         .then((res) => {
-          setaccessToken(res.data.accessToken);
-          AxiosInstance.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${res.data.accessToken}`;
+          if (res.data.role === "admin") {
+            setaccessToken(res.data.accessToken);
+            setrole("admin");
+            AdminAxiosInstance.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${res.data.accessToken}`;
+            AdminAxiosInstanceforUpload.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${res.data.accessToken}`;
+          }
         })
         .catch((error) => {
           AxiosInstance.post("/User/logout", {}, { withCredentials: true });

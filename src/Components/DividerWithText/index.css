@@ -1,4 +1,8 @@
 /* Base styling for the text */
+.divider-bg {
+  background-color: var(--user-theme);
+}
+
 .shiny-text {
   color: var(--user-theme); /* Fallback color */
   position: relative;
