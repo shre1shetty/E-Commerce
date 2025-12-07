@@ -68,9 +68,29 @@ const HomePage = () => {
     );
   }, [location.pathname]);
 
-  const getCols = (prodPerRow, gap) => {
-    return `grid-cols-[repeat(auto-fit,minmax(calc((100%/${prodPerRow})-${gap}px),1fr))]`;
-  };
+  const cols = [
+    "grid-cols-2 md:grid-cols-1",
+    "grid-cols-2 md:grid-cols-2",
+    "grid-cols-2 md:grid-cols-3",
+    "grid-cols-2 md:grid-cols-4",
+    "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
+    "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6",
+  ];
+
+  const gaps = [
+    "gap-[1px]",
+    "gap-[2px]",
+    "gap-[3px]",
+    "gap-[4px]",
+    "gap-[5px]",
+    "gap-[6px]",
+    "gap-[7px]",
+    "gap-[8px]",
+    "gap-[9px]",
+    "gap-[10px]",
+    "gap-[11px]",
+    "gap-[12px]",
+  ];
 
   return (
     <div className="relative min-h-[calc(100vh-80px)]">
@@ -159,14 +179,7 @@ const HomePage = () => {
                     </text>
                     {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 lg:gap-2 mt-4"> */}
                     <div
-                      style={{
-                        gap: `${gap}px`,
-                        marginTop: "1rem",
-                        display: "grid",
-                        gridTemplateColumns: `repeat(auto-fit, minmax(160px,calc((100% / ${prodPerRow}) - ${gap}px)))`,
-                      }}
-                      className="home-card-container"
-                      // className={`grid gap-[${gap}px] mt-4 grid-cols-[repeat(auto-fit,minmax(calc((100%/${prodPerRow})-${gap}px),1fr))]`}
+                      className={`grid ${gaps[gap]} mt-4 ${cols[prodPerRow]} home-card-container`}
                     >
                       {products.map((product) => (
                         <HomeProductCard
