@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-
+import "@/Components/Sidebar/Sidebar.scss";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,9 +20,10 @@ import { LS } from "@/lib/SecureLocalStorage";
 
 export function NavMain({ items, open }) {
   const navigate = useNavigate();
-  const regex = /[^\/]+\/(.+)$/;
-  const menuName = window.location.pathname.match(regex);
-  LS.set("activeMenu", menuName?.length > 0 ? menuName[1] : "");
+  // const regex = /[^\/]+\/(.+)$/;
+  // const menuName = window.location.pathname.match(regex);
+  // console.log(menuName);
+  // LS.set("activeMenu", menuName?.length > 0 ? menuName[1] : "");
   return (
     <SidebarGroup className={!open ? "!p-2" : ""}>
       <SidebarGroupLabel>Admin Panel</SidebarGroupLabel>
@@ -53,9 +54,10 @@ export function NavMain({ items, open }) {
                           </a> */}
                           <div
                             className={
-                              LS.get("activeMenu") === subItem.title
-                                ? "active"
-                                : ""
+                              window.location.pathname.replace("/", "") ===
+                              subItem.title.replaceAll(" ", "")
+                                ? "active cursor-pointer"
+                                : " cursor-pointer"
                             }
                             onClick={() => navigate(subItem.url)}
                           >
@@ -71,7 +73,12 @@ export function NavMain({ items, open }) {
           ) : (
             <SidebarMenuButton asChild>
               <div
-                className={LS.get("activeMenu") === item.title ? "active" : ""}
+                className={
+                  window.location.pathname.replace("/", "") ===
+                  item.title.replaceAll(" ", "")
+                    ? "active cursor-pointer"
+                    : " cursor-pointer"
+                }
                 onClick={() => navigate(item.url)}
               >
                 <item.icon />

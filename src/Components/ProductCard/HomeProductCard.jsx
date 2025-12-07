@@ -4,6 +4,11 @@ import "./index.css";
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import { Check, Heart, ShoppingBag, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { addToWishList, removeFromWishList } from "./service";
+import { useDispatch, useSelector } from "react-redux";
+import { setWishList } from "@/Redux/Slice/WishlistSlice";
+import { LS } from "@/lib/SecureLocalStorage";
+import { AxiosInstance } from "@/lib/AxiosInstance";
 const HomeProductCard = ({
   id,
   label,
@@ -13,8 +18,14 @@ const HomeProductCard = ({
   filters,
   description,
   variantValues = [],
+  onClick = null,
 }) => {
   const navigate = useNavigate();
+  const wishList = useSelector((state) => state.data.wishlist.wishlist);
+  const isWishListed = wishList?.some(
+    (val) => val.toString() === id.toString()
+  );
+  const dispatch = useDispatch();
   const [productImage, setproductImage] = useState(null);
   const [variant1, setvariant1] = useState({ name: null, value: null });
   const [variant2, setvariant2] = useState({ name: null, value: null });
@@ -29,6 +40,25 @@ const HomeProductCard = ({
         ? getFileUrl(val?.values.picture[0])
         : URL.createObjectURL(val?.values.picture[0])
     );
+  };
+  const addItemToWishlist = ({ productId, userId }) => {
+    addToWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
+  };
+
+  const removeItemfromWishlist = ({ productId, userId }) => {
+    removeFromWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
   };
 
   useEffect(() => {
@@ -56,7 +86,7 @@ const HomeProductCard = ({
   return (
     <div
       key={id}
-      className="bg-[#f5f4f7] h-[290px] rounded-[25px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden"
+      className="bg-[#f5f4f7] h-[290px] rounded-[25px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden home-card"
     >
       <div className="w-full h-[200px] hover:scale-[1.02] relative">
         <img
@@ -98,7 +128,10 @@ const HomeProductCard = ({
       </div>
       <div className="addtoCart">
         <button className="">
-          <ShoppingBag size={14} onClick={() => navigate(`/Product/${id}`)} />
+          <ShoppingBag
+            size={14}
+            onClick={() => (onClick ? onClick() : navigate(`/Product/${id}`))}
+          />
         </button>
       </div>
       <div className="top-product-name">
@@ -114,8 +147,18 @@ const HomeProductCard = ({
         <span className="">{price}</span>
       </div>
       <div className="wishlist">
-        <button className="">
-          <Heart />
+        <button
+          className=""
+          onClick={() =>
+            isWishListed
+              ? removeItemfromWishlist({
+                  productId: id,
+                  userId: LS.get("userId"),
+                })
+              : addItemToWishlist({ productId: id, userId: LS.get("userId") })
+          }
+        >
+          {isWishListed ? <Heart fill="red" stroke="red" /> : <Heart />}
         </button>
       </div>
       <div className="flex text-xs items-center font-extrabold text-blue-950 gap-1 absolute top-4 left-4">

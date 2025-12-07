@@ -364,3 +364,7 @@ body {
 .p-accordion-tab {
   margin-bottom: 16px;
 }
+
+.rmsc .dropdown-content {
+  z-index: 999 !important;
+}

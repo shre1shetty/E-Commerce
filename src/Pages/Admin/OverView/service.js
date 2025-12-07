@@ -44,3 +44,12 @@ export const getRecentRatings = async () => {
     console.log(error);
   }
 };
+
+export const getViewdata = async () => {
+  try {
+    const res = await AxiosInstance.get("/Dashboard/analyticsOverview");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

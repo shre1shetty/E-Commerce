@@ -1,3 +1,7 @@
+.home-card {
+  max-width: 272px;
+}
+
 .filterdiv {
   display: flex;
   justify-content: space-between;

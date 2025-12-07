@@ -38,7 +38,7 @@ const Edit = () => {
         rows: [],
       },
       category: [],
-      topProduct: [],
+      sections: [],
       footerDetails: {
         address: "",
         contact: "",
@@ -73,6 +73,17 @@ const Edit = () => {
               file: convertToBase64toFile(val.file),
             })),
           });
+        } else if (key === "sections") {
+          formik.setFieldValue(
+            "sections",
+            res.sections.map((section) => ({
+              ...section,
+              overlayBgImage:
+                section.overlayBgImage && section.overlayBgImage !== ""
+                  ? convertToBase64toFile(section.overlayBgImage)
+                  : "",
+            }))
+          );
         } else if (key === "logo") {
           formik.setFieldValue(key, convertToBase64toFile(res[key]));
         } else {
@@ -236,7 +247,12 @@ const Edit = () => {
                   }
                 />
               </div> */}
-              <SectionMapping />
+              <SectionMapping
+                sections={formik.values.sections}
+                setsections={(values) =>
+                  formik.setFieldValue("sections", values)
+                }
+              />
               <div className="flex gap-2">
                 <Button onClick={() => stepperRef.current.prevCallback()}>
                   Prev

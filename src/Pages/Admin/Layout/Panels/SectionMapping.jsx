@@ -11,10 +11,12 @@ import * as Yup from "yup";
 import { Segmented, Splitter } from "antd";
 import AgGrid from "@/Components/AgGrid/AgGrid";
 import { EditIcon, Trash2 } from "lucide-react";
-const SectionMapping = () => {
+import HomeProductCard from "@/Components/ProductCard/HomeProductCard";
+import FileUploadButton from "@/Components/FileUpload/FIleUploadButton";
+const SectionMapping = ({ sections, setsections }) => {
   const containerRef = useRef(null);
   const [products, setproducts] = useState([]);
-  const [sections, setsections] = useState([]);
+  // const [sections, setsections] = useState([]);
   const [sectionNames, setsectionNames] = useState([]);
   const [activeSection, setactiveSection] = useState("");
   const [active, setactive] = useState("Grid");
@@ -35,9 +37,12 @@ const SectionMapping = () => {
       type: "",
       overlayText: "",
       overlaySubText: "",
+      overlayBgImage: "",
       categoryName: "",
       products: [],
       size: 100,
+      prodPerRow: 1,
+      gap: 1,
     },
     validationSchema: Yup.object({
       section: Yup.string().required(),
@@ -57,6 +62,16 @@ const SectionMapping = () => {
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
       }),
+      prodPerRow: Yup.string().when("type", {
+        is: (val) => val === "Category",
+        then: (schema) => schema.required("Products per row is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+      gap: Yup.string().when("type", {
+        is: (val) => val === "Category",
+        then: (schema) => schema.required("Gap is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
       products: Yup.array().when("type", {
         is: (val) => val === "Category",
         then: (schema) =>
@@ -67,8 +82,7 @@ const SectionMapping = () => {
     onSubmit: () => {},
   });
 
-  const addSection = (values) => {
-    console.log(values);
+  const addSection = (values, sections) => {
     formik.submitForm();
     formik.validateForm().then((errors) => {
       if (Object.keys(errors).length > 0) {
@@ -78,18 +92,21 @@ const SectionMapping = () => {
           messageType: "error",
         });
       } else {
+        values.gap = parseInt(values.gap);
         if (values.id) {
           const id = values.id;
-          setsections((prev) =>
-            prev.map((val, index) => (index.toString() === id ? values : val))
+          setsections(
+            sections.map((val, index) =>
+              index.toString() === id ? values : val
+            )
           );
         } else {
           const sectionRowsLength = sections.filter(
             ({ section }) => section === values.section
           ).length;
           const equalSize = 100 / (sectionRowsLength + 1);
-          setsections((prev) =>
-            [...prev, values].map((val) =>
+          setsections(
+            [...sections, values].map((val) =>
               val.section === values.section ? { ...val, size: equalSize } : val
             )
           );
@@ -125,7 +142,7 @@ const SectionMapping = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-5 gap-2 ">
+      <div className="grid grid-cols-7 gap-1 ">
         <div className="">
           <label htmlFor="" className="">
             Section
@@ -165,6 +182,23 @@ const SectionMapping = () => {
         </div>
         {formik.values.type === "Banner" && (
           <>
+            <div className="">
+              <label htmlFor="" className="">
+                Background Image
+              </label>
+              <FileUploadButton
+                onChange={(file) =>
+                  formik.setFieldValue("overlayBgImage", file)
+                }
+                value={formik.values.overlayBgImage}
+              />
+              <ErrorMessage
+                isVisible={
+                  formik.touched.overlayBgImage && formik.errors.overlayBgImage
+                }
+                message={formik.errors.overlayBgImage}
+              />
+            </div>
             <div className="">
               <label htmlFor="" className="">
                 Overlay Text
@@ -256,11 +290,51 @@ const SectionMapping = () => {
                 message={formik.errors.products}
               />
             </div>
+            <div className="">
+              <label htmlFor="" className="">
+                Products per row
+              </label>
+              <InputText
+                name="prodPerRow"
+                className={
+                  formik.touched.prodPerRow && formik.errors.prodPerRow
+                    ? "errorClass"
+                    : ""
+                }
+                value={formik.values.prodPerRow}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <ErrorMessage
+                isVisible={
+                  formik.touched.prodPerRow && formik.errors.prodPerRow
+                }
+                message={formik.errors.prodPerRow}
+              />
+            </div>
+            <div className="">
+              <label htmlFor="" className="">
+                Gap
+              </label>
+              <InputText
+                name="gap"
+                className={
+                  formik.touched.gap && formik.errors.gap ? "errorClass" : ""
+                }
+                value={formik.values.gap}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <ErrorMessage
+                isVisible={formik.touched.gap && formik.errors.gap}
+                message={formik.errors.gap}
+              />
+            </div>
           </>
         )}
         <button
           className="px-[18px] py-2 text-white rounded-lg bg-black h-[40px] mt-6"
-          onClick={() => addSection(formik.values)}
+          onClick={() => addSection(formik.values, sections)}
         >
           Add
         </button>
@@ -294,8 +368,8 @@ const SectionMapping = () => {
                   </button>
                   <button
                     onClick={() =>
-                      setsections((prev) =>
-                        prev.filter(
+                      setsections(
+                        sections.filter(
                           (val, index) => index.toString() !== node.id
                         )
                       )
@@ -327,8 +401,17 @@ const SectionMapping = () => {
               headerName: "Category Name",
             },
             {
+              field: "prodPerRow",
+              headerName: "PPR",
+            },
+            {
+              field: "gap",
+              headerName: "Gap",
+            },
+            {
               field: "",
               headerName: "Products",
+              flex: 2,
               cellRenderer: ({ data }) => (
                 <div className="">
                   {data.products.map((val) => val.label).toString()}
@@ -348,26 +431,48 @@ const SectionMapping = () => {
                 pixelSizes,
                 containerRef.current?.offsetWidth
               );
-              setsections((prev) => {
-                let flag = 0;
-                return prev.map((val) => {
-                  if (val.section === activeSection) {
-                    const size = flag === 1 ? size2 : size1;
-                    flag = 1;
-                    return { ...val, size };
-                  }
-                  return val;
-                });
+              let flag = 0;
+              const newResizedSection = sections.map((val) => {
+                if (val.section === activeSection) {
+                  const size = flag === 1 ? size2 : size1;
+                  flag = 1;
+                  return { ...val, size };
+                }
+                return val;
               });
+              setsections(newResizedSection);
             }}
           >
-            {rows.map(({ type, size }) => (
-              <Splitter.Panel size={`${size}%`}>
-                <label htmlFor="" className="">
-                  {type}
-                </label>
-              </Splitter.Panel>
-            ))}
+            {rows.map(
+              ({ type, size, gap, prodPerRow, products, overlayBgImage }) => (
+                <Splitter.Panel size={`${size}%`}>
+                  {type === "Banner" ? (
+                    <div className="bg-white flex justify-center items-center h-full">
+                      <img
+                        src={URL.createObjectURL(overlayBgImage)}
+                        alt=""
+                        className="h-full w-full"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        gap: `${gap}px`,
+                        display: "grid",
+                        gridTemplateColumns: `repeat(auto-fit, minmax(190px,calc((100% / ${prodPerRow}) - ${gap}px)))`,
+                      }}
+                      // className={`grid gap-[${gap}px] mt-4 grid-cols-[repeat(auto-fit,minmax(calc((100%/${prodPerRow})-${gap}px),1fr))]`}
+                    >
+                      {products.map((product) => (
+                        <div className="h-[290px] max-w-[272px] bg-white flex justify-center items-center">
+                          {product.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Splitter.Panel>
+              )
+            )}
           </Splitter>
         </div>
       )}

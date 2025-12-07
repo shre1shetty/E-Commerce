@@ -1,7 +1,6 @@
-.bento-1 {
+.bento[data-type="Banner"] {
   width: 100%;
   position: relative;
-  height: 225px;
   border-radius: 12px;
   overflow: hidden;
   img {
@@ -10,21 +9,24 @@
   }
 }
 
-@media (min-width: 768px) {
-  .bento-1 {
-    width: 25%;
-    height: 600px;
+@media (max-width: 768px) {
+  .bento {
+    width: 100% !important;
+  }
+
+  .bento[data-type="Banner"] {
+    height: 225px;
   }
 
   .transparent-overlay {
-    bottom: -10%;
+    bottom: -25% !important;
   }
 }
 
 .transparent-overlay {
   justify-content: end;
   position: absolute;
-  bottom: -50%;
+  bottom: -10%;
   left: 0;
   width: 100%;
   height: 100%;
@@ -41,7 +43,7 @@
 }
 
 .transparent-overlay:hover {
-  bottom: 0;
+  bottom: 0 !important;
   transition: bottom 0.3s ease-in-out;
 }
 

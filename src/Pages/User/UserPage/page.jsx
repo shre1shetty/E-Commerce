@@ -4,6 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LS } from "@/lib/SecureLocalStorage";
 const OrdersPage = React.lazy(() => import("./Order/page"));
 const AddressPage = React.lazy(() => import("./Address/page"));
+const WishlistPage = React.lazy(() => import("./Favourite/page"));
 const page = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -11,7 +12,7 @@ const page = () => {
     <div>
       <h1 className="user-header">Your Account</h1>
       <span className="user-sub-header">
-        Shrevan Shetty, Email: shrevan506@gmail.com
+        {LS.get("username")}, Email: {LS.get("email")}
       </span>
       <div className="grid grid-cols-4 mt-7 gap-4">
         <div className="">
@@ -45,9 +46,17 @@ const page = () => {
               <i class="fa-solid fa-lock"></i>
               <p className="">Login and Security</p>
             </li>
-            <li className="">
+            <li
+              className={
+                pathname.toLowerCase() === "/userDetails/Wishlist".toLowerCase()
+                  ? "active"
+                  : ""
+              }
+            >
               <i class="fa-solid fa-heart"></i>
-              <p className="">Saved Items</p>
+              <p className="" onClick={() => navigate("Wishlist")}>
+                Saved Items
+              </p>
             </li>
             <li className="">
               <hr className="" />
@@ -73,6 +82,7 @@ const page = () => {
             <Routes>
               <Route index path="/Orders" element={<OrdersPage />}></Route>
               <Route path="/Addresses" element={<AddressPage />}></Route>
+              <Route path="/Wishlist" element={<WishlistPage />}></Route>
             </Routes>
           </Suspense>
         </div>

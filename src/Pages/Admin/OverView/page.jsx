@@ -33,10 +33,12 @@ import {
   getOverAllStats,
   getRecentRatings,
   getTopProducts,
+  getViewdata,
   salesByCategory,
 } from "./service";
 import { formatNumber, getFileUrl } from "@/lib/utils";
 import dayjs from "dayjs";
+import { orderBy } from "lodash";
 const OverView = () => {
   const [monthlySales, setmonthlySales] = useState({
     sales: 0,
@@ -47,6 +49,8 @@ const OverView = () => {
   });
   const [topProducts, settopProducts] = useState([]);
   const [comments, setcomments] = useState([]);
+  const [views, setviews] = useState([]);
+  const [TotalViews, setTotalViews] = useState([]);
   const [salesDataByCateg, setsalesDataByCateg] = useState([]);
   const [overAllData, setoverAllData] = useState({
     userCount: 0,
@@ -54,6 +58,7 @@ const OverView = () => {
     totalSales: 0,
     productsPercentage: 0,
     usersPercentage: 0,
+    avgViews: 0,
     statusCode: 0,
   });
   const Colors = [
@@ -164,6 +169,26 @@ const OverView = () => {
     getOverAllStats().then(setoverAllData);
     salesByCategory().then(setsalesDataByCateg);
     getRecentRatings().then(setcomments);
+    getViewdata().then((resp) => {
+      let totalViews = 0;
+      let lastDay = 1;
+      const formatedViews = resp.map((row) => {
+        const dateString = row.dimensionValues[0].value; // "20251123"
+        const day = parseInt(dateString.slice(6, 8)); // 23
+        totalViews += Number(row.metricValues[0].value);
+        lastDay = day;
+        return {
+          day,
+          views: Number(row.metricValues[0].value),
+        };
+      });
+      setTotalViews(totalViews);
+      setviews(orderBy(formatedViews, "day"));
+      setoverAllData((prev) => ({
+        ...prev,
+        avgViews: Math.round(totalViews / lastDay),
+      }));
+    });
   }, []);
 
   return (
@@ -289,7 +314,8 @@ const OverView = () => {
                   Monthly Visitor
                 </p>
                 <h2 className="graph-value">
-                  4500 <span className="text-[10px] text-slate-500">views</span>
+                  {TotalViews}{" "}
+                  <span className="text-[10px] text-slate-500">views</span>
                 </h2>
               </div>
               <div className="graph-icon-container">
@@ -298,7 +324,7 @@ const OverView = () => {
               </div>
             </div>
             <ResponsiveContainer width={"100%"} height={100}>
-              <LineChart data={combinedData}>
+              <LineChart data={views}>
                 <Tooltip
                   formatter={(value) => [`${value} views`]}
                   labelFormatter={(label) => `Day ${label + 1}`}
@@ -535,7 +561,7 @@ const OverView = () => {
               <p className="text-[10px] text-slate-500">
                 +1.1% Daily Avg Viewers
               </p>
-              <p className="text-2xl font-bold pt-3">150</p>
+              <p className="text-2xl font-bold pt-3">{overAllData.avgViews}</p>
             </div>
           </div>
           <div className="top-seller-container" onMouseLeave={handleMouseLeave}>

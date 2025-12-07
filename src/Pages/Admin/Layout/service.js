@@ -1,4 +1,7 @@
-import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
+import {
+  AdminAxiosInstance,
+  AdminAxiosInstance as AxiosInstance,
+} from "@/lib/AdminAxiosInstance";
 import { AdminAxiosInstanceforUpload as AxiosInstanceUpload } from "@/lib/AdminAxiosInstanceforUpload";
 
 export const addLayout = async (body) => {
@@ -32,6 +35,18 @@ export const updateLayout = async (body, id) => {
   try {
     const resp = await AxiosInstanceUpload.post(
       `/Layout/updateLayout?id=${id}`,
+      body
+    );
+    return resp.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const toggleLayoutActiveStatus = async (body) => {
+  try {
+    const resp = await AdminAxiosInstance.post(
+      "/Layout/toggleLayoutActiveStatus",
       body
     );
     return resp.data;

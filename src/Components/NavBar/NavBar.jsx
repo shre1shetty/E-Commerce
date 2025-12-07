@@ -14,7 +14,7 @@ import LoginModal from "@/Pages/Login/LoginModal";
 import { LS } from "@/lib/SecureLocalStorage";
 const NavBar = ({ logo }) => {
   const navigate = useNavigate();
-  const count = useSelector((state) => state.count.count.count);
+  const count = useSelector((state) => state.data.count.count);
   const [open, setopen] = useState(false);
   return (
     <div className="navBar flex bg-white gap-1 border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
@@ -105,7 +105,15 @@ const NavBar = ({ logo }) => {
           <User size={16} strokeWidth={3} />
         </button>
         <button className="navbar-button">
-          <Heart size={16} strokeWidth={3} />
+          <Heart
+            size={16}
+            strokeWidth={3}
+            onClick={() =>
+              LS.get("userId")
+                ? navigate("userDetails/Wishlist")
+                : setopen(true)
+            }
+          />
         </button>
         <button
           className="navbar-button relative shopping-bag"

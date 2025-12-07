@@ -1,5 +1,6 @@
 import * as React from "react";
 import Logo from "../assets/Logo.png";
+import Logo2 from "../assets/Logo2.png";
 import {
   AudioWaveform,
   BookOpen,
@@ -105,12 +106,12 @@ const data = {
       icon: HousePlus,
       items: [],
     },
-    {
-      title: "Customers",
-      url: "#",
-      icon: SquareUser,
-      items: [],
-    },
+    // {
+    //   title: "Customers",
+    //   url: "#",
+    //   icon: SquareUser,
+    //   items: [],
+    // },
     {
       title: "Filters",
       url: "Filters",
@@ -155,10 +156,14 @@ export function AppSidebar({ ...props }) {
         <div
           className={cn(
             "sidebar-header flex  items-center gap-2 text-lg text-[#7e8394] overflow-hidden",
-            props.open ? "h-16" : "h-8"
+            props.open ? "h-[80px]" : "h-8"
           )}
         >
-          <img src={Logo} alt="" className="w-auto h-full" />
+          <img
+            src={props.open ? Logo2 : Logo}
+            alt=""
+            className="w-full h-full"
+          />
           {/* <div
             className={
               props.open ? "whitespace-nowrap" : "whitespace-nowrap hidden"

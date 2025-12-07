@@ -14,6 +14,7 @@ import { setRole } from "@/Redux/Slice/UserSlice";
 import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
 import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
 import { AdminAxiosInstanceforUpload as AxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
+import { setWishList } from "@/Redux/Slice/WishlistSlice";
 const LoginModal = ({ open, setopen }) => {
   const navigate = useNavigate();
   const [loginSignup, setloginSignup] = useState("login");
@@ -82,6 +83,11 @@ const LoginModal = ({ open, setopen }) => {
               ] = `Bearer ${values.accessToken}`;
               navigate("/Overview");
             }
+            AxiosInstance.post("/Wishlist/getWishlistByUser", {
+              userId: values._id,
+            }).then((res) => {
+              dispatch(setWishList(res.data));
+            });
             setopen(false);
           } else {
             GlobalToast({

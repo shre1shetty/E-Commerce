@@ -269,6 +269,7 @@ const NavbarSearch = () => {
                 </div>
                 {Products?.map(
                   ({
+                    _id,
                     name,
                     variantFields,
                     variantValues,
@@ -278,6 +279,7 @@ const NavbarSearch = () => {
                   }) => (
                     <div className="min-w-[250px]">
                       <HomeProductCard
+                        id={_id}
                         label={name}
                         description={description}
                         filters={variantFields}
@@ -285,6 +287,10 @@ const NavbarSearch = () => {
                         discountPrice={price}
                         variantValues={variantValues}
                         image={`http://localhost:5000/file?id=${pictures[0]}`}
+                        onClick={() => {
+                          setopen(false);
+                          navigate(`/Product/${_id}`);
+                        }}
                       />
                     </div>
                   )

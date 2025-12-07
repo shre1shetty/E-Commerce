@@ -16,7 +16,7 @@ const RouteContainer = () => {
   const [AdminLogin, setAdminLogin] = useState(true);
   const [logo, setlogo] = useState(null);
   const [footerDetails, setfooterDetails] = useState({});
-  const role = useSelector((state) => state.count.role.role);
+  const role = useSelector((state) => state.data.role.role);
   useEffect(() => {
     getLogo().then(({ logo }) => {
       setlogo(`${import.meta.env.VITE_BASE_URL}/file?id=${logo}`);
@@ -25,7 +25,7 @@ const RouteContainer = () => {
   }, []);
 
   return (
-    <BrowserRouter basename="E-Cart/">
+    <BrowserRouter basename="/">
       <div className="main-div">
         {role === "admin" ? (
           <>
