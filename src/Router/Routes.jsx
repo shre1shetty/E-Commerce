@@ -19,7 +19,7 @@ const RawCreateProductsToDisplayPage = lazy(() =>
   import("../Pages/Admin/ProductsToDisplay/rawCreate")
 );
 const EditProductsToDisplayPage = lazy(() =>
-  import("../Pages/Admin/ProductsToDisplay/edit")
+  import("../Pages/Admin/ProductsToDisplay/Edit")
 );
 const Layout = lazy(() => import("@/Pages/Admin/Layout/Layout"));
 const CreateLayout = lazy(() => import("@/Pages/Admin/Layout/Create"));
