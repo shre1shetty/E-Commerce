@@ -3,10 +3,10 @@ import { LS } from "./SecureLocalStorage";
 
 export const AdminAxiosInstanceforUpload = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}`,
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
 });
+
+AdminAxiosInstanceforUpload.defaults.headers.common["Content-Type"] =
+  "multipart/form-data";
 
 AdminAxiosInstanceforUpload.interceptors.response.use(
   (res) => res,
@@ -37,6 +37,3 @@ AdminAxiosInstanceforUpload.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-
-AdminAxiosInstanceforUpload.defaults.headers.common["Content-Type"] =
-  "multipart/form-data";
