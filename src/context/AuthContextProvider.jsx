@@ -16,6 +16,7 @@ const AuthContextProvider = ({ children }) => {
         { withCredentials: true }
       )
         .then((res) => {
+          console.log(res);
           if (res.data.role === "admin") {
             setaccessToken(res.data.accessToken);
             setrole("admin");
