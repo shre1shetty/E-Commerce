@@ -1,7 +1,7 @@
 import CircularOption from "@/Components/CicularOption/CircularOption";
 import Slider from "@/Components/Slider/Slider";
 import React, { useEffect, useState } from "react";
-import TopDiscount from "@/assets/TopDiscount.png";
+import TopDiscount from "@/assets/topDiscount.png";
 import Traditional from "@/assets/Traditional.png";
 import Shoe1 from "@/assets/shoe1.png";
 import DividerWithText from "@/Components/DividerWithText/DividerWithText";
