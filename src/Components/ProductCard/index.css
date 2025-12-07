@@ -1,6 +1,12 @@
 .home-card {
   max-width: 272px;
 }
+@media (max-width: 768px) {
+  /* styles for all phones + small tablets */
+  .home-card-container {
+    gap: 2px !important;
+  }
+}
 
 .filterdiv {
   display: flex;

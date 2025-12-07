@@ -163,8 +163,9 @@ const HomePage = () => {
                         gap: `${gap}px`,
                         marginTop: "1rem",
                         display: "grid",
-                        gridTemplateColumns: `repeat(auto-fit, minmax(190px,calc((100% / ${prodPerRow}) - ${gap}px)))`,
+                        gridTemplateColumns: `repeat(auto-fit, minmax(160px,calc((100% / ${prodPerRow}) - ${gap}px)))`,
                       }}
+                      className="home-card-container"
                       // className={`grid gap-[${gap}px] mt-4 grid-cols-[repeat(auto-fit,minmax(calc((100%/${prodPerRow})-${gap}px),1fr))]`}
                     >
                       {products.map((product) => (
