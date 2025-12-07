@@ -328,7 +328,7 @@ const OverView = () => {
                 <Tooltip
                   formatter={(value) => [`${value} views`]}
                   labelFormatter={(label, payload) =>
-                    `Day ${payload[0].payload.day + 1}`
+                    `Day ${payload[0].payload.day}`
                   }
                   contentStyle={{
                     backgroundColor: "#1e1e2f",
