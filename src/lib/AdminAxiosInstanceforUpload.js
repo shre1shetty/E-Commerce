@@ -1,5 +1,6 @@
 import axios from "axios";
 import { LS } from "./SecureLocalStorage";
+import { TokenStore } from "./TokenStore";
 
 export const AdminAxiosInstanceforUpload = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}`,
@@ -7,6 +8,12 @@ export const AdminAxiosInstanceforUpload = axios.create({
 
 AdminAxiosInstanceforUpload.defaults.headers.common["Content-Type"] =
   "multipart/form-data";
+
+AdminAxiosInstanceforUpload.interceptors.request.use((config) => {
+  const token = TokenStore.getToken();
+  if (token) config.headers["Authorization"] = `Bearer ${token}`;
+  return config;
+});
 
 AdminAxiosInstanceforUpload.interceptors.response.use(
   (res) => res,
@@ -30,6 +37,7 @@ AdminAxiosInstanceforUpload.interceptors.response.use(
       originalRequest.headers[
         "Authorization"
       ] = `Bearer ${res.data.accessToken}`;
+      TokenStore.setToken(res.data.accessToken);
       return AdminAxiosInstanceforUpload(originalRequest);
     }
     LS.clear();

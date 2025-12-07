@@ -25,7 +25,6 @@ AdminAxiosInstance.interceptors.response.use(
         import.meta.env.PROD ? {} : { refreshToken: LS.get("refreshToken") },
         { withCredentials: true }
       );
-      console.log(data.accessToken);
       const newToken = data.accessToken;
 
       // update axios instance
@@ -33,14 +32,16 @@ AdminAxiosInstance.interceptors.response.use(
         "Authorization"
       ] = `Bearer ${newToken}`;
 
+      TokenStore.setToken(newToken);
+
       // update the retry request
       originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
 
       return AdminAxiosInstance(originalRequest);
     }
 
-    // LS.clear();
-    // window.location.href = import.meta.env.BASE_URL;
+    LS.clear();
+    window.location.href = import.meta.env.BASE_URL;
     return Promise.reject(err);
   }
 );

@@ -327,7 +327,9 @@ const OverView = () => {
               <LineChart data={views}>
                 <Tooltip
                   formatter={(value) => [`${value} views`]}
-                  labelFormatter={(label) => `Day ${label + 1}`}
+                  labelFormatter={(label, payload) =>
+                    `Day ${payload[0].payload.day + 1}`
+                  }
                   contentStyle={{
                     backgroundColor: "#1e1e2f",
                     border: "none",
