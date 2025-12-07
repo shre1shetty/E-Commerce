@@ -1,10 +1,16 @@
 import axios from "axios";
 import { LS } from "./SecureLocalStorage";
+import { TokenStore } from "./TokenStore";
 
 export const AdminAxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 AdminAxiosInstance.defaults.headers.common["Content-Type"] = "application/json";
+AdminAxiosInstance.interceptors.request.use((config) => {
+  const token = TokenStore.getToken();
+  if (token) config.headers["Authorization"] = `Bearer ${token}`;
+  return config;
+});
 
 AdminAxiosInstance.interceptors.response.use(
   (res) => res,

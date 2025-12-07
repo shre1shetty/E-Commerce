@@ -2,6 +2,7 @@ import { AdminAxiosInstance } from "@/lib/AdminAxiosInstance";
 import { AdminAxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
 import { AxiosInstance } from "@/lib/AxiosInstance";
 import { LS } from "@/lib/SecureLocalStorage";
+import { TokenStore } from "@/lib/TokenStore";
 import React, {
   createContext,
   useEffect,
@@ -27,14 +28,13 @@ const AuthContextProvider = ({ children }) => {
         const res = await AxiosInstance.post("/User/refreshToken", payload, {
           withCredentials: true,
         });
-
-        console.log(res.data);
         if (res.data?.role === "admin") {
           setaccessToken(res.data.accessToken);
+          TokenStore.setToken(res.data.accessToken);
           setrole("admin");
-          AdminAxiosInstance.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${res.data.accessToken}`;
+          // AdminAxiosInstance.defaults.headers.common[
+          //   "Authorization"
+          // ] = `Bearer ${res.data.accessToken}`;
           AdminAxiosInstanceforUpload.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${res.data.accessToken}`;
