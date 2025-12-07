@@ -16,11 +16,17 @@ const AuthContextProvider = ({ children }) => {
         { withCredentials: true }
       )
         .then((res) => {
-          console.log(res);
+          console.log(res.data.accessToken);
           if (res.data.role === "admin") {
             setaccessToken(res.data.accessToken);
             setrole("admin");
             AdminAxiosInstance.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${res.data.accessToken}`;
+            AdminAxiosInstance.defaults.headers.post[
+              "Authorization"
+            ] = `Bearer ${res.data.accessToken}`;
+            AdminAxiosInstance.defaults.headers.get[
               "Authorization"
             ] = `Bearer ${res.data.accessToken}`;
             AdminAxiosInstanceforUpload.defaults.headers.common[
