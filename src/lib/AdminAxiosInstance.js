@@ -19,7 +19,6 @@ AdminAxiosInstance.interceptors.response.use(
         import.meta.env.PROD ? {} : { refreshToken: LS.get("refreshToken") },
         { withCredentials: true }
       );
-      debugger;
       console.log(data.accessToken);
       const newToken = data.accessToken;
 
@@ -34,8 +33,8 @@ AdminAxiosInstance.interceptors.response.use(
       return AdminAxiosInstance(originalRequest);
     }
 
-    LS.clear();
-    window.location.href = import.meta.env.BASE_URL;
+    // LS.clear();
+    // window.location.href = import.meta.env.BASE_URL;
     return Promise.reject(err);
   }
 );
