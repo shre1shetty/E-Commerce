@@ -19,7 +19,8 @@ AdminAxiosInstance.interceptors.response.use(
         import.meta.env.PROD ? {} : { refreshToken: LS.get("refreshToken") },
         { withCredentials: true }
       );
-      console.log(data);
+      debugger;
+      console.log(data.accessToken);
       const newToken = data.accessToken;
 
       // update axios instance
