@@ -5,7 +5,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/Components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { isEmpty } from "lodash";
 import RegularProductCard from "@/Components/ProductCard/RegularProductCard";

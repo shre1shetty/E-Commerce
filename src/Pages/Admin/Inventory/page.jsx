@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./Inventory.css";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/Components/ui/input";
 import { cn, convertForSelect, matches } from "@/lib/utils";
 import AgGrid from "@/Components/AgGrid/AgGrid";
 import AddModal from "./Dialog/AddModal";

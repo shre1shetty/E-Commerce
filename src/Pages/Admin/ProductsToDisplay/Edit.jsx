@@ -18,13 +18,13 @@ import {
 } from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/Components/ui/accordion";
 
 import { ArrowLeft, Eye, PlusCircle, Trash2, X } from "lucide-react";
 import { Button } from "@/Components/ui/button";

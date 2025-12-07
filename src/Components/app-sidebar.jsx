@@ -19,14 +19,14 @@ import {
   SquareUser,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
+import { NavMain } from "@/Components/nav-main";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@/Components/ui/sidebar";
 import { LS } from "@/lib/SecureLocalStorage";
 import { cn } from "@/lib/utils";
 

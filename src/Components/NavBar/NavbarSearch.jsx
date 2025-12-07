@@ -2,7 +2,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Search } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 import { getProducts } from "./service";
 import { debounce, sortBy, uniqWith } from "lodash";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/Components/ui/dialog";
 import HomeProductCard from "../ProductCard/HomeProductCard";
 import "./index.css";
 import Fuse from "fuse.js";

@@ -5,7 +5,7 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@/Components/ui/hover-card";
 import NavbarSearch from "./NavbarSearch";
 import { Heart, ShoppingBag, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
