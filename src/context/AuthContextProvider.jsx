@@ -13,12 +13,16 @@ import React, {
 
 export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
+  const [authReady, setAuthReady] = useState(false);
   const [accessToken, setaccessToken] = useState(null);
   const [role, setrole] = useState(null);
 
   useEffect(() => {
     const refresh = async () => {
-      if (window.location.pathname === import.meta.env.BASE_URL) return;
+      if (window.location.pathname === import.meta.env.BASE_URL) {
+        setAuthReady(true);
+        return;
+      }
 
       try {
         const payload = import.meta.env.PROD
@@ -52,6 +56,8 @@ const AuthContextProvider = ({ children }) => {
         }
         setaccessToken(null);
         setrole(null);
+      } finally {
+        setAuthReady(true);
       }
     };
 
@@ -60,7 +66,7 @@ const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ accessToken, role }}>
-      {children}
+      {authReady ? children : null}
     </AuthContext.Provider>
   );
 };
