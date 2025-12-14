@@ -49,7 +49,8 @@ const page = () => {
   });
 
   const getVariantImage = (variantValues, variant) => {
-    const imageId = variantValues?.find(({ _id }) => _id === variant).values
+    console.log(variantValues, variant);
+    const imageId = variantValues?.find(({ _id }) => _id === variant)?.values
       .picture;
     return imageId[0] ?? "";
   };

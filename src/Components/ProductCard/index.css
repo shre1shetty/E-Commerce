@@ -210,6 +210,15 @@
   cursor: pointer;
 }
 
+@media not all and (min-width: 640px) {
+  .product-card {
+    height: 235px !important;
+  }
+  .product-image {
+    height: 120px !important;
+  }
+}
+
 .background-circle {
   height: 50%;
   width: 100%;
@@ -258,6 +267,10 @@
   color: #000153;
   font-weight: 700;
   line-height: 16px;
+  width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .detail-description {
@@ -294,4 +307,7 @@
   flex-direction: column-reverse;
   justify-content: space-between;
   height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
 }

@@ -4,13 +4,6 @@ import { getFileUrl, parseValueMap } from "@/lib/utils";
 import { changeQuantity } from "../service";
 import { LS } from "@/lib/SecureLocalStorage";
 const CartTab = ({ products, setcurrent, setitems, setproducts, summary }) => {
-  const total = products.reduce((acc, { productId, variant, quantity }) => {
-    return (
-      acc +
-      quantity *
-        productId.variantValues.find(({ _id }) => _id === variant).values.price
-    );
-  }, 0);
   const getVariantName = ({ variantFields, variantValues, variant }) => {
     const variantField = variantValues.find(({ _id }) => _id === variant).name;
     const name = parseValueMap(
@@ -70,7 +63,7 @@ const CartTab = ({ products, setcurrent, setitems, setproducts, summary }) => {
                   ₹
                   {
                     productId.variantValues.find(({ _id }) => _id === variant)
-                      .values.price
+                      .values.discountedPrice
                   }{" "}
                 </div>
               </div>

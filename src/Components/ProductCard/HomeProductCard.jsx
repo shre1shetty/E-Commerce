@@ -1,4 +1,4 @@
-import { ceil, isString } from "lodash";
+import { ceil, first, isString } from "lodash";
 import React, { useEffect, useState } from "react";
 import "./index.css";
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
@@ -14,7 +14,7 @@ const HomeProductCard = ({
   label,
   image,
   price = 0,
-  discountPrice = 0,
+  discountedPrice = 0,
   filters,
   description,
   variantValues = [],
@@ -26,6 +26,8 @@ const HomeProductCard = ({
     (val) => val.toString() === id.toString()
   );
   const dispatch = useDispatch();
+  const [productPrice, setproductPrice] = useState(price);
+  const [productDiscPrice, setproductDiscPrice] = useState(discountedPrice);
   const [productImage, setproductImage] = useState(null);
   const [variant1, setvariant1] = useState({ name: null, value: null });
   const [variant2, setvariant2] = useState({ name: null, value: null });
@@ -40,6 +42,8 @@ const HomeProductCard = ({
         ? getFileUrl(val?.values.picture[0])
         : URL.createObjectURL(val?.values.picture[0])
     );
+    setproductPrice(val?.values.price);
+    setproductDiscPrice(val?.values.discountedPrice);
   };
   const addItemToWishlist = ({ productId, userId }) => {
     addToWishList({ productId, userId }).then((res) => {
@@ -62,6 +66,7 @@ const HomeProductCard = ({
   };
 
   useEffect(() => {
+    console.log(filters);
     setvariant1({
       name: filters[0]?.field,
       value: filters[0]?.value[0],
@@ -144,7 +149,10 @@ const HomeProductCard = ({
       </div>
       <div className="top-product-price">
         <span className="currency">₹</span>
-        <span className="">{price}</span>
+        <span className="">{productDiscPrice}</span>
+        <span className="text-slate-500 text-[10px] line-through ml-1">
+          {productPrice}
+        </span>
       </div>
       <div className="wishlist">
         <button

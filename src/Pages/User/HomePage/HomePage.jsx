@@ -179,14 +179,21 @@ const HomePage = () => {
                     </text>
                     {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 lg:gap-2 mt-4"> */}
                     <div
-                      className={`grid ${gaps[gap]} mt-4 ${cols[prodPerRow]} home-card-container`}
+                      className={`grid ${gaps[gap]} mt-4 ${
+                        cols[prodPerRow - 1]
+                      } home-card-container`}
                     >
                       {products.map((product) => (
                         <HomeProductCard
                           id={product._id}
                           image={Shoe1}
                           label={product.name}
-                          price={parseInt(product.price)}
+                          price={parseInt(
+                            product.variantValues[0].values.price
+                          )}
+                          discountedPrice={parseInt(
+                            product.variantValues[0].values.discountedPrice
+                          )}
                           discountPrice={product.price}
                           filters={product.variantFields}
                           description={product.description}

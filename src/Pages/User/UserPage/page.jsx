@@ -2,12 +2,15 @@ import React, { Suspense } from "react";
 import "./index.css";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LS } from "@/lib/SecureLocalStorage";
+import { useDispatch } from "react-redux";
+import { setRole } from "@/Redux/Slice/UserSlice";
 const OrdersPage = React.lazy(() => import("./Order/page"));
 const AddressPage = React.lazy(() => import("./Address/page"));
 const WishlistPage = React.lazy(() => import("./Favourite/page"));
 const page = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
   return (
     <div>
       <h1 className="user-header">Your Account</h1>
@@ -69,6 +72,7 @@ const page = () => {
               className=""
               onClick={() => {
                 LS.clear();
+                dispatch(setRole("user"));
                 navigate("/");
               }}
             >

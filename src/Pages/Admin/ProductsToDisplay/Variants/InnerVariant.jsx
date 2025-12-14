@@ -32,7 +32,12 @@ const InnerVariant = ({
   };
   useEffect(() => {
     if (baseValues.values) {
+      formik.setFieldValue("purchasePrice", baseValues.values.purchasePrice);
       formik.setFieldValue("price", baseValues.values.price);
+      formik.setFieldValue(
+        "discountedPrice",
+        baseValues.values.discountedPrice
+      );
       formik.setFieldValue("inStock", baseValues.values.inStock);
       formik.setFieldValue("picture", baseValues.values.picture ?? []);
     }
@@ -51,7 +56,17 @@ const InnerVariant = ({
       </div>
       <div className="flex items-center gap-4">
         <div className="flex gap-2 items-center">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="flex gap-1 items-center">
+              <label htmlFor="price" className="form-label whitespace-nowrap">
+                Purchase Price :
+              </label>
+              <Input
+                name="purchasePrice"
+                value={formik.values.purchasePrice ?? ""}
+                onChange={formik.handleChange}
+              />
+            </div>
             <div className="flex gap-1 items-center">
               <label htmlFor="price" className="form-label whitespace-nowrap">
                 Price :
@@ -59,6 +74,16 @@ const InnerVariant = ({
               <Input
                 name="price"
                 value={formik.values.price ?? ""}
+                onChange={formik.handleChange}
+              />
+            </div>
+            <div className="flex gap-1 items-center">
+              <label htmlFor="price" className="form-label whitespace-nowrap">
+                Discounted Price :
+              </label>
+              <Input
+                name="discountedPrice"
+                value={formik.values.discountedPrice ?? ""}
                 onChange={formik.handleChange}
               />
             </div>

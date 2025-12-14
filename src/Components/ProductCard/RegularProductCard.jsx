@@ -59,12 +59,12 @@ const RegularProductCard = ({
         />
       </div>
       <div className="details-div">
-        <div className="flex justify-between items-center">
-          <div className="">
+        <div className=" relative">
+          <div className="w-full">
             <p className="detail-name">{name}</p>
             <p className="detail-description">
-              {description.length > 22
-                ? description.slice(0, 22) + "..."
+              {description.length > 42
+                ? description.slice(0, 42) + "..."
                 : description}
             </p>
             <p className="detail-price">₹{price}</p>

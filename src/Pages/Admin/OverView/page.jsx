@@ -39,7 +39,9 @@ import {
 import { formatNumber, getFileUrl } from "@/lib/utils";
 import dayjs from "dayjs";
 import { orderBy } from "lodash";
+import { LS } from "@/lib/SecureLocalStorage";
 const OverView = () => {
+  const userName = LS.get("username");
   const [monthlySales, setmonthlySales] = useState({
     sales: 0,
     salesByDay: [],
@@ -202,11 +204,23 @@ const OverView = () => {
             </p>
           </div>
         }
+        children={
+          <>
+            <img
+              className="max-sm:hidden absolute top-0 right-2 h-[90px]"
+              src="./Representative.png"
+            />
+            <div className="max-sm:hidden chat-bubble">
+              Hi {userName.slice(0, 1).toUpperCase() + userName.slice(1)}{" "}
+              Welcome Back !
+            </div>
+          </>
+        }
       />
       <div className="dashboard-container">
         <div className="graph-container">
           <div className="graph-card">
-            <div className="flex justify-between items-center p-2.5 pb-0">
+            <div className="flex justify-between items-center p-2.5 md:pb-0">
               <div className="">
                 <p className="graph-label">
                   <Banknote size={10} />
@@ -222,7 +236,11 @@ const OverView = () => {
                 <span className="">{monthlySales.percentage}%</span>
               </div>
             </div>
-            <ResponsiveContainer width={"100%"} height={100}>
+            <ResponsiveContainer
+              className={"max-sm:hidden"}
+              width={"100%"}
+              height={100}
+            >
               <AreaChart data={monthlySales.salesByDay}>
                 <defs>
                   <linearGradient
@@ -263,7 +281,7 @@ const OverView = () => {
             </ResponsiveContainer>
           </div>
           <div className="graph-card">
-            <div className="flex justify-between items-center p-2.5 pb-0">
+            <div className="flex justify-between items-center p-2.5 md:pb-0">
               <div className="">
                 <p className="graph-label">
                   <ShoppingCart size={10} />
@@ -279,7 +297,11 @@ const OverView = () => {
                 <span className="">{monthlySales.ordersPercentage}%</span>
               </div>
             </div>
-            <ResponsiveContainer width={"100%"} height={100}>
+            <ResponsiveContainer
+              className={"max-sm:hidden"}
+              width={"100%"}
+              height={100}
+            >
               <BarChart data={monthlySales.salesByDay}>
                 <Tooltip
                   formatter={(value) => [`${value} orders`]}
@@ -307,7 +329,7 @@ const OverView = () => {
             </ResponsiveContainer>
           </div>
           <div className="graph-card">
-            <div className="flex justify-between items-center p-2.5 pb-0">
+            <div className="flex justify-between items-center p-2.5 md:pb-0">
               <div className="">
                 <p className="graph-label">
                   <Eye size={10} />
@@ -323,7 +345,11 @@ const OverView = () => {
                 <span className="">12.87%</span>
               </div>
             </div>
-            <ResponsiveContainer width={"100%"} height={100}>
+            <ResponsiveContainer
+              className={"max-sm:hidden"}
+              width={"100%"}
+              height={100}
+            >
               <LineChart data={views}>
                 <Tooltip
                   formatter={(value) => [`${value} views`]}
@@ -455,7 +481,7 @@ const OverView = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 max-sm:col-span-3">
             <div className="top-selling">
               <h2 className="top-selling-header">Top Selling Products</h2>
               <div className="top-products-list-container">
@@ -511,7 +537,7 @@ const OverView = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 max-sm:col-span-3">
           <div className="overall-container">
             <div className="overall-card sales">
               <div className="flex justify-center items-center mb-2.5">

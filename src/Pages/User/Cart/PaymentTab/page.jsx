@@ -221,7 +221,7 @@ const PaymentTab = ({ products, summary, formik }) => {
                     ₹
                     {
                       productId.variantValues.find(({ _id }) => _id === variant)
-                        .values.price
+                        .values.discountedPrice
                     }
                   </span>{" "}
                   x {quantity}

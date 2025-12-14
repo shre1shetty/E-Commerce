@@ -22,3 +22,8 @@
   font-size: 14px;
   margin-top: 18px;
 }
+@media not all and (min-width: 640px) {
+  .mask {
+    display: none;
+  }
+}

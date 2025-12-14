@@ -6,6 +6,7 @@ import {
   BookOpen,
   Bot,
   Command,
+  DoorOpen,
   Dot,
   Frame,
   GalleryVerticalEnd,
@@ -25,10 +26,14 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail,
 } from "@/Components/ui/sidebar";
 import { LS } from "@/lib/SecureLocalStorage";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import { setRole } from "@/Redux/Slice/UserSlice";
+import { useDispatch } from "react-redux";
 
 // This is sample data.
 const data = {
@@ -150,6 +155,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -176,7 +183,21 @@ export function AppSidebar({ ...props }) {
       <SidebarContent>
         <NavMain items={data.navMain} open={props.open} />
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter>
+        <SidebarMenuButton asChild>
+          <div
+            className={" cursor-pointer"}
+            onClick={() => {
+              LS.clear();
+              navigate("/");
+              dispatch(setRole("user"));
+            }}
+          >
+            <DoorOpen />
+            {props.open && <span className="">Logout</span>}
+          </div>
+        </SidebarMenuButton>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -80,7 +80,7 @@ const CategoryPage = () => {
           </button>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex sm:gap-1 md:gap-2 relative">
         <div className="products-container" data-showFilter={showFilter}>
           {filteredProducts.map((product) => (
             <RegularProductCard
@@ -99,7 +99,7 @@ const CategoryPage = () => {
             showFilter
               ? "w-[40%] min-w-[220px] md:w-1/5 border-l pl-4 border-slate-600 text-[#00003b]"
               : "w-0"
-          } overflow-x-hidden transition-all duration-300 min-h-[560px]`}
+          } max-sm:absolute max-sm:top-0 max-sm:right-0 bg-white h-full overflow-x-hidden transition-all duration-300 min-h-[560px]`}
         >
           <div className="price-range border-b-2 pb-3">
             <label htmlFor="range" className="range-label">

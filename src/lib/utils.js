@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import Fuse from "fuse.js";
 import { twMerge } from "tailwind-merge";
-
+import * as XLSX from "xlsx";
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
@@ -131,7 +131,6 @@ export async function fetchImageWithMetadata(imageUrl) {
     // Get filename from Content-Disposition header (if available)
     const contentDisposition = response.headers.get("Content-Disposition");
     let filename = "default-filename.png"; // Fallback filename
-    console.log(contentDisposition);
     if (contentDisposition && contentDisposition.includes("filename=")) {
       filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
     }
@@ -204,4 +203,35 @@ export const handleResize = (pixelSizes, containerWidth) => {
   const percentSizes = pixelSizes.map((px) => (px / containerWidth) * 100);
 
   return percentSizes;
+};
+
+function autoFitColumns(worksheet) {
+  const range = XLSX.utils.decode_range(worksheet["!ref"]);
+  const colWidths = [];
+
+  for (let C = range.s.c; C <= range.e.c; C++) {
+    let maxLength = 10; // minimum width
+
+    for (let R = range.s.r; R <= range.e.r; R++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+      const cell = worksheet[cellAddress];
+
+      if (cell && cell.v != null) {
+        const cellValue = cell.v.toString();
+        maxLength = Math.max(maxLength, cellValue.length);
+      }
+    }
+
+    colWidths.push({ wch: maxLength + 2 });
+  }
+
+  worksheet["!cols"] = colWidths;
+}
+
+export const exportToExcel = ({ data, fileName }) => {
+  const ws = XLSX.utils.json_to_sheet(data);
+  autoFitColumns(ws);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Products");
+  XLSX.writeFile(wb, fileName);
 };

@@ -45,6 +45,7 @@ const RawCreate = () => {
       variantFields: [],
       variantValues: [],
       category: [],
+      tags: [],
     },
   });
   const SpecificationFormik = useFormik({
@@ -167,8 +168,8 @@ const RawCreate = () => {
     formik.setFieldValue(
       "AdditionalSpecification",
       formik.values.AdditionalSpecification
-        ? [...formik.values.AdditionalSpecification, { [field]: value }]
-        : [{ [field]: value }]
+        ? [...formik.values.AdditionalSpecification, { key: field, value }]
+        : [{ key: field, value }]
     );
     SpecificationFormik.resetForm();
   };
@@ -326,6 +327,21 @@ const RawCreate = () => {
                       onChange={formik.handleChange}
                     />
                   </div>
+                  <div className="">
+                    <label htmlFor="tags" className="form-label">
+                      Tags
+                    </label>
+                    <Input
+                      name="tags"
+                      value={formik.values.tags.toString() ?? ""}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "tags",
+                          event.target.value.split(",")
+                        );
+                      }}
+                    />
+                  </div>
                 </div>
                 {/*Details*/}
 
@@ -425,27 +441,24 @@ const RawCreate = () => {
                       )}
                     >
                       {formik.values.AdditionalSpecification?.map(
-                        (data, index) => (
+                        ({ key, value }, index) => (
                           <div className="" key={index}>
-                            <label
-                              htmlFor={Object.keys(data)[0]}
-                              className="form-label"
-                            >
-                              {Object.keys(data)[0]}
+                            <label htmlFor={key} className="form-label">
+                              {key}
                             </label>
                             <div className="flex justify-between gap-1">
                               <Input
-                                name={Object.keys(data)[0]}
-                                value={data[Object.keys(data)[0]] ?? ""}
+                                name={key}
+                                value={value ?? ""}
                                 onChange={(event) => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.map(
                                       (val) =>
-                                        val == data
+                                        val.key == key
                                           ? {
-                                              [Object.keys(data)[0]]:
-                                                event.target.value,
+                                              key,
+                                              value: event.target.value,
                                             }
                                           : val
                                     )
@@ -453,11 +466,12 @@ const RawCreate = () => {
                                 }}
                               />
                               <Button
+                                className={"!h-10"}
                                 onClick={() => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.filter(
-                                      (val) => val !== data
+                                      (val) => val.key !== key
                                     )
                                   );
                                 }}

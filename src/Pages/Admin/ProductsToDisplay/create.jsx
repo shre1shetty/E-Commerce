@@ -29,14 +29,25 @@ import MainVariant from "./Variants/MainVariant";
 import Preview from "./Preview/Preview";
 import { InputTextarea } from "primereact/inputtextarea";
 import GlobalToast from "@/Components/GlobalToast";
+import { MultiSelect } from "react-multi-select-component";
+import { getVariant } from "../Variant/service";
+import { getFilterType } from "../FilterType/service";
 const Create = () => {
   const [InventoryItems, setInventoryItems] = useState([]);
+  const [filterOptions, setfilterOptions] = useState([]);
   const [originalInventory, setoriginalInventory] = useState([]);
+  const [variants, setvariants] = useState({
+    options: [],
+    raw: [],
+  });
   const [showPreview, setshowPreview] = useState(false);
+  const [variantFields, setvariantFields] = useState([]);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      tags: [],
       variantFields: [],
+      category: [],
     },
   });
   const SpecificationFormik = useFormik({
@@ -46,50 +57,22 @@ const Create = () => {
     },
   });
 
+  function getVariantFields(id, values) {
+    const selectedVariant = variants.raw.find((data) => data._id === id);
+    setvariantFields(selectedVariant.Fields);
+    formik.setFieldValue(
+      "variantFields",
+      selectedVariant.Fields.map((field) => ({
+        field: field.name,
+        value: values ? values[field.name].split(",") : [],
+        flag: field.flag,
+      }))
+    );
+  }
+
   const handleAdd = (data) => {
     delete data._id;
-    const formData = new FormData();
-    Object.keys(data).forEach((key, index) => {
-      // console.log(key);
-      if (
-        key === "category" ||
-        key === "variantFields" ||
-        key === "AdditionalSpecification"
-      ) {
-        data[key].forEach((value2, index1) => {
-          Object.keys(value2).forEach((key1) => {
-            let fieldValue = value2[key1];
-
-            // Check if the value is an object or array, and stringify it
-            if (Array.isArray(fieldValue)) {
-              fieldValue.forEach((value, index2) => {
-                formData.append(`${key}[${index1}][${key1}][${index2}]`, value);
-              });
-            } else {
-              formData.append(`${key}[${index1}][${key1}]`, fieldValue);
-            }
-          });
-          // formData.append(key, picture);
-        });
-      } else if (key === "variantValues") {
-        data[key].forEach((variant, index1) => {
-          formData.append(`variantValues[${index1}][name]`, variant.name);
-          Object.keys(variant.values).forEach((key) => {
-            formData.append(
-              `variantValues[${index1}][values][${key}]`,
-              variant.values[key]
-            );
-          });
-        });
-      } else if (key === "pictures") {
-        data[key].forEach((picture, index) => {
-          formData.append(`pictures[${index}]`, picture);
-        });
-      } else {
-        formData.append(key, data[key]);
-      }
-    });
-
+    const formData = convertToFormData(data);
     addProduct(formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({
@@ -115,33 +98,46 @@ const Create = () => {
       );
       setoriginalInventory(resp);
     });
+    getVariant().then((resp) => {
+      setvariants({
+        options: resp.map((data) => ({
+          label: data.name,
+          value: data._id,
+        })),
+        raw: resp,
+      });
+    });
+    getFilterType().then((resp) => {
+      setfilterOptions(
+        convertForSelect({ data: resp, label: "name", value: "_id" })
+      );
+    });
   }, []);
 
   useEffect(() => {
-    if (formik.values.Title !== "" && formik.values.Title) {
+    if (formik.values.name !== "" && formik.values.name) {
       const selectedOption = originalInventory.find(
-        (data) => data._id === formik.values.Title
+        (data) => data.name === formik.values.name
       );
-      Object.keys(selectedOption).forEach((key) =>
-        formik.setFieldValue(key, selectedOption[key])
-      );
-      const values = [];
-      selectedOption?.variantFields[0].value.forEach((data) => {
-        selectedOption?.variantFields[1].value.forEach((data2) =>
-          values.push({
-            name: `${selectedOption?.variantFields[0].field}${data}${selectedOption?.variantFields[1].field}${data2}Variant`,
-            values: {
-              price: selectedOption?.price,
-              inStock: selectedOption?.inStock,
-              picture: null,
-            },
-          })
+      Object.keys({
+        description: "",
+        productType: "",
+        inStock: "",
+        fabric: "",
+        brand: "",
+        fitType: "",
+      }).forEach((key) => formik.setFieldValue(key, selectedOption[key]));
+      if (selectedOption.category) {
+        const categIds = filterOptions.filter(({ label }) =>
+          selectedOption.category
+            .split(",")
+            .some((val) => label.toLowerCase() === val.toLowerCase())
         );
-      });
-
-      formik.setFieldValue("variantValues", values);
+        formik.setFieldValue("category", categIds);
+      }
+      getVariantFields(selectedOption.productType, selectedOption);
     }
-  }, [formik.values.Title]);
+  }, [formik.values.name]);
 
   useEffect(() => {
     console.log(formik.values);
@@ -191,19 +187,37 @@ const Create = () => {
                   Base Information
                 </label>
                 <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 flex flex-col gap-2">
-                  <div className="w-1/3">
-                    <label htmlFor="" className="form-label">
-                      Title
-                    </label>
-                    <SelectElement
-                      options={InventoryItems}
-                      value={InventoryItems.find(
-                        (data) => data.value === formik.values.Title
-                      )}
-                      onChange={(data) =>
-                        formik.setFieldValue("Title", data.value)
-                      }
-                    />
+                  <div className="flex gap-2">
+                    <div className="w-1/3">
+                      <label htmlFor="" className="form-label">
+                        Title
+                      </label>
+                      <SelectElement
+                        options={InventoryItems}
+                        value={InventoryItems.find(
+                          (data) => data.label === formik.values.name
+                        )}
+                        onChange={(data) =>
+                          formik.setFieldValue("name", data.label)
+                        }
+                      />
+                    </div>
+                    <div className="w-1/3">
+                      <label htmlFor="" className="form-label">
+                        Product Type
+                      </label>
+                      <SelectElement
+                        options={variants.options}
+                        name={"productType"}
+                        value={variants.options?.find(
+                          (data) => data.value === formik.values.productType
+                        )}
+                        onChange={(data) => {
+                          formik.setFieldValue("productType", data.value);
+                          getVariantFields(data.value);
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className="w-2/3">
                     <label htmlFor="" className="form-label">
@@ -251,6 +265,19 @@ const Create = () => {
                     />
                   </div>
                   <div className="">
+                    <label htmlFor="" className="form-label">
+                      Category
+                    </label>
+                    <MultiSelect
+                      options={filterOptions}
+                      value={formik.values.category}
+                      onChange={(data) =>
+                        formik.setFieldValue("category", data)
+                      }
+                      labelledBy="Select"
+                    />
+                  </div>
+                  <div className="">
                     <label htmlFor="brand" className="form-label">
                       Brand
                     </label>
@@ -280,8 +307,76 @@ const Create = () => {
                       onChange={formik.handleChange}
                     />
                   </div>
+                  <div className="">
+                    <label htmlFor="tags" className="form-label">
+                      Tags
+                    </label>
+                    <Input
+                      name="tags"
+                      value={formik.values.tags.toString() ?? ""}
+                      onChange={(event) => {
+                        formik.setFieldValue(
+                          "tags",
+                          event.target.value.split(",")
+                        );
+                      }}
+                    />
+                  </div>
                 </div>
                 {/*Details*/}
+
+                {/*Variants */}
+                <label htmlFor="" className="form-label">
+                  Variants
+                </label>
+                <div
+                  className={cn(
+                    "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
+                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                  )}
+                >
+                  {variantFields?.map((data, index) => (
+                    <div className="" key={index}>
+                      <label htmlFor="" className="form-label">
+                        {data.name}
+                      </label>
+                      <Input
+                        name={data.name}
+                        value={
+                          formik.values.variantFields
+                            .find((val) => val.field === data.name)
+                            ?.value.join(",") ?? ""
+                        }
+                        onChange={(event) => {
+                          formik.setFieldValue(
+                            "variantFields",
+                            formik.values.variantFields.some(
+                              ({ field }) => field === data.name
+                            )
+                              ? formik.values.variantFields.map((val) =>
+                                  val.field === data.name
+                                    ? {
+                                        field: data.name,
+                                        value: event.target.value.split(","),
+                                        flag: data.flag,
+                                      }
+                                    : val
+                                )
+                              : [
+                                  ...formik.values.variantFields,
+                                  {
+                                    field: data.name,
+                                    value: event.target.value.split(","),
+                                    flag: data.flag,
+                                  },
+                                ]
+                          );
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/*Variants */}
 
                 {/*Additional Specifications*/}
                 <label htmlFor="" className="form-label">
@@ -326,27 +421,24 @@ const Create = () => {
                       )}
                     >
                       {formik.values.AdditionalSpecification?.map(
-                        (data, index) => (
+                        ({ key, value }, index) => (
                           <div className="" key={index}>
-                            <label
-                              htmlFor={Object.keys(data)[0]}
-                              className="form-label"
-                            >
-                              {Object.keys(data)[0]}
+                            <label htmlFor={key} className="form-label">
+                              {key}
                             </label>
                             <div className="flex justify-between gap-1">
                               <Input
-                                name={Object.keys(data)[0]}
-                                value={data[Object.keys(data)[0]] ?? ""}
+                                name={key}
+                                value={value ?? ""}
                                 onChange={(event) => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.map(
                                       (val) =>
-                                        val == data
+                                        val.key == key
                                           ? {
-                                              [Object.keys(data)[0]]:
-                                                event.target.value,
+                                              key,
+                                              value: event.target.value,
                                             }
                                           : val
                                     )
@@ -354,11 +446,12 @@ const Create = () => {
                                 }}
                               />
                               <Button
+                                className={"!h-10"}
                                 onClick={() => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.filter(
-                                      (val) => val !== data
+                                      (val) => val.key !== key
                                     )
                                   );
                                 }}

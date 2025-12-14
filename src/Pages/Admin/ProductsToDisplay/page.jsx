@@ -4,11 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts } from "./service";
 import IconButton from "@/Components/Button/IconButton";
-import { CirclePlus, PackagePlus } from "lucide-react";
+import { CirclePlus, Download, PackagePlus, Upload } from "lucide-react";
+import ProductTemplateModal from "./ProductTemplateModal";
+import ProductUploadtemplate from "./ProductUploadtemplate";
 
 const Page = () => {
   const navigate = useNavigate();
   const [rows, setrows] = useState([]);
+  const [open, setopen] = useState(false);
+  const [openUpload, setopenUpload] = useState(false);
   const headCells = [
     {
       field: "id",
@@ -79,6 +83,12 @@ const Page = () => {
     <>
       <CustomHeader title={"Products To Display"}>
         <div className="pl-2 flex items-center gap-2">
+          <IconButton onClick={() => setopen(true)}>
+            <Download size={16} />
+          </IconButton>
+          <IconButton onClick={() => setopenUpload(true)}>
+            <Upload size={16} />
+          </IconButton>
           <IconButton onClick={() => navigate(`CreateNew`)}>
             <CirclePlus size={16} />
           </IconButton>
@@ -90,6 +100,8 @@ const Page = () => {
       <div className="mt-4">
         <AgGrid headCells={headCells} rows={rows} />
       </div>
+      <ProductTemplateModal open={open} setopen={setopen} />
+      <ProductUploadtemplate open={openUpload} setopen={setopenUpload} />
     </>
   );
 };

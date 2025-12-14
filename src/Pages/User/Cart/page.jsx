@@ -126,7 +126,7 @@ const page = () => {
           acc +
           quantity *
             productId.variantValues.find(({ _id }) => _id === variant).values
-              .price
+              .discountedPrice
         );
       },
       0

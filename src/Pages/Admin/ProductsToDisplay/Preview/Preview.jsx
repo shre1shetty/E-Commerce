@@ -6,7 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/Components/ui/carousel";
-import { cn } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
 import { isEmpty } from "lodash";
 import RegularProductCard from "@/Components/ProductCard/RegularProductCard";
 import HomeProductCard from "@/Components/ProductCard/HomeProductCard";
@@ -31,37 +31,10 @@ const Preview = ({ data, showPreview }) => {
           {}
         )
       );
-      // setvariantFields({
-      //   varient1: data.variantFields[0]?.field,
-      //   varient2: data.variantFields[1]?.field,
-      // });
+      console.log(data);
       setvalues(data);
-      // if (!isEmpty(data.variantFields[0]) || !isEmpty(data.variantFields[1]))
-      //   setfield1Field2({
-      //     field1: data.variantFields[0].value[0],
-      //     field2: data.variantFields[1].value[0],
-      //   });
-      // if (data.pictures) {
-      // if (
-      //   data.variantValues?.find(
-      //     (val) =>
-      //       val.name ===
-      //       `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
-      //   )?.values.picture
-      // ) {
-      //   const PictureArray = data.pictures ?? [];
-      //   PictureArray[0] = data.variantValues.find(
-      //     (val) =>
-      //       val.name ===
-      //       `${data.variantFields[0].field}${data.variantFields[0].value[0]}${data.variantFields[1].field}${data.variantFields[1].value[0]}Variant`
-      //   )?.values.picture;
-      //   setpicturesArray(PictureArray);
-      // } else {
-      setpicturesArray(data.pictures);
-      // }
-      // }
     }
-  }, [data]);
+  }, [data, showPreview]);
 
   return (
     <div
@@ -82,30 +55,45 @@ const Preview = ({ data, showPreview }) => {
         <TabsContent value="home" className="flex-1 overflow-auto">
           <div className="bg-white">
             <HomeProductCard
+              key={showPreview}
               label={values?.name}
               description={values.description ?? ""}
               filters={values.variantFields}
               variantValues={values.variantValues}
-              price={values.price}
+              price={
+                values?.variantValues?.length > 0
+                  ? values.variantValues[0].values.price
+                  : 0
+              }
+              discountedPrice={
+                values?.variantValues?.length > 0
+                  ? values.variantValues[0].values.discountedPrice
+                  : 0
+              }
             />
           </div>
         </TabsContent>
         <TabsContent value="category" className="flex-1 overflow-auto">
           <div className="bg-white">
             <RegularProductCard
+              key={showPreview}
               description={values?.description ?? ""}
               name={values?.name}
               picture={
-                picturesArray?.length > 0
-                  ? URL.createObjectURL(picturesArray[0])
+                values.variantValues?.length > 0 &&
+                values.variantValues[0].values.picture.length > 0
+                  ? typeof values.variantValues[0].values.picture[0] ===
+                    "string"
+                    ? getFileUrl(values.variantValues[0].values.picture[0])
+                    : URL.createObjectURL(
+                        values.variantValues[0].values.picture[0]
+                      )
                   : ""
               }
               price={
-                values.variantValues?.find(
-                  (val) =>
-                    val.name ===
-                    `${variantFields.varient1}${field1Field2.field1}${variantFields.varient2}${field1Field2.field2}Variant`
-                )?.values?.price
+                values.variantValues?.length > 0
+                  ? values.variantValues[0]?.values?.discountedPrice
+                  : 0
               }
               variantFields={values?.variantFields}
             />

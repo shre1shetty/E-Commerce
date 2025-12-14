@@ -140,6 +140,19 @@
   }
 }
 
+@media not all and (min-width: 640px) {
+  .graph-icon-container {
+    display: none !important;
+  }
+  .dashboard-container {
+    padding: 0px !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .revenue-analysis-card {
+    @apply col-span-3 !important;
+  }
+}
+
 .overall-container {
   @apply grid grid-cols-2 gap-2;
   .overall-card {
@@ -220,4 +233,29 @@
   .label-container {
     padding: 10px 18px 10px 18px;
   }
+}
+
+.chat-bubble {
+  background: #f4f4f4;
+  width: 160px;
+  font-size: 12px;
+  line-height: normal;
+  padding: 9px;
+  border-radius: 10px;
+  color: #595959;
+  position: absolute;
+  top: 4px;
+  right: 105px;
+  font-weight: 500;
+}
+
+.chat-bubble::after {
+  transform: rotate(319deg);
+  content: "";
+  position: absolute;
+  right: -5px;
+  bottom: -2px;
+  border-width: 8px 8px 0 8px;
+  border-style: solid;
+  border-color: #f4f4f4 transparent transparent transparent;
 }

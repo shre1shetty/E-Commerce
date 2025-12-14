@@ -18,7 +18,7 @@
     @apply w-[275px] h-screen text-[#969aa8] bg-[var(--theme-color)] flex flex-col gap-1 font-medium text-base p-3;
   }
   .header {
-    @apply flex justify-between text-[#070b51] font-bold text-2xl  py-[19px] items-center;
+    @apply flex justify-between text-[#070b51] font-bold text-2xl  py-[19px] items-center relative overflow-hidden;
   }
   .filter-list {
     @apply flex gap-2;

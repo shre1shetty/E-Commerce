@@ -15,9 +15,10 @@ import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
 import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
 import { AdminAxiosInstanceforUpload as AxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
 import { setWishList } from "@/Redux/Slice/WishlistSlice";
+import { Segmented } from "antd";
 const LoginModal = ({ open, setopen }) => {
   const navigate = useNavigate();
-  const [loginSignup, setloginSignup] = useState("login");
+  const [loginSignup, setloginSignup] = useState("Login");
   const dispatch = useDispatch();
   const loginFormik = useFormik({
     initialValues: {
@@ -151,8 +152,8 @@ const LoginModal = ({ open, setopen }) => {
   return (
     <Dialog open={open} onOpenChange={setopen}>
       {/* <DialogTrigger className="w-full">{children}</DialogTrigger> */}
-      <DialogContent className="max-w-6xl">
-        <div className="mask" data-state={loginSignup}>
+      <DialogContent>
+        {/* <div className="mask" data-state={loginSignup}>
           {loginSignup === "login" ? (
             <div className="font-extrabold text-center">
               <div className="text-white text-2xl">
@@ -178,73 +179,30 @@ const LoginModal = ({ open, setopen }) => {
               </button>
             </div>
           )}
-        </div>
+        </div> */}
+        <Segmented
+          options={["Login", "Sign Up"]}
+          onChange={setloginSignup}
+          block
+        />
 
-        <div className="grid grid-cols-2 ">
-          <div className="p-12">
-            <div className="text-2xl font-bold">Login</div>
-            <div className="text-sm text-muted-foreground">
-              Enter your email and password to login.
-            </div>
-            <div className="mt-3">
-              <Label className="">Username / Email</Label>
-              <Input
-                className=""
-                placeholder="Enter username / email"
-                name="username"
-                value={loginFormik.values.username}
-                onChange={loginFormik.handleChange}
-                onBlur={loginFormik.handleBlur}
-              />
-            </div>
-            <div className="mt-3">
-              <Label className="">Password</Label>
-              <Input
-                className=""
-                placeholder="Enter password"
-                type="password"
-                name="password"
-                value={loginFormik.values.password}
-                onChange={loginFormik.handleChange}
-                onBlur={loginFormik.handleBlur}
-              />
-            </div>
-            <div className="flex text-center items-center justify-center mt-4">
-              <a href="" className="text-[13px] text-[var(--user-theme)]">
-                Forgot your password ?
-              </a>
-            </div>
-            <div className="flex items-center justify-center mt-4">
-              <button
-                className="bg-[var(--user-theme)] text-white px-28 py-2 rounded-full"
-                onClick={() => handleLogin(loginFormik.values)}
-              >
-                Login
-              </button>
-            </div>
-          </div>
-          <div className="p-12 ">
-            <div className="text-2xl font-bold">Sign Up</div>
-            <div className="text-sm text-muted-foreground mb-2">
-              Sign up for exclusive offers, early access to sales, and
-              personalized recommendations! Join our community today.
-            </div>
-            <div className="grid grid-cols-2 gap-2">
+        <div className="">
+          {loginSignup === "Login" ? (
+            <div className="p-4">
+              <div className="text-2xl font-bold">Login</div>
+              <div className="text-sm text-muted-foreground">
+                Enter your email and password to login.
+              </div>
               <div className="mt-3">
-                <Label className="">Username</Label>
+                <Label className="">Username / Email</Label>
                 <Input
+                  autoFocus={true}
                   className=""
-                  placeholder="Enter username"
+                  placeholder="Enter username / email"
                   name="username"
-                  value={userFormik.values.username}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.username}
-                  isVisible={
-                    userFormik.touched.username && userFormik.errors.username
-                  }
+                  value={loginFormik.values.username}
+                  onChange={loginFormik.handleChange}
+                  onBlur={loginFormik.handleBlur}
                 />
               </div>
               <div className="mt-3">
@@ -254,96 +212,149 @@ const LoginModal = ({ open, setopen }) => {
                   placeholder="Enter password"
                   type="password"
                   name="password"
-                  value={userFormik.values.password}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.password}
-                  isVisible={
-                    userFormik.touched.password && userFormik.errors.password
-                  }
+                  value={loginFormik.values.password}
+                  onChange={loginFormik.handleChange}
+                  onBlur={loginFormik.handleBlur}
                 />
               </div>
-              <div className="mt-3">
-                <Label className="">Email</Label>
-                <Input
-                  className=""
-                  placeholder="Enter email"
-                  name="email"
-                  value={userFormik.values.email}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.email}
-                  isVisible={
-                    userFormik.touched.email && userFormik.errors.email
-                  }
-                />
+              <div className="flex text-center items-center justify-center mt-4">
+                <a href="" className="text-[13px] text-[var(--user-theme)]">
+                  Forgot your password ?
+                </a>
               </div>
-              <div className="mt-3">
-                <Label className="">Phone Number</Label>
-                <Input
-                  className=""
-                  placeholder="Enter phone number"
-                  name="contactNumber"
-                  value={userFormik.values.contactNumber}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.contactNumber}
-                  isVisible={
-                    userFormik.touched.contactNumber &&
-                    userFormik.errors.contactNumber
-                  }
-                />
-              </div>
-              <div className="mt-3">
-                <Label>Address</Label>
-                <Input
-                  className=""
-                  placeholder="Enter address"
-                  name="address"
-                  value={userFormik.values.address}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.address}
-                  isVisible={
-                    userFormik.touched.address && userFormik.errors.address
-                  }
-                />
-              </div>
-              <div className="mt-3">
-                <Label className="">Pincode</Label>
-                <Input
-                  className=""
-                  placeholder="Enter pincode"
-                  name="pincode"
-                  value={userFormik.values.pincode}
-                  onChange={userFormik.handleChange}
-                  onBlur={userFormik.handleBlur}
-                />
-                <ErrorMessage
-                  message={userFormik.errors.pincode}
-                  isVisible={
-                    userFormik.touched.pincode && userFormik.errors.pincode
-                  }
-                />
+              <div className="flex items-center justify-center mt-4">
+                <button
+                  className="bg-[var(--user-theme)] text-white px-28 py-2 rounded-full"
+                  onClick={() => handleLogin(loginFormik.values)}
+                >
+                  Login
+                </button>
               </div>
             </div>
-            <div className="flex items-center justify-center mt-6">
-              <button
-                className="bg-[var(--user-theme)] text-white px-28 py-2 rounded-full"
-                onClick={() => handleSignUp(userFormik.values)}
-              >
-                SignUp
-              </button>
+          ) : (
+            <div className="p-4 ">
+              <div className="text-2xl font-bold">Sign Up</div>
+              <div className="text-sm text-muted-foreground mb-2">
+                Sign up for exclusive offers, early access to sales, and
+                personalized recommendations! Join our community today.
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="mt-3">
+                  <Label className="">Username</Label>
+                  <Input
+                    autoFocus={true}
+                    className=""
+                    placeholder="Enter username"
+                    name="username"
+                    value={userFormik.values.username}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.username}
+                    isVisible={
+                      userFormik.touched.username && userFormik.errors.username
+                    }
+                  />
+                </div>
+                <div className="mt-3">
+                  <Label className="">Password</Label>
+                  <Input
+                    className=""
+                    placeholder="Enter password"
+                    type="password"
+                    name="password"
+                    value={userFormik.values.password}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.password}
+                    isVisible={
+                      userFormik.touched.password && userFormik.errors.password
+                    }
+                  />
+                </div>
+                <div className="mt-3">
+                  <Label className="">Email</Label>
+                  <Input
+                    className=""
+                    placeholder="Enter email"
+                    name="email"
+                    value={userFormik.values.email}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.email}
+                    isVisible={
+                      userFormik.touched.email && userFormik.errors.email
+                    }
+                  />
+                </div>
+                <div className="mt-3">
+                  <Label className="">Phone Number</Label>
+                  <Input
+                    className=""
+                    placeholder="Enter phone number"
+                    name="contactNumber"
+                    value={userFormik.values.contactNumber}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.contactNumber}
+                    isVisible={
+                      userFormik.touched.contactNumber &&
+                      userFormik.errors.contactNumber
+                    }
+                  />
+                </div>
+                <div className="mt-3">
+                  <Label>Address</Label>
+                  <Input
+                    className=""
+                    placeholder="Enter address"
+                    name="address"
+                    value={userFormik.values.address}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.address}
+                    isVisible={
+                      userFormik.touched.address && userFormik.errors.address
+                    }
+                  />
+                </div>
+                <div className="mt-3">
+                  <Label className="">Pincode</Label>
+                  <Input
+                    className=""
+                    placeholder="Enter pincode"
+                    name="pincode"
+                    value={userFormik.values.pincode}
+                    onChange={userFormik.handleChange}
+                    onBlur={userFormik.handleBlur}
+                  />
+                  <ErrorMessage
+                    message={userFormik.errors.pincode}
+                    isVisible={
+                      userFormik.touched.pincode && userFormik.errors.pincode
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-center mt-6">
+                <button
+                  className="bg-[var(--user-theme)] text-white px-28 py-2 rounded-full"
+                  onClick={() => handleSignUp(userFormik.values)}
+                >
+                  SignUp
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

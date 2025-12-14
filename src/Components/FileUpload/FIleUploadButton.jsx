@@ -1,7 +1,7 @@
 import { PlusIcon, X } from "lucide-react";
 import React, { useRef } from "react";
 import "./index.css";
-const FileUploadButton = ({ value, onChange }) => {
+const FileUploadButton = ({ value, onChange, type }) => {
   const ref = useRef(null);
   return (
     <div className="relative cursor-pointer fileUploadDiv">
@@ -9,7 +9,7 @@ const FileUploadButton = ({ value, onChange }) => {
         type="file"
         hidden={value}
         ref={ref}
-        accept=".png,.jpg,.jpeg"
+        accept={type ?? ".png,.jpg,.jpeg"}
         name=""
         id=""
         className="absolute z-10 opacity-0 h-full w-full"

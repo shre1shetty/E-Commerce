@@ -188,7 +188,7 @@ const page = () => {
                   userId: LS.get("userId"),
                   productId: product._id,
                   quantity: 1,
-                  price: selectedVariant.values.price,
+                  price: selectedVariant.values.discountedPrice,
                   variant: selectedVariant._id,
                 })
               }
@@ -204,7 +204,7 @@ const page = () => {
                   userId: LS.get("userId"),
                   productId: product._id,
                   quantity: 1,
-                  price: selectedVariant.values.price,
+                  price: selectedVariant.values.discountedPrice,
                   variant: selectedVariant._id,
                 })
               }
@@ -225,7 +225,9 @@ const page = () => {
             {product.category.map((val) => val.label).toString()}
           </div>
           <hr className="my-2" />
-          <div className="product-page-price">₹ {product.price}</div>
+          <div className="product-page-price">
+            ₹ {selectedVariant?.values?.discountedPrice}
+          </div>
           <span className="text-xs">MRP incl. of all taxes</span>
           <div className="flex gap-2 items-end mt-2 leading-[normal] text-[#7e5600]">
             <Rate allowHalf value={4.5} disabled />
