@@ -71,7 +71,7 @@ export function NavMain({ items, open }) {
               </SidebarMenuItem>
             </Collapsible>
           ) : (
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={item.title}>
               <div
                 className={
                   window.location.pathname.replace("/", "") ===
@@ -82,7 +82,8 @@ export function NavMain({ items, open }) {
                 onClick={() => navigate(item.url)}
               >
                 <item.icon />
-                {open && <span className="">{item.title}</span>}
+                <span className="">{item.title}</span>
+                {/* {open && <span className="">{item.title}</span>} */}
               </div>
             </SidebarMenuButton>
           )

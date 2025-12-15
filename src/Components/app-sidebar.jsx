@@ -28,6 +28,7 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarRail,
+  useSidebar,
 } from "@/Components/ui/sidebar";
 import { LS } from "@/lib/SecureLocalStorage";
 import { cn } from "@/lib/utils";
@@ -157,31 +158,24 @@ const data = {
 export function AppSidebar({ ...props }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div
           className={cn(
             "sidebar-header flex  items-center gap-2 text-lg text-[#7e8394] overflow-hidden",
-            props.open ? "h-[80px]" : "h-8"
+            "h-8"
           )}
         >
-          <img
-            src={props.open ? Logo2 : Logo}
-            alt=""
-            className="w-full h-full"
-          />
-          {/* <div
-            className={
-              props.open ? "whitespace-nowrap" : "whitespace-nowrap hidden"
-            }
-          >
-            E-Cart Solutions
-          </div> */}
+          <img src={Logo} alt="" className="h-8 w-8" />
+          <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+            E-Cart Solution
+          </span>
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} open={props.open} />
+        <NavMain items={data.navMain} open={open} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuButton asChild>
@@ -194,7 +188,8 @@ export function AppSidebar({ ...props }) {
             }}
           >
             <DoorOpen />
-            {props.open && <span className="">Logout</span>}
+            <span className="">Logout</span>
+            {/* {props.open && <span className="">Logout</span>} */}
           </div>
         </SidebarMenuButton>
       </SidebarFooter>
