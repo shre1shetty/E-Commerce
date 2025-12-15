@@ -16,8 +16,9 @@ import Footer from "@/Components/Footer/Footer";
 import { useSelector } from "react-redux";
 import { Bell, Menu, Search } from "lucide-react";
 import { useRef } from "react";
+import NavBar from "@/Components/NavBar/NavBar";
 
-const NavBar = () => {
+const AdminNavBar = () => {
   const { open } = useSidebar();
   return (
     <>
@@ -69,7 +70,7 @@ const RouteContainer = () => {
                   <AppSidebar />
                 </div>
                 <div className={"bg-[#f2f4f7] grow p-3 text-black"}>
-                  <NavBar />
+                  <AdminNavBar />
                   <div
                     className={
                       "bg-white rounded-lg h-full  px-1 md:px-[19px] mt-10"
