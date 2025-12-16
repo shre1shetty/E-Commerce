@@ -73,22 +73,25 @@
     border-bottom: 1px solid lightgray;
     padding-bottom: 12px;
     margin-top: 12px;
+    column-gap: 4px;
     .section-name {
       color: slategray;
       font-weight: 500;
+      font-size: 12px;
     }
     .status-name {
       color: var(--user-theme);
       font-weight: 600;
-      line-height: normal;
+      font-size: 12px;
     }
     .section-value {
       color: rgb(94, 106, 118);
-      line-height: normal;
+      font-size: 12px;
     }
     .section-total {
       color: #333365;
       font-weight: 600;
+      font-size: 12px;
     }
   }
 }
@@ -115,5 +118,40 @@
     font-size: 14px;
     color: #909090;
     line-height: 18px;
+  }
+}
+
+@media not all and (min-width: 640px) {
+  .user-menu-list {
+    display: flex;
+    justify-content: space-between;
+  }
+  .user-menu-list {
+    li.active {
+      padding: 2px 14px 2px 2px;
+      p {
+        display: block !important;
+        white-space: nowrap;
+      }
+    }
+    li {
+      gap: 8px;
+      padding: 2px;
+      font-size: 12px;
+      p {
+        display: none;
+      }
+    }
+  }
+  .order-container {
+    padding: 14px 16px;
+    .title {
+      h1 {
+        font-size: 16px;
+      }
+      span {
+        font-size: 12px;
+      }
+    }
   }
 }

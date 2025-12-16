@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Router } from "./Routes";
 import "./Router.scss";
 import { BrowserRouter } from "react-router-dom";
@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { Bell, Menu, Search } from "lucide-react";
 import { useRef } from "react";
 import NavBar from "@/Components/NavBar/NavBar";
+import LoginModal from "@/Pages/Login/LoginModal";
 
 const AdminNavBar = () => {
   const { open } = useSidebar();
@@ -47,11 +48,20 @@ const AdminNavBar = () => {
     </>
   );
 };
+
+export const loginStateContext = createContext({
+  open: false,
+  setopen: () => {},
+});
 const RouteContainer = () => {
   const [logo, setlogo] = useState(null);
+  const [open, setopen] = useState(false);
   const [footerDetails, setfooterDetails] = useState({});
   const sidebarRef = useRef(null);
   const role = useSelector((state) => state.data.role.role);
+
+  const ContextValue = { open, setopen };
+
   useEffect(() => {
     getLogo().then(({ logo }) => {
       setlogo(`${import.meta.env.VITE_BASE_URL}/file?id=${logo}`);
@@ -83,15 +93,16 @@ const RouteContainer = () => {
             </SidebarProvider>
           </>
         ) : (
-          <>
+          <loginStateContext.Provider value={ContextValue}>
             <NavBar logo={logo} />
             <div className={"grow"}>
-              <div className={"px-[19px] h-full"}>
+              <div className={"px-2 md:px-[19px] h-full"}>
                 <UserRouter />
               </div>
             </div>
             <Footer logo={logo} footerDetails={footerDetails} />
-          </>
+            <LoginModal open={open} setopen={setopen} />
+          </loginStateContext.Provider>
         )}
       </div>
     </BrowserRouter>

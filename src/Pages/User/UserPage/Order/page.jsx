@@ -40,7 +40,7 @@ const page = () => {
     <div>
       <Segmented
         options={["Current", "Fulfilled", "All Orders"]}
-        className="w-1/2 !text-sm font-semibold"
+        className="w-full sm:w-1/2 !text-sm font-semibold"
         block
         value={activeTab}
         onChange={setactiveTab}
@@ -71,7 +71,7 @@ const page = () => {
                   <div className="section-total">Total :</div>
                   <div className="col-span-3 section-total">{amount}</div>
                 </div>
-                <div className="grid grid-cols-2">
+                <div className="md:grid grid-cols-2">
                   {products.map(
                     ({
                       name,

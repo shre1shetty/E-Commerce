@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "../../assets/NavbarLogo.png";
 import "./index.css";
 import {
@@ -12,10 +12,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LoginModal from "@/Pages/Login/LoginModal";
 import { LS } from "@/lib/SecureLocalStorage";
+import { loginStateContext } from "@/Router/RouteContainer";
 const NavBar = ({ logo }) => {
   const navigate = useNavigate();
   const count = useSelector((state) => state.data.count.count);
-  const [open, setopen] = useState(false);
+
+  const { setopen } = useContext(loginStateContext);
   return (
     <div className="navBar flex bg-white gap-1 border-[#d2d2d2] h-[60px] px-2 mb-2 sticky top-0 z-[999] items-center font-medium justify-between">
       <div
@@ -123,7 +125,7 @@ const NavBar = ({ logo }) => {
           <ShoppingBag size={16} strokeWidth={3} />
         </button>
       </div>
-      <LoginModal open={open} setopen={setopen} />
+      {/* <LoginModal open={open} setopen={setopen} /> */}
     </div>
   );
 };

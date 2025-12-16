@@ -16,3 +16,9 @@
     font-size: 14px;
   }
 }
+
+@media not all and (min-width: 640px) {
+  .address-container {
+    padding: 14px 16px;
+  }
+}

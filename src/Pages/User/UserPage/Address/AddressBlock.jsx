@@ -117,7 +117,7 @@ const AddressBlock = ({ values = {}, newFlag = false, refreshGrid }) => {
 
   return (
     <div className="address-container">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 md:gap-4">
         <div className="">
           <input
             type="text"
@@ -133,7 +133,7 @@ const AddressBlock = ({ values = {}, newFlag = false, refreshGrid }) => {
             isVisible={formik.touched.addressName && formik.errors.addressName}
           />
         </div>
-        <div className="col-span-3 grid grid-cols-subgrid gap-4">
+        <div className="col-span-3 grid md:grid-cols-subgrid grid-cols-2 gap-2 md:gap-4">
           <div className="">
             <label htmlFor="Name" className="form-label">
               Name
@@ -216,66 +216,68 @@ const AddressBlock = ({ values = {}, newFlag = false, refreshGrid }) => {
             isVisible={formik.touched.address && formik.errors.address}
           />
         </div>
-        <div className="">
-          <label htmlFor="" className="form-label">
-            State
-          </label>
-          <SelectElement
-            options={States}
-            value={States.find(({ label }) => label === formik.values.state)}
-            errorFlag={formik.touched.state && formik.errors.state}
-            disabled={!editFlag}
-            placeholder="Select your state"
-            onChange={({ label, value }) => {
-              formik.setFieldValue("state", label);
-              formik.setFieldValue("stateId", value);
-            }}
-          />
-          <ErrorMessage
-            message={formik.errors.state}
-            isVisible={formik.touched.state && formik.errors.state}
-          />
-        </div>
-        <div className="">
-          <label htmlFor="" className="form-label">
-            City
-          </label>
-          <SelectElement
-            value={cities.find(({ label }) => formik.values.city === label)}
-            options={cities}
-            errorFlag={formik.touched.city && formik.errors.city}
-            disabled={!editFlag}
-            placeholder="Select your city"
-            onChange={({ label }) => formik.setFieldValue("city", label)}
-          />
-          <ErrorMessage
-            message={formik.errors.city}
-            isVisible={formik.touched.city && formik.errors.city}
-          />
-        </div>
-        <div className="">
-          <label htmlFor="" className="form-label">
-            Pincode
-          </label>
-          <InputNumber
-            className={
-              formik.touched.pincode && formik.errors.pincode
-                ? "errorClass w-full"
-                : "w-full"
-            }
-            placeholder="Enter your pincode"
-            maxLength={6}
-            disabled={!editFlag}
-            useGrouping={false}
-            name="pincode"
-            value={formik.values.pincode}
-            onChange={({ value }) => formik.setFieldValue("pincode", value)}
-            onBlur={formik.handleBlur}
-          />
-          <ErrorMessage
-            message={formik.errors.pincode}
-            isVisible={formik.touched.pincode && formik.errors.pincode}
-          />
+        <div className="col-span-3 grid md:grid-cols-subgrid grid-cols-2 gap-2 md:gap-4">
+          <div className="">
+            <label htmlFor="" className="form-label">
+              State
+            </label>
+            <SelectElement
+              options={States}
+              value={States.find(({ label }) => label === formik.values.state)}
+              errorFlag={formik.touched.state && formik.errors.state}
+              disabled={!editFlag}
+              placeholder="Select your state"
+              onChange={({ label, value }) => {
+                formik.setFieldValue("state", label);
+                formik.setFieldValue("stateId", value);
+              }}
+            />
+            <ErrorMessage
+              message={formik.errors.state}
+              isVisible={formik.touched.state && formik.errors.state}
+            />
+          </div>
+          <div className="">
+            <label htmlFor="" className="form-label">
+              City
+            </label>
+            <SelectElement
+              value={cities.find(({ label }) => formik.values.city === label)}
+              options={cities}
+              errorFlag={formik.touched.city && formik.errors.city}
+              disabled={!editFlag}
+              placeholder="Select your city"
+              onChange={({ label }) => formik.setFieldValue("city", label)}
+            />
+            <ErrorMessage
+              message={formik.errors.city}
+              isVisible={formik.touched.city && formik.errors.city}
+            />
+          </div>
+          <div className="">
+            <label htmlFor="" className="form-label">
+              Pincode
+            </label>
+            <InputNumber
+              className={
+                formik.touched.pincode && formik.errors.pincode
+                  ? "errorClass w-full"
+                  : "w-full"
+              }
+              placeholder="Enter your pincode"
+              maxLength={6}
+              disabled={!editFlag}
+              useGrouping={false}
+              name="pincode"
+              value={formik.values.pincode}
+              onChange={({ value }) => formik.setFieldValue("pincode", value)}
+              onBlur={formik.handleBlur}
+            />
+            <ErrorMessage
+              message={formik.errors.pincode}
+              isVisible={formik.touched.pincode && formik.errors.pincode}
+            />
+          </div>
         </div>
         {editFlag && (
           <div className="col-span-3 flex items-center justify-end mt-2">

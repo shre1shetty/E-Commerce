@@ -17,7 +17,7 @@ const page = () => {
       <span className="user-sub-header">
         {LS.get("username")}, Email: {LS.get("email")}
       </span>
-      <div className="grid grid-cols-4 mt-7 gap-4">
+      <div className="flex flex-col sm:grid grid-cols-4 mt-3 md:mt-7 gap-4">
         <div className="">
           <ul className="user-menu-list">
             <li
@@ -26,11 +26,10 @@ const page = () => {
                   ? "active"
                   : ""
               }
+              onClick={() => navigate("Orders")}
             >
               <i class="fa-solid fa-truck"></i>
-              <p className="" onClick={() => navigate("Orders")}>
-                My Orders
-              </p>
+              <p className="">My Orders</p>
             </li>
             <li
               className={
@@ -39,11 +38,10 @@ const page = () => {
                   ? "active"
                   : ""
               }
+              onClick={() => navigate("Addresses")}
             >
               <i class="fa-solid fa-location-dot"></i>
-              <p className="" onClick={() => navigate("Addresses")}>
-                Your Addresses
-              </p>
+              <p className="">Your Addresses</p>
             </li>
             <li className="">
               <i class="fa-solid fa-lock"></i>
@@ -55,13 +53,12 @@ const page = () => {
                   ? "active"
                   : ""
               }
+              onClick={() => navigate("Wishlist")}
             >
               <i class="fa-solid fa-heart"></i>
-              <p className="" onClick={() => navigate("Wishlist")}>
-                Saved Items
-              </p>
+              <p className="">Saved Items</p>
             </li>
-            <li className="">
+            <li className="!hidden sm:!flex">
               <hr className="" />
             </li>
             <li className="">

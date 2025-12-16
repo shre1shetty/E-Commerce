@@ -1,5 +1,5 @@
 import { ceil, first, isString } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./index.css";
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
 import { Check, Heart, ShoppingBag, Star } from "lucide-react";
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWishList } from "@/Redux/Slice/WishlistSlice";
 import { LS } from "@/lib/SecureLocalStorage";
 import { AxiosInstance } from "@/lib/AxiosInstance";
+import { loginStateContext } from "@/Router/RouteContainer";
 const HomeProductCard = ({
   id,
   label,
@@ -55,6 +56,8 @@ const HomeProductCard = ({
     });
   };
 
+  const { setopen } = useContext(loginStateContext);
+
   const removeItemfromWishlist = ({ productId, userId }) => {
     removeFromWishList({ productId, userId }).then((res) => {
       if (res) {
@@ -91,9 +94,9 @@ const HomeProductCard = ({
   return (
     <div
       key={id}
-      className="bg-[#f5f4f7] h-[290px] rounded-[25px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden home-card"
+      className="bg-[#f5f4f7] h-[270px] md:h-[290px] rounded-[25px] p-2 relative bg-cover bg-center cursor-pointer overflow-hidden home-card"
     >
-      <div className="w-full h-[200px] hover:scale-[1.02] relative">
+      <div className="w-full h-[180px] md:h-[200px] hover:scale-[1.02] relative">
         <img
           src={productImage ? productImage : ""}
           alt=""
@@ -157,14 +160,21 @@ const HomeProductCard = ({
       <div className="wishlist">
         <button
           className=""
-          onClick={() =>
-            isWishListed
-              ? removeItemfromWishlist({
-                  productId: id,
-                  userId: LS.get("userId"),
-                })
-              : addItemToWishlist({ productId: id, userId: LS.get("userId") })
-          }
+          onClick={() => {
+            if (LS.get("userId")) {
+              isWishListed
+                ? removeItemfromWishlist({
+                    productId: id,
+                    userId: LS.get("userId"),
+                  })
+                : addItemToWishlist({
+                    productId: id,
+                    userId: LS.get("userId"),
+                  });
+            } else {
+              setopen(true);
+            }
+          }}
         >
           {isWishListed ? <Heart fill="red" stroke="red" /> : <Heart />}
         </button>
