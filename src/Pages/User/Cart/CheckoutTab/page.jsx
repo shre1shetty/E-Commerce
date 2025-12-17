@@ -73,7 +73,7 @@ const CheckoutTab = ({ setcurrent, setitems, formik }) => {
             2. Delivery Address
           </label>
           <div className="account-address-content">
-            <div className="account-address-item col-span-4">
+            <div className="account-address-item col-span-2 md:col-span-3 lg:col-span-4">
               <label htmlFor="" className="mandatory">
                 Address
               </label>

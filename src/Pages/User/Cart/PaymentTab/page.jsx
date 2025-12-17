@@ -6,14 +6,16 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { RadioButton } from "primereact/radiobutton";
 import RazorPayImage from "@/assets/razorpay.png";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { confirmOrder } from "../service";
 import { Button } from "@/Components/ui/button";
 import GlobalToast from "@/Components/GlobalToast";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const PaymentTab = ({ products, summary, formik }) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const getVariantName = ({ variantFields, variantValues, variant }) => {
     const variantField = variantValues.find(({ _id }) => _id === variant).name;
     const name = parseValueMap(
@@ -96,8 +98,80 @@ const PaymentTab = ({ products, summary, formik }) => {
   }, [formik.values]);
 
   return (
-    <div className="grid grid-cols-3 h-[555px] gap-4 mt-6">
-      <div className="col-span-2">
+    <div className="flex flex-col md:grid md:grid-cols-3 h-[555px] gap-2 md:gap-4 mt-6 overflow-auto">
+      {isMobile && (
+        <div className="checkout-order-summary">
+          <label htmlFor="" className="">
+            Order Summary
+          </label>
+          <div className="border-b border-gray-500 pb-8">
+            <div className="product-list">
+              {products.map(({ productId, variant, quantity }, index) => (
+                <div className="product-item" key={index}>
+                  <div className="flex gap-2">
+                    <img
+                      src={getFileUrl(
+                        productId.variantValues.find(
+                          ({ _id }) => _id === variant
+                        ).values.picture[0]
+                      )}
+                      alt={productId.name}
+                    />
+                    <div className="text-[10px]">
+                      <h3>{productId.name}</h3>
+                      {getVariantName({
+                        variantFields: productId.variantFields,
+                        variantValues: productId.variantValues,
+                        variant,
+                      })}
+                    </div>
+                  </div>
+
+                  <p>
+                    <span className="text-sm">
+                      ₹
+                      {
+                        productId.variantValues.find(
+                          ({ _id }) => _id === variant
+                        ).values.discountedPrice
+                      }
+                    </span>{" "}
+                    x {quantity}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="order-summary md:my-8">
+            <div className="sub-total">
+              <div className="label">Sub Total</div>
+              <div className="value">₹{summary.subTotal}</div>
+            </div>
+            <div className="discount">
+              <div className="label">Discount</div>
+              <div className="value">-₹{summary.discount}</div>
+            </div>
+            <div className="tax">
+              <div className="label">Tax</div>
+              <div className="value">₹{summary.tax}</div>
+            </div>
+            <div className="shipping">
+              <div className="label">Shipping</div>
+              <div className="shipping-value">
+                {summary.shipping > 0 ? "₹" + summary.shipping : "Free"}
+              </div>
+            </div>
+            <div className="total">
+              <div className="label">Total</div>
+              <div className="value">₹{summary.amount}</div>
+            </div>
+            <div className="expected-delivery">
+              Expected Delivery by <span className="">14th July 2025</span>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="col-span-2 ">
         <label htmlFor="" className="">
           Billing Information
         </label>
@@ -121,7 +195,7 @@ const PaymentTab = ({ products, summary, formik }) => {
               disabled
             />
           </div>
-          <div className="account-detail-item col-span-4">
+          <div className="account-detail-item col-span-2 md:col-span-4">
             <label htmlFor="">Shipping Address</label>
             <InputTextarea
               autoResize
@@ -190,74 +264,78 @@ const PaymentTab = ({ products, summary, formik }) => {
         </div>
         <div className=""></div>
       </div>
-      <div className="checkout-order-summary ">
-        <label htmlFor="" className="">
-          Order Summary
-        </label>
-        <div className="border-b border-gray-500 pb-8">
-          <div className="product-list">
-            {products.map(({ productId, variant, quantity }, index) => (
-              <div className="product-item" key={index}>
-                <div className="flex gap-2">
-                  <img
-                    src={getFileUrl(
-                      productId.variantValues.find(({ _id }) => _id === variant)
-                        .values.picture[0]
-                    )}
-                    alt={productId.name}
-                  />
-                  <div className="text-[10px]">
-                    <h3>{productId.name}</h3>
-                    {getVariantName({
-                      variantFields: productId.variantFields,
-                      variantValues: productId.variantValues,
-                      variant,
-                    })}
+      {!isMobile && (
+        <div className="checkout-order-summary">
+          <label htmlFor="" className="">
+            Order Summary
+          </label>
+          <div className="border-b border-gray-500 pb-8">
+            <div className="product-list">
+              {products.map(({ productId, variant, quantity }, index) => (
+                <div className="product-item" key={index}>
+                  <div className="flex gap-2">
+                    <img
+                      src={getFileUrl(
+                        productId.variantValues.find(
+                          ({ _id }) => _id === variant
+                        ).values.picture[0]
+                      )}
+                      alt={productId.name}
+                    />
+                    <div className="text-[10px]">
+                      <h3>{productId.name}</h3>
+                      {getVariantName({
+                        variantFields: productId.variantFields,
+                        variantValues: productId.variantValues,
+                        variant,
+                      })}
+                    </div>
                   </div>
-                </div>
 
-                <p>
-                  <span className="text-sm">
-                    ₹
-                    {
-                      productId.variantValues.find(({ _id }) => _id === variant)
-                        .values.discountedPrice
-                    }
-                  </span>{" "}
-                  x {quantity}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="order-summary my-8">
-          <div className="sub-total">
-            <div className="label">Sub Total</div>
-            <div className="value">₹{summary.subTotal}</div>
-          </div>
-          <div className="discount">
-            <div className="label">Discount</div>
-            <div className="value">-₹{summary.discount}</div>
-          </div>
-          <div className="tax">
-            <div className="label">Tax</div>
-            <div className="value">₹{summary.tax}</div>
-          </div>
-          <div className="shipping">
-            <div className="label">Shipping</div>
-            <div className="shipping-value">
-              {summary.shipping > 0 ? "₹" + summary.shipping : "Free"}
+                  <p>
+                    <span className="text-sm">
+                      ₹
+                      {
+                        productId.variantValues.find(
+                          ({ _id }) => _id === variant
+                        ).values.discountedPrice
+                      }
+                    </span>{" "}
+                    x {quantity}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="total">
-            <div className="label">Total</div>
-            <div className="value">₹{summary.amount}</div>
-          </div>
-          <div className="expected-delivery">
-            Expected Delivery by <span className="">14th July 2025</span>
+          <div className="order-summary md:my-8">
+            <div className="sub-total">
+              <div className="label">Sub Total</div>
+              <div className="value">₹{summary.subTotal}</div>
+            </div>
+            <div className="discount">
+              <div className="label">Discount</div>
+              <div className="value">-₹{summary.discount}</div>
+            </div>
+            <div className="tax">
+              <div className="label">Tax</div>
+              <div className="value">₹{summary.tax}</div>
+            </div>
+            <div className="shipping">
+              <div className="label">Shipping</div>
+              <div className="shipping-value">
+                {summary.shipping > 0 ? "₹" + summary.shipping : "Free"}
+              </div>
+            </div>
+            <div className="total">
+              <div className="label">Total</div>
+              <div className="value">₹{summary.amount}</div>
+            </div>
+            <div className="expected-delivery">
+              Expected Delivery by <span className="">14th July 2025</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

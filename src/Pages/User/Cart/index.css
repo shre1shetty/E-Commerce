@@ -101,6 +101,29 @@
       }
     }
 
+    @media not all and (min-width: 640px) {
+      .sub-total,
+      .discount,
+      .tax,
+      .shipping,
+      .total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+        .label {
+          font-size: 12px;
+          font-weight: 500;
+        }
+        .value {
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+      .shipping-value {
+        font-size: 12px;
+      }
+    }
+
     .shipping-value {
       color: darkorange;
       font-weight: 600;
@@ -137,7 +160,7 @@
 
   .account-details-content,
   .account-address-content {
-    @apply grid grid-cols-4 gap-2;
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2;
     padding-top: 14px;
     border-bottom: 1px solid #d0d0d0;
     padding-bottom: 28px;
@@ -253,4 +276,19 @@
   border-radius: 11px;
   background-position-x: -13%;
   background-position-y: 145%;
+}
+
+@media not all and (min-width: 640px) {
+  .cart-page {
+    padding: 0 4px;
+    .cart-label {
+      font-size: 1.8rem;
+    }
+  }
+  .order-summary {
+    padding: 10px 5px !important;
+  }
+  .checkout-order-summary {
+    padding: 6px 6px !important;
+  }
 }

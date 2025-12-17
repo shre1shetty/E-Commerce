@@ -157,8 +157,14 @@ const page = () => {
       <label htmlFor="" className="cart-label">
         {current === 1 ? "Your Cart" : current === 2 ? "Checkout" : "Payment"}
       </label>
-      <div className="flex justify-between">
-        <Steps className="!w-1/2 !mt-3" items={items} current={current} />
+      <div className="flex justify-between gap-2 items-center">
+        <Steps
+          direction="horizontal"
+          responsive={false}
+          className="w-full md:!w-1/2"
+          items={items}
+          current={current}
+        />
         <button className="" onClick={() => backButtonHandler(current)}>
           <ArrowLeft />
         </button>
