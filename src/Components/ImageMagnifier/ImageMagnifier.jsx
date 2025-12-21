@@ -14,16 +14,18 @@ const ImageMagnifier = ({
   const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
   const [[x, y], setXY] = useState([0, 0]);
 
-  const mouseEnter = (e) => {
-    const el = e.currentTarget;
-
+  const setImageSize = (el) => {
     const { width, height } = el.getBoundingClientRect();
     setSize([width, height]);
+  };
+
+  // 🖱 Mouse
+  const mouseEnter = (e) => {
+    setImageSize(e.currentTarget);
     setShowMagnifier(true);
   };
 
-  const mouseLeave = (e) => {
-    e.preventDefault();
+  const mouseLeave = () => {
     setShowMagnifier(false);
   };
 
@@ -37,6 +39,38 @@ const ImageMagnifier = ({
     setXY([x, y]);
   };
 
+  // 📱 Touch
+  const touchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const el = e.currentTarget;
+
+    setImageSize(el);
+    setShowMagnifier(true);
+
+    const { top, left } = el.getBoundingClientRect();
+    setXY([
+      touch.pageX - left - window.scrollX,
+      touch.pageY - top - window.scrollY,
+    ]);
+  };
+
+  const touchMove = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const el = e.currentTarget;
+    const { top, left } = el.getBoundingClientRect();
+
+    setXY([
+      touch.pageX - left - window.scrollX,
+      touch.pageY - top - window.scrollY,
+    ]);
+  };
+
+  const touchEnd = () => {
+    setShowMagnifier(false);
+  };
+
   return (
     <div className="relative inline-block">
       <img
@@ -45,26 +79,32 @@ const ImageMagnifier = ({
         width={width}
         height={height}
         alt={alt}
-        onMouseEnter={(e) => mouseEnter(e)}
-        onMouseLeave={(e) => mouseLeave(e)}
-        onMouseMove={(e) => mouseMove(e)}
-        style={{ height: height }}
+        style={{
+          height,
+          touchAction: "none", // 🔴 THIS is mandatory
+        }}
+        onMouseEnter={mouseEnter}
+        onMouseLeave={mouseLeave}
+        onMouseMove={mouseMove}
+        onTouchStart={touchStart}
+        onTouchMove={touchMove}
+        onTouchEnd={touchEnd}
       />
+
       <div
         style={{
-          display: showMagnifier ? "" : "none",
+          display: showMagnifier ? "block" : "none",
           position: "absolute",
           pointerEvents: "none",
-          height: `${magnifierHeight}px`,
-          width: `${magnifierWidth}px`,
-          opacity: "1",
+          height: magnifierHeight,
+          width: magnifierWidth,
           border: "1px solid lightgrey",
-          backgroundColor: "white",
           borderRadius: "5px",
+          backgroundColor: "white",
           backgroundImage: `url('${src}')`,
           backgroundRepeat: "no-repeat",
-          top: `${y - magnifierHeight / 2}px`,
-          left: `${x - magnifierWidth / 2}px`,
+          top: y - magnifierHeight / 2,
+          left: x - magnifierWidth / 2,
           backgroundSize: `${imgWidth * zoomLevel}px ${
             imgHeight * zoomLevel
           }px`,

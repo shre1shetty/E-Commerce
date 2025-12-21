@@ -275,18 +275,32 @@ body {
   }
 }
 
-.ant-steps-icon,
+.ant-upload-list-picture {
+  max-height: 222px;
+  overflow: auto;
+}
+
+.ant-steps-item-icon,
 .ant-steps-item-title {
   color: color-mix(in oklab, var(--user-theme), black 25%) !important;
   font-weight: 600;
 }
 
 .ant-steps-item-wait {
-  .ant-steps-icon,
+  .ant-steps-item-icon,
   .ant-steps-item-title {
     color: #969696a6 !important;
   }
 }
+
+.ant-steps .ant-steps-item-rail.ant-steps-item-rail-wait {
+  --steps-item-solid-line-color: rgb(0 0 0 / 25%);
+}
+
+.ant-steps .ant-steps-item-rail {
+  --steps-item-solid-line-color: var(--user-theme);
+}
+
 .ant-segmented {
   background-color: #eef0f2;
 }

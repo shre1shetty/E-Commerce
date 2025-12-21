@@ -28,7 +28,7 @@ const CartTab = ({ products, setcurrent, setitems, setproducts, summary }) => {
     }).then((resp) => setproducts(resp.products));
   };
   return (
-    <div className="flex flex-col md:grid md:grid-cols-3 gap-6 h-[555px] mt-6">
+    <div className="flex flex-col md:grid md:grid-cols-3 gap-6  mt-6">
       <div className="col-span-2 flex flex-col gap-4 overflow-y-auto">
         {products.map(({ _id, productId, variant, quantity }, index) => (
           <div className="">

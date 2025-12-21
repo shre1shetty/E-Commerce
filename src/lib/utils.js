@@ -235,3 +235,18 @@ export const exportToExcel = ({ data, fileName }) => {
   XLSX.utils.book_append_sheet(wb, ws, "Products");
   XLSX.writeFile(wb, fileName);
 };
+
+export const matchRoute = (routePath, currentPath) => {
+  if (routePath === "/") {
+    return currentPath === "/";
+  }
+
+  const routeParts = routePath.split("/").filter(Boolean);
+  const currentParts = currentPath.split("/").filter(Boolean);
+
+  if (routeParts.length !== currentParts.length) return false;
+
+  return routeParts.every((part, index) => {
+    return part.startsWith(":") || part === currentParts[index];
+  });
+};

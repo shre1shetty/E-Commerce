@@ -98,7 +98,7 @@ const PaymentTab = ({ products, summary, formik }) => {
   }, [formik.values]);
 
   return (
-    <div className="flex flex-col md:grid md:grid-cols-3 h-[555px] gap-2 md:gap-4 mt-6 overflow-auto">
+    <div className="flex flex-col md:grid md:grid-cols-3  gap-2 md:gap-4 mt-6 overflow-auto">
       {isMobile && (
         <div className="checkout-order-summary">
           <label htmlFor="" className="">

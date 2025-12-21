@@ -120,7 +120,7 @@ const HomePage = () => {
           <text className="text-2xl font-bold text-[#353434]">
             Our Category
           </text>
-          <div className="flex gap-1 md:gap-4 lg:gap-6 mt-4 h-[90px] md:h-[110px] lg:h-[140px] overflow-hidden overflow-x-auto">
+          <div className="flex gap-1 md:gap-4 lg:gap-6 mt-4 h-[90px] md:h-[110px] lg:h-[140px]">
             <CircularOption image={TopDiscount}>Top Discounts</CircularOption>
             {category.map(({ image, label, value }) => (
               <CircularOption
@@ -198,6 +198,7 @@ const HomePage = () => {
                           filters={product.variantFields}
                           description={product.description}
                           variantValues={product.variantValues}
+                          avgRating={product.avgRating}
                         />
                       ))}
                     </div>

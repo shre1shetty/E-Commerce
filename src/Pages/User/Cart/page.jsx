@@ -148,15 +148,15 @@ const page = () => {
     formik.setFieldValue("currentState", current);
   }, [current]);
 
-  useEffect(() => {
-    console.log(formik.values);
-  }, [formik.values]);
+  // useEffect(() => {
+  //   console.log(formik.values);
+  // }, [formik.values]);
 
   return (
     <div className="cart-page" data-tab={current}>
-      <label htmlFor="" className="cart-label">
+      {/* <label htmlFor="" className="cart-label">
         {current === 1 ? "Your Cart" : current === 2 ? "Checkout" : "Payment"}
-      </label>
+      </label> */}
       <div className="flex justify-between gap-2 items-center">
         <Steps
           direction="horizontal"

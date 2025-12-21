@@ -5,8 +5,8 @@ const Footer = ({ logo, footerDetails }) => {
   return (
     <div className="footer">
       <div className="">
-        <img src={logo} alt="" className="h-14 w-14" />
-        <div className="text-[9px]">
+        <img src={logo} alt="" className="h-[50px] w-[50px] md:h-14 md:w-14" />
+        <div className="text-[8px] md:text-[9px] leading-none">
           © 2025 Shoes India Pvt. Ltd. All rights reserved.
         </div>
       </div>
@@ -36,7 +36,7 @@ const Footer = ({ logo, footerDetails }) => {
           <Youtube color="white" size={12} />
         </a>
       </div>
-      <div className="flex gap-5">
+      <div className="flex gap-1.5 md:gap-5">
         <div className="">
           <div className="footer-label">Address</div>
           <div className="footer-text">{footerDetails.address}</div>

@@ -1,8 +1,14 @@
 import { convertToBase64toFile, getFileUrl } from "@/lib/utils";
-import React from "react";
+import React, { useContext } from "react";
 import "./index.css";
 import { Heart, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { addToWishList, removeFromWishList } from "./service";
+import { useDispatch, useSelector } from "react-redux";
+import { setWishList } from "@/Redux/Slice/WishlistSlice";
+import { loginStateContext } from "@/Router/RouteContainer";
+import { LS } from "@/lib/SecureLocalStorage";
+import { AxiosInstance } from "@/lib/AxiosInstance";
 
 const RegularProductCard = ({
   _id,
@@ -12,7 +18,13 @@ const RegularProductCard = ({
   price,
   variantFields,
   variantValues,
+  avgRating = 4.5,
 }) => {
+  const dispatch = useDispatch();
+  const wishList = useSelector((state) => state.data.wishlist.wishlist);
+  const isWishListed = wishList?.some(
+    (val) => val.toString() === _id.toString()
+  );
   const navigate = useNavigate();
   const getVariantField = ({ flag, value }) => {
     if (flag === "Fill") {
@@ -41,14 +53,55 @@ const RegularProductCard = ({
       );
     }
   };
+  const addItemToWishlist = ({ productId, userId }) => {
+    addToWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
+  };
+
+  const { setopen } = useContext(loginStateContext);
+
+  const removeItemfromWishlist = ({ productId, userId }) => {
+    removeFromWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
+  };
   return (
     <div className="product-card" onClick={() => navigate(`/Product/${_id}`)}>
       <div className="ratings">
         <Star fill="gold" color="gold" size={15} />
-        <span className="">4.5</span>
+        <span className="">{avgRating.toFixed(1)}</span>
       </div>
       <div className="product-wishlist">
-        <Heart />
+        <button
+          className=""
+          onClick={(event) => {
+            event.stopPropagation();
+            if (LS.get("userId")) {
+              isWishListed
+                ? removeItemfromWishlist({
+                    productId: _id,
+                    userId: LS.get("userId"),
+                  })
+                : addItemToWishlist({
+                    productId: _id,
+                    userId: LS.get("userId"),
+                  });
+            } else {
+              setopen(true);
+            }
+          }}
+        >
+          {isWishListed ? <Heart fill="red" stroke="red" /> : <Heart />}
+        </button>
       </div>
       <div className="background-circle"></div>
       <div className="product-image">

@@ -23,6 +23,7 @@ const page = () => {
           filters={product.variantFields}
           description={product.description}
           variantValues={product.variantValues}
+          avgRating={product.avgRating}
         />
       ))}
     </div>

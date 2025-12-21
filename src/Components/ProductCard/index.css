@@ -140,7 +140,7 @@
 }
 
 .top-product-name {
-  font-size: 18px;
+  font-size: 16px;
   padding-left: 13px;
   font-weight: 600;
   color: #161616;
@@ -161,7 +161,7 @@
 
 .top-product-price {
   padding-left: 13px;
-  color: #c09f8a;
+  color: #003049;
   font-size: 17px;
   font-weight: 800;
   display: flex;

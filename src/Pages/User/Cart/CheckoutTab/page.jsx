@@ -1,7 +1,7 @@
 import SelectElement from "@/Components/Select/SelectElement";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import States from "@/assets/states.json";
 import Cities from "@/assets/cities.json";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -9,9 +9,10 @@ import { ArrowRight } from "lucide-react";
 import { LS } from "@/lib/SecureLocalStorage";
 import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
 import GlobalToast from "@/Components/GlobalToast";
+import { getRows } from "../../UserPage/Address/service";
+import { Radio } from "antd";
 const CheckoutTab = ({ setcurrent, setitems, formik }) => {
-  const cities =
-    Cities.find(({ value }) => formik.values.stateId === value)?.cities ?? [];
+  const [cities, setcities] = useState([]);
   const handleClick = (event) => {
     event.preventDefault();
     formik.submitForm();
@@ -38,8 +39,45 @@ const CheckoutTab = ({ setcurrent, setitems, formik }) => {
       }
     });
   };
+  const [addressList, setaddressList] = useState([]);
+  const [addressType, setaddressType] = useState("Other");
+  useEffect(() => {
+    getRows().then(setaddressList);
+  }, []);
+
+  useEffect(() => {
+    formik.setFieldTouched("address", false);
+    formik.setFieldTouched("state", false);
+    formik.setFieldTouched("stateId", false);
+    formik.setFieldTouched("city", false);
+    formik.setFieldTouched("pincode", false);
+    if (addressType === "Other") {
+      formik.setFieldValue("address", "");
+      formik.setFieldValue("state", "");
+      formik.setFieldValue("stateId", "");
+      formik.setFieldValue("city", "");
+      formik.setFieldValue("pincode", "");
+    } else {
+      const selectedAddress = addressList.find(
+        ({ addressName }) => addressName === addressType
+      );
+      formik.setFieldValue("address", selectedAddress.address);
+      formik.setFieldValue("state", selectedAddress.state);
+      formik.setFieldValue("stateId", parseInt(selectedAddress.stateId));
+      formik.setFieldValue("city", selectedAddress.city);
+      formik.setFieldValue("pincode", selectedAddress.pincode);
+    }
+    formik.setErrors({});
+  }, [addressType]);
+
+  useEffect(() => {
+    setcities(
+      Cities.find(({ value }) => formik.values.stateId === value)?.cities ?? []
+    );
+  }, [formik.values.stateId]);
+
   return (
-    <div className=" h-[555px] mt-6">
+    <div className="  mt-6">
       <form className="col-span-2 flex flex-col gap-4 overflow-y-auto pb-2">
         <div className="account-details">
           <label htmlFor="" className="account-details-label">
@@ -62,7 +100,7 @@ const CheckoutTab = ({ setcurrent, setitems, formik }) => {
                 maxLength={14}
                 useGrouping={false}
                 prefix="+91 "
-                // value={formik.values.phone}
+                value={parseInt(formik.values.phone)}
                 onChange={({ value }) => formik.setFieldValue("phone", value)}
               />
             </div>
@@ -72,6 +110,23 @@ const CheckoutTab = ({ setcurrent, setitems, formik }) => {
           <label htmlFor="" className="account-address-label">
             2. Delivery Address
           </label>
+          <div className="flex justify-end">
+            <Radio.Group
+              size="middle"
+              options={[
+                ...addressList.map((val) => ({
+                  value: val.addressName,
+                  label: val.addressName,
+                })),
+                {
+                  label: "Other",
+                  value: "Other",
+                },
+              ]}
+              value={addressType}
+              onChange={(event) => setaddressType(event.target.value)}
+            />
+          </div>
           <div className="account-address-content">
             <div className="account-address-item col-span-2 md:col-span-3 lg:col-span-4">
               <label htmlFor="" className="mandatory">

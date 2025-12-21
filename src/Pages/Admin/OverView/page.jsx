@@ -159,6 +159,7 @@ const OverView = () => {
 
   useEffect(() => {
     getMonthlySales().then((data) => {
+      console.log(data);
       setmonthlySales({
         sales: data.data.totalSales,
         salesByDay: data.salesByDays,

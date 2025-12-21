@@ -3,7 +3,7 @@ import {
   getProductById,
   getRatingsByproductId,
 } from "@/Pages/Admin/ProductsToDisplay/service";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./index.css";
 import { Rating } from "primereact/rating";
@@ -24,16 +24,19 @@ import LoginModal from "@/Pages/Login/LoginModal";
 import { addToCart } from "./service";
 import { setCount } from "@/Redux/Slice/CountSlice";
 import { useDispatch } from "react-redux";
+import { loginStateContext } from "@/Router/RouteContainer";
+import RatingModal from "@/Components/Modal/RatingModal";
 const page = () => {
   const { id } = useParams();
+  const { setopen } = useContext(loginStateContext);
   const [selectedVariant, setselectedVariant] = useState({});
   const [selectedVariantField, setselectedVariantField] = useState({});
   const [selectedImage, setselectedImage] = useState(null);
   const [openDescription, setopenDescription] = useState(false);
   const [openSpecification, setopenSpecification] = useState(false);
+  const [openRatings, setopenRatings] = useState(false);
   const [reviewImages, setreviewImages] = useState([]);
   const [reviews, setreviews] = useState([]);
-  const [open, setopen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [product, setproduct] = useState({
@@ -126,23 +129,25 @@ const page = () => {
   const src = selectedImage ? getFileUrl(selectedImage) : "";
 
   useEffect(() => {
-    getProductById(id).then((resp) => {
-      setproduct(resp);
-      setselectedImage(resp.variantValues[0].values.picture[0]);
-      setselectedVariantField(
-        resp.variantFields.reduce((acc, field) => {
-          acc[field.field] = field.value[0];
-          return acc;
-        }, {})
-      );
-    });
-    getRatingsByproductId(id).then((resp) => {
-      setreviews(resp);
-      setreviewImages(
-        resp.reduce((acc, curr) => [...acc, ...curr.pictures], [])
-      );
-    });
-  }, []);
+    if (!openRatings) {
+      getProductById(id).then((resp) => {
+        setproduct(resp);
+        setselectedImage(resp.variantValues[0].values.picture[0]);
+        setselectedVariantField(
+          resp.variantFields.reduce((acc, field) => {
+            acc[field.field] = field.value[0];
+            return acc;
+          }, {})
+        );
+      });
+      getRatingsByproductId(id).then((resp) => {
+        setreviews(resp);
+        setreviewImages(
+          resp.reduce((acc, curr) => [...acc, ...curr.pictures], [])
+        );
+      });
+    }
+  }, [openRatings]);
   useEffect(() => {
     // console.log(selectedVariantField);
     const selectedVariant = product.variantValues?.find(({ name }) =>
@@ -151,6 +156,11 @@ const page = () => {
     setselectedImage(selectedVariant?.values?.picture[0]);
     setselectedVariant(selectedVariant || {});
   }, [selectedVariantField]);
+
+  useEffect(() => {
+    console.log(selectedVariantField);
+  }, [selectedVariantField]);
+
   return (
     <div>
       <div className=""></div>
@@ -292,7 +302,9 @@ const page = () => {
                 <span className="text-xs mt-1">(1299902 reviews)</span>
               </div>
 
-              <button className="">Rate this product</button>
+              <button className="" onClick={() => setopenRatings(true)}>
+                Rate this product
+              </button>
             </div>
             <div className="product-page-review-images">
               Images by customers
@@ -335,7 +347,14 @@ const page = () => {
           </div>
         </div>
       </div>
-      <LoginModal open={open} setopen={setopen} />
+      <RatingModal
+        id={product._id}
+        image={src}
+        variant={selectedVariantField}
+        name={product.name}
+        open={openRatings}
+        setopen={setopenRatings}
+      />
     </div>
   );
 };

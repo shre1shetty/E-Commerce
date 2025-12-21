@@ -20,6 +20,7 @@ const HomeProductCard = ({
   description,
   variantValues = [],
   onClick = null,
+  avgRating = 4.5,
 }) => {
   const navigate = useNavigate();
   const wishList = useSelector((state) => state.data.wishlist.wishlist);
@@ -69,7 +70,6 @@ const HomeProductCard = ({
   };
 
   useEffect(() => {
-    console.log(filters);
     setvariant1({
       name: filters[0]?.field,
       value: filters[0]?.value[0],
@@ -181,7 +181,7 @@ const HomeProductCard = ({
       </div>
       <div className="flex text-xs items-center font-extrabold text-blue-950 gap-1 absolute top-4 left-4">
         <Star fill="gold" size={12} color="gold" />
-        <div className="">4.5</div>
+        <div className="">{avgRating.toFixed(1)}</div>
       </div>
     </div>
   );

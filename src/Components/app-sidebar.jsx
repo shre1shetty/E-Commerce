@@ -35,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { setRole } from "@/Redux/Slice/UserSlice";
 import { useDispatch } from "react-redux";
+import { setCount } from "@/Redux/Slice/CountSlice";
 
 // This is sample data.
 const data = {

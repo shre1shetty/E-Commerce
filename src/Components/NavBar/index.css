@@ -129,14 +129,14 @@
 .navbar-content {
   border-radius: 999px;
   padding: 4px;
-  background-color: color-mix(in oklab, var(--user-theme), white 80%);
+  background-color: color-mix(in oklab, var(--user-theme), white 60%);
   display: flex;
   align-items: center;
 }
 
 .navbar-button {
   background-color: color-mix(in oklab, var(--user-theme), white 70%);
-  color: var(--user-theme);
+  color: color-mix(in oklab, var(--user-theme), black 17%);
   padding: 8px;
   border-radius: 999px;
 }

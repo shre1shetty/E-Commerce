@@ -4,6 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LS } from "@/lib/SecureLocalStorage";
 import { useDispatch } from "react-redux";
 import { setRole } from "@/Redux/Slice/UserSlice";
+import { setCount } from "@/Redux/Slice/CountSlice";
 const OrdersPage = React.lazy(() => import("./Order/page"));
 const AddressPage = React.lazy(() => import("./Address/page"));
 const WishlistPage = React.lazy(() => import("./Favourite/page"));
@@ -70,6 +71,7 @@ const page = () => {
               onClick={() => {
                 LS.clear();
                 dispatch(setRole("user"));
+                dispatch(setCount(0));
                 navigate("/");
               }}
             >

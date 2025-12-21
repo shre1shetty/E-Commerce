@@ -16,6 +16,7 @@ import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
 import { AdminAxiosInstanceforUpload as AxiosInstanceforUpload } from "@/lib/AdminAxiosInstanceforUpload";
 import { setWishList } from "@/Redux/Slice/WishlistSlice";
 import { Segmented } from "antd";
+import { setCount } from "@/Redux/Slice/CountSlice";
 const LoginModal = ({ open, setopen }) => {
   const navigate = useNavigate();
   const [loginSignup, setloginSignup] = useState("Login");
@@ -89,6 +90,11 @@ const LoginModal = ({ open, setopen }) => {
             }).then((res) => {
               dispatch(setWishList(res.data));
             });
+            AxiosInstance.get(`/Cart/getCartCount?userId=${values._id}`).then(
+              (resp) => {
+                dispatch(setCount(resp.data.count ?? 0));
+              }
+            );
             setopen(false);
           } else {
             GlobalToast({

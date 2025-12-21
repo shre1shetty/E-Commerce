@@ -276,6 +276,7 @@ const NavbarSearch = () => {
                     price,
                     pictures,
                     description,
+                    avgRating,
                   }) => (
                     <div className="min-w-[250px]">
                       <HomeProductCard
@@ -291,6 +292,7 @@ const NavbarSearch = () => {
                           setopen(false);
                           navigate(`/Product/${_id}`);
                         }}
+                        avgRating={avgRating}
                       />
                     </div>
                   )

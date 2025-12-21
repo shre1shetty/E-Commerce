@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import { Router } from "./Routes";
 import "./Router.scss";
 import { BrowserRouter } from "react-router-dom";
-import { LS } from "@/lib/SecureLocalStorage";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -57,7 +56,6 @@ const RouteContainer = () => {
   const [logo, setlogo] = useState(null);
   const [open, setopen] = useState(false);
   const [footerDetails, setfooterDetails] = useState({});
-  const sidebarRef = useRef(null);
   const role = useSelector((state) => state.data.role.role);
 
   const ContextValue = { open, setopen };
@@ -76,9 +74,7 @@ const RouteContainer = () => {
           <>
             <SidebarProvider defaultOpen={false}>
               <div className="container-div w-full">
-                <div className="" ref={sidebarRef}>
-                  <AppSidebar />
-                </div>
+                <AppSidebar />
                 <div className={"bg-[#f2f4f7] grow p-3 text-black"}>
                   <AdminNavBar />
                   <div
