@@ -2,7 +2,13 @@ import CustomHeader from "@/Components/CustomHeader";
 import SelectElement from "@/Components/Select/SelectElement";
 import React, { useEffect, useState } from "react";
 import { addProduct, getInventory } from "./service";
-import { cn, combineUnique, convertForSelect } from "@/lib/utils";
+import {
+  cn,
+  combineUnique,
+  convertForSelect,
+  convertToFormData,
+  generateCombinations,
+} from "@/lib/utils";
 import { useFormik } from "formik";
 import { Input } from "@/Components/ui/input";
 import {
@@ -47,6 +53,7 @@ const Create = () => {
     initialValues: {
       tags: [],
       variantFields: [],
+      variantValues: [],
       category: [],
     },
   });
@@ -138,6 +145,19 @@ const Create = () => {
       getVariantFields(selectedOption.productType, selectedOption);
     }
   }, [formik.values.name]);
+
+  useEffect(() => {
+    if (formik.values.variantFields[0]?.value.length > 0) {
+      formik.setFieldValue(
+        "variantValues",
+        generateCombinations({
+          data: formik.values.variantFields,
+          price: 0,
+          inStock: 0,
+        })
+      );
+    }
+  }, [formik.values.variantFields]);
 
   useEffect(() => {
     console.log(formik.values);
@@ -518,18 +538,32 @@ const Create = () => {
                             field1={formik.values.variantFields[0]?.field}
                             field2={formik.values.variantFields[1]?.field}
                             setSizeVariantValues={(values) => {
-                              formik.setFieldValue(
-                                "variantValues",
-                                formik.values.variantValues.map((value) =>
-                                  value.name ===
-                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`
-                                    ? {
-                                        name: `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`,
-                                        values: values,
-                                      }
-                                    : value
+                              const name = `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`;
+                              if (
+                                formik.values.variantValues.some(
+                                  (value) => value.name === name
                                 )
-                              );
+                              ) {
+                                formik.setFieldValue(
+                                  "variantValues",
+                                  formik.values.variantValues.map((value) =>
+                                    value.name === name
+                                      ? {
+                                          name: name,
+                                          values: values,
+                                        }
+                                      : value
+                                  )
+                                );
+                              } else {
+                                formik.setFieldValue("variantValues", [
+                                  ...formik.values.variantValues,
+                                  {
+                                    name: name,
+                                    values,
+                                  },
+                                ]);
+                              }
                             }}
                           />
                         ))}

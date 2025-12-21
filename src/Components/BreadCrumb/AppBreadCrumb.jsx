@@ -9,6 +9,9 @@ const breadcrumbConfig = [
   { path: "/Product/:id", label: "Product" },
   { path: "/Cart", label: "Cart" },
   { path: "/userDetails", label: "My Account" },
+  { path: "/userDetails/Orders", label: "Orders" },
+  { path: "/userDetails/Addresses", label: "Addresses" },
+  { path: "/userDetails/Wishlist", label: "Wishlist" },
 ];
 
 const AppBreadcrumb = () => {

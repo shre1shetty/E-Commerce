@@ -53,7 +53,6 @@ const RatingModal = ({ image, variant, name, open, setopen, id }) => {
       </span>
     ));
   };
-  console.log(LS.get("userId"));
   const formik = useFormik({
     initialValues: {
       userId: LS.get("userId"),

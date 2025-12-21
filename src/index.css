@@ -225,7 +225,10 @@ body {
   box-shadow: none;
   @apply px-3 py-2 text-sm h-10;
 }
-
+.fa-brands,
+.fa-solid {
+  font-family: "Font Awesome 6 Brands" !important;
+}
 .p-button {
   padding: 6px 12px;
   font-size: 14px;

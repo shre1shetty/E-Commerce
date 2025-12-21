@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Heart,
   HeartIcon,
   Share2,
   ShoppingCart,
@@ -23,11 +24,21 @@ import { LS } from "@/lib/SecureLocalStorage";
 import LoginModal from "@/Pages/Login/LoginModal";
 import { addToCart } from "./service";
 import { setCount } from "@/Redux/Slice/CountSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginStateContext } from "@/Router/RouteContainer";
 import RatingModal from "@/Components/Modal/RatingModal";
+import {
+  addToWishList,
+  removeFromWishList,
+} from "@/Components/ProductCard/service";
+import { setWishList } from "@/Redux/Slice/WishlistSlice";
+import ShareModal from "@/Components/Modal/ShareModal";
 const page = () => {
   const { id } = useParams();
+  const wishList = useSelector((state) => state.data.wishlist.wishlist);
+  const isWishListed = wishList?.some(
+    (val) => val.toString() === id.toString()
+  );
   const { setopen } = useContext(loginStateContext);
   const [selectedVariant, setselectedVariant] = useState({});
   const [selectedVariantField, setselectedVariantField] = useState({});
@@ -35,6 +46,7 @@ const page = () => {
   const [openDescription, setopenDescription] = useState(false);
   const [openSpecification, setopenSpecification] = useState(false);
   const [openRatings, setopenRatings] = useState(false);
+  const [openShare, setopenShare] = useState(false);
   const [reviewImages, setreviewImages] = useState([]);
   const [reviews, setreviews] = useState([]);
   const dispatch = useDispatch();
@@ -127,6 +139,25 @@ const page = () => {
   }
 
   const src = selectedImage ? getFileUrl(selectedImage) : "";
+  const addItemToWishlist = ({ productId, userId }) => {
+    addToWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
+  };
+
+  const removeItemfromWishlist = ({ productId, userId }) => {
+    removeFromWishList({ productId, userId }).then((res) => {
+      if (res) {
+        AxiosInstance.post("/Wishlist/getWishlistByUser", {
+          userId,
+        }).then((res) => dispatch(setWishList(res.data)));
+      }
+    });
+  };
 
   useEffect(() => {
     if (!openRatings) {
@@ -168,9 +199,28 @@ const page = () => {
         <div className="col lg:col-span-2 sm:col flex flex-col gap-2">
           <div className="p-2.5 rounded-md bg-[#f6f6f6] relative flex justify-center">
             <ImageMagnifier src={src} height={480} width={"auto"} />
-            <button className="product-page-wishlist-button">
-              <HeartIcon size={16} />
-            </button>
+            <div className="product-page-wishlist-button">
+              <button
+                className=""
+                onClick={() => {
+                  if (LS.get("userId")) {
+                    isWishListed
+                      ? removeItemfromWishlist({
+                          productId: id,
+                          userId: LS.get("userId"),
+                        })
+                      : addItemToWishlist({
+                          productId: id,
+                          userId: LS.get("userId"),
+                        });
+                  } else {
+                    setopen(true);
+                  }
+                }}
+              >
+                {isWishListed ? <Heart fill="red" stroke="red" /> : <Heart />}
+              </button>
+            </div>
           </div>
           <div className="flex gap-2 w-full bg-[#f6f6f6] p-1">
             <button className="bg-white text-[darkgray] hover:text-[gray]">
@@ -227,7 +277,7 @@ const page = () => {
         <div className="col lg:col-span-3 sm:col relative">
           <div className="flex justify-between">
             <div className="product-page-name">{product.name} </div>
-            <button className="">
+            <button className="" onClick={() => setopenShare(true)}>
               <Share2 />
             </button>
           </div>
@@ -355,6 +405,7 @@ const page = () => {
         open={openRatings}
         setopen={setopenRatings}
       />
+      <ShareModal open={openShare} setopen={setopenShare} product={product} />
     </div>
   );
 };
