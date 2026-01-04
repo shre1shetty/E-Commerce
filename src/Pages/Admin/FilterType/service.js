@@ -22,3 +22,12 @@ export const DeleteFilterType = async (data) => {
     console.log(error);
   }
 };
+
+export const ToggleShowOnSearch = async (body) => {
+  try {
+    const resp = await AxiosInstance.post("/Filters/toggleShowOnSearch", body);
+    return resp.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

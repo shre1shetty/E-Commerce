@@ -56,7 +56,7 @@ const Page = () => {
     getVariant().then((resp) => setrows(resp));
   };
   useEffect(() => {
-    getVariant().then((resp) => setrows(resp));
+    refreshGrid();
   }, []);
 
   return (

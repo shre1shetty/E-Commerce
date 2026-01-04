@@ -1,11 +1,12 @@
 import AgGrid from "@/Components/AgGrid/AgGrid";
 import GlobalToast from "@/Components/GlobalToast";
 import React, { useEffect, useState } from "react";
-import { DeleteFilterType, getFilterType } from "./service";
+import { DeleteFilterType, getFilterType, ToggleShowOnSearch } from "./service";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomHeader from "@/Components/CustomHeader";
 import AddModal from "./Dialog/AddModal";
 import EditModal from "./Dialog/EditModal";
+import { Checkbox } from "primereact/checkbox";
 
 const Page = () => {
   const { id } = useParams();
@@ -13,6 +14,20 @@ const Page = () => {
   const navigate = useNavigate();
   const deleteFilter = (itemId) => {
     DeleteFilterType({ itemId: itemId, id: id }).then((resp) => {
+      GlobalToast({
+        message: resp.statusMsg,
+        messageTimer: 2500,
+        messageType: resp.statusCode === 200 ? "success" : "error",
+      });
+      refreshGrid();
+    });
+  };
+  const toggleShowOnSearch = ({ _id, showOnSearch }) => {
+    ToggleShowOnSearch({
+      _id,
+      id,
+      showOnSearch,
+    }).then((resp) => {
       GlobalToast({
         message: resp.statusMsg,
         messageTimer: 2500,
@@ -45,6 +60,25 @@ const Page = () => {
     {
       field: "name",
       headerName: "Name",
+    },
+    {
+      field: "showOnSearch",
+      headerName: "Is Active",
+      cellRenderer: (params) => (
+        <div className="h-full-w-full flex justify-center items-center">
+          <Checkbox
+            checked={params.data.showOnSearch}
+            onChange={(event) => {
+              toggleShowOnSearch({
+                _id: params.data._id,
+                showOnSearch: event.checked,
+              });
+            }}
+            className="!h-full !w-6"
+            size={10}
+          ></Checkbox>
+        </div>
+      ),
     },
   ];
   const refreshGrid = () => {

@@ -10,3 +10,12 @@ export const getProducts = async (terms) => {
     console.log(error);
   }
 };
+
+export const getSearchFilters = async () => {
+  try {
+    const resp = await AxiosInstance.get("/Filters/getOptionsForSearch");
+    return resp.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

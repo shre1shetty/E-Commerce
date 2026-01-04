@@ -59,6 +59,7 @@ const EditPage = () => {
   const handleUpdate = (data) => {
     delete data._id;
     const formData = convertToFormData(data);
+    console.log(Object.fromEntries(formData.entries()));
     updateProduct(searchParams.get("id"), formData).then((resp) => {
       if (resp.statusCode === 200) {
         GlobalToast({

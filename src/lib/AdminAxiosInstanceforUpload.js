@@ -6,9 +6,6 @@ export const AdminAxiosInstanceforUpload = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}`,
 });
 
-AdminAxiosInstanceforUpload.defaults.headers.common["Content-Type"] =
-  "multipart/form-data";
-
 AdminAxiosInstanceforUpload.interceptors.request.use((config) => {
   const token = TokenStore.getToken();
   if (token) config.headers["Authorization"] = `Bearer ${token}`;
@@ -40,8 +37,8 @@ AdminAxiosInstanceforUpload.interceptors.response.use(
       TokenStore.setToken(res.data.accessToken);
       return AdminAxiosInstanceforUpload(originalRequest);
     }
-    LS.clear();
-    window.location.href = import.meta.env.BASE_URL;
+    // LS.clear();
+    // window.location.href = import.meta.env.BASE_URL;
     return Promise.reject(err);
   }
 );

@@ -1,8 +1,5 @@
 import { AdminAxiosInstance as AxiosInstance } from "@/lib/AdminAxiosInstance";
-import {
-  AdminAxiosInstanceforUpload,
-  AdminAxiosInstanceforUpload as AxiosInstanceUpload,
-} from "@/lib/AdminAxiosInstanceforUpload";
+import { AdminAxiosInstanceforUpload as AxiosInstanceUpload } from "@/lib/AdminAxiosInstanceforUpload";
 
 export const getInventory = async () => {
   try {
@@ -24,6 +21,7 @@ export const addProduct = async (product) => {
 
 export const updateProduct = async (id, product) => {
   try {
+    console.log(id, Object.fromEntries(product.entries()));
     const res = await AxiosInstanceUpload.post(
       `/Products/updateProduct?id=${id}`,
       product

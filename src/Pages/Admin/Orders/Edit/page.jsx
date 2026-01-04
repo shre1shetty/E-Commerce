@@ -72,11 +72,11 @@ const page = () => {
     return formattedName.slice(0, -3); // Remove the last " / "
   };
 
-  const handleSave = (data) => {
+  const handleSave = (data, order) => {
     formik.validateForm().then((errors) => {
       console.log(errors);
       if (Object.keys(errors).length === 0) {
-        proceedToNextStage(data).then((resp) => {
+        proceedToNextStage({ ...data, ...order.userId }).then((resp) => {
           GlobalToast({
             message: resp?.message,
             messageTimer: 2500,
@@ -390,7 +390,7 @@ const page = () => {
               </div>
               <Button
                 className="w-full"
-                onClick={() => handleSave(formik.values)}
+                onClick={() => handleSave(formik.values, Order)}
               >
                 Submit
               </Button>

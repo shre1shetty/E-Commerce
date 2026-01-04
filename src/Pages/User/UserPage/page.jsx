@@ -8,6 +8,7 @@ import { setCount } from "@/Redux/Slice/CountSlice";
 const OrdersPage = React.lazy(() => import("./Order/page"));
 const AddressPage = React.lazy(() => import("./Address/page"));
 const WishlistPage = React.lazy(() => import("./Favourite/page"));
+const LoginSecurityPage = React.lazy(() => import("./LoginSecurity/page"));
 const page = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -44,7 +45,15 @@ const page = () => {
               <i class="fa-solid fa-location-dot"></i>
               <p className="">Your Addresses</p>
             </li>
-            <li className="">
+            <li
+              className={
+                pathname.toLowerCase() ===
+                "/userDetails/Login&Security".toLowerCase()
+                  ? "active"
+                  : ""
+              }
+              onClick={() => navigate("Login&Security")}
+            >
               <i class="fa-solid fa-lock"></i>
               <p className="">Login and Security</p>
             </li>
@@ -86,6 +95,10 @@ const page = () => {
               <Route index path="/Orders" element={<OrdersPage />}></Route>
               <Route path="/Addresses" element={<AddressPage />}></Route>
               <Route path="/Wishlist" element={<WishlistPage />}></Route>
+              <Route
+                path="/Login&Security"
+                element={<LoginSecurityPage />}
+              ></Route>
             </Routes>
           </Suspense>
         </div>

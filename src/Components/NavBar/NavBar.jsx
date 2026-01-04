@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Image from "../../assets/NavbarLogo.png";
 import "./index.css";
 import {
   HoverCard,
@@ -8,14 +7,19 @@ import {
 } from "@/Components/ui/hover-card";
 import NavbarSearch from "./NavbarSearch";
 import { Heart, ShoppingBag, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LoginModal from "@/Pages/Login/LoginModal";
 import { LS } from "@/lib/SecureLocalStorage";
 import { loginStateContext } from "@/Router/RouteContainer";
+import { getSearchFilters } from "./service";
 const NavBar = ({ logo }) => {
   const navigate = useNavigate();
   const count = useSelector((state) => state.data.count.count);
+  const [navBarData, setnavBarData] = useState([]);
+  useEffect(() => {
+    getSearchFilters().then((res) => res && setnavBarData(res));
+  }, []);
 
   const { setopen } = useContext(loginStateContext);
   return (
@@ -28,73 +32,27 @@ const NavBar = ({ logo }) => {
       </div>
       <div className="navbar-content  max-w-[650px] grow ">
         <NavbarSearch />
-        <HoverCard>
-          <HoverCardTrigger className=" cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
-            Men
-          </HoverCardTrigger>
-          <HoverCardContent className="grid grid-cols-4 gap-6 w-fit">
-            <div className="category-context">
-              <span className="">Traditional</span>
-              <a href="" className="">
-                Kolhapuri
-              </a>
-              <a href="" className="">
-                Pathani Sandal
-              </a>
-              <a href="" className="">
-                Juttis
-              </a>
-            </div>
-            <div className="category-context">
-              <span className="">Casual</span>
-              <a href="" className="">
-                Loafers
-              </a>
-              <a href="" className="">
-                Sleepers
-              </a>
-              <a href="" className="">
-                Sandals
-              </a>
-            </div>
-            <div className="category-context">
-              <span className="">Sports</span>
-              <a href="" className="">
-                Running Shoes
-              </a>
-              <a href="" className="">
-                Casual Sports Shoees
-              </a>
-              <a href="" className="">
-                Spikes Shoes
-              </a>
-            </div>
-          </HoverCardContent>
-        </HoverCard>
-        <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
-            Women
-          </HoverCardTrigger>
-          <HoverCardContent>
-            The React Framework – created and maintained by @vercel.
-          </HoverCardContent>
-        </HoverCard>
-        <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
-            Sports
-          </HoverCardTrigger>
-          <HoverCardContent>
-            The React Framework – created and maintained by @vercel.
-          </HoverCardContent>
-        </HoverCard>
-        <HoverCard>
-          <HoverCardTrigger className="cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] h-full hidden md:flex items-center navbarText">
-            Casual
-          </HoverCardTrigger>
-          <HoverCardContent>
-            The React Framework – created and maintained by @vercel.
-          </HoverCardContent>
-        </HoverCard>
+        {navBarData.map((item) => (
+          <HoverCard>
+            <HoverCardTrigger className="h-8 cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] hidden md:flex items-center navbarText">
+              <Link to={`/Category/${item._id}`} className="">
+                {item.name}
+              </Link>
+            </HoverCardTrigger>
+            <HoverCardContent className="flex gap-6 w-fit min-w-[200px] justify-around">
+              {item.otherFilters.map((filter) => (
+                <div className="category-context">
+                  <span className="">{filter.name}</span>
+                  {filter.subFilter.map(({ name, _id }) => (
+                    <Link to={`/Category/${item._id},${_id}`} className="">
+                      {name}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </HoverCardContent>
+          </HoverCard>
+        ))}
       </div>
 
       <div className="flex gap-1 md:gap-3 items-center shrink-0">

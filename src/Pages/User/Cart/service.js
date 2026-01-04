@@ -27,3 +27,14 @@ export const confirmOrder = async (data) => {
     throw new Error("Order confirmation failed");
   }
 };
+
+export const getGSTFilter = async (data) => {
+  try {
+    const resp = await AxiosInstance.post("/Variants/getGSTFilter", {
+      ids: data,
+    });
+    return resp.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

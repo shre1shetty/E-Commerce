@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
-import { getCart } from "./service";
+import { getCart, getGSTFilter } from "./service";
 import { LS } from "@/lib/SecureLocalStorage";
 import {
   ArrowLeft,
@@ -17,6 +17,7 @@ import PaymentTab from "./PaymentTab/page";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { getGstPercentage } from "@/lib/utils";
 const page = () => {
   const [products, setproducts] = useState([]);
   const dispatch = useDispatch();
@@ -116,10 +117,42 @@ const page = () => {
 
   useEffect(() => {
     dispatch(setCount(products.length));
+    const ids = products.reduce((acc, curr) => {
+      if (acc.includes(curr.productId.productType)) {
+        return acc;
+      }
+      acc = [...acc, curr.productId.productType];
+      return acc;
+    }, []);
+
     formik.setFieldValue(
       "products",
       products.map((val) => ({ ...val, productId: val.productId._id }))
     );
+    if (products.length > 0) {
+      getGSTFilter(ids).then((resp) => {
+        const productsTotalGst = products.reduce(
+          (acc, { productId, quantity, variant }) => {
+            acc +=
+              quantity *
+              productId.variantValues.find(({ _id }) => _id === variant).values
+                .discountedPrice *
+              (getGstPercentage(
+                productId.variantValues.find(({ _id }) => _id === variant)
+                  .values.discountedPrice,
+                resp.find(({ _id }) => _id === productId.productType)
+              ) /
+                100);
+            return acc;
+          },
+          0
+        );
+        formik.setFieldValue(
+          "summary.tax",
+          parseInt(productsTotalGst.toFixed(0))
+        );
+      });
+    }
     const subTotal = products.reduce(
       (acc, { productId, variant, quantity }) => {
         return (

@@ -274,6 +274,7 @@ const NavbarSearch = () => {
                     variantFields,
                     variantValues,
                     price,
+                    discountedPrice,
                     pictures,
                     description,
                     avgRating,
@@ -284,8 +285,10 @@ const NavbarSearch = () => {
                         label={name}
                         description={description}
                         filters={variantFields}
-                        price={price}
-                        discountPrice={price}
+                        price={variantValues[0].values.price}
+                        discountedPrice={
+                          variantValues[0].values.discountedPrice
+                        }
                         variantValues={variantValues}
                         image={`http://localhost:5000/file?id=${pictures[0]}`}
                         onClick={() => {

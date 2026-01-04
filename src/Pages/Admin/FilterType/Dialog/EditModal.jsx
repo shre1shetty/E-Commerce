@@ -14,8 +14,13 @@ import { Button as CustomButton } from "@/Components/ui/button";
 import { useFormik } from "formik";
 import { UpdateFilterType } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
-import { convertToFormData } from "@/lib/utils";
+import {
+  convertToBase64toFile,
+  convertToFormData,
+  getFileUrl,
+} from "@/lib/utils";
 import FileUploadButton from "@/Components/FileUpload/FIleUploadButton";
+import axios from "axios";
 
 const EditModal = ({ refreshGrid, children, data = {} }) => {
   const [open, setopen] = useState(false);
@@ -37,7 +42,12 @@ const EditModal = ({ refreshGrid, children, data = {} }) => {
   };
   useEffect(() => {
     Object.keys(data).forEach((key) =>
-      formik.setFieldValue(key, data[key]?.toString())
+      formik.setFieldValue(
+        key,
+        key === "image"
+          ? convertToBase64toFile(data[key])
+          : data[key]?.toString()
+      )
     );
   }, [data]);
   return (

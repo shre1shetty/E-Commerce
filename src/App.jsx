@@ -10,7 +10,11 @@ import AuthContextProvider from "./context/AuthContextProvider";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { AxiosInstance } from "./lib/AxiosInstance";
 function App() {
-  ReactGA.initialize("G-D61EQSNRHJ");
+  ReactGA.initialize("G-D61EQSNRHJ", {
+    gaOptions: {
+      send_page_view: false,
+    },
+  });
   const [themeColor, setThemeColor] = useState(null);
   useEffect(() => {
     async function fetchTheme() {

@@ -13,6 +13,7 @@ import AgGrid from "@/Components/AgGrid/AgGrid";
 import { EditIcon, Trash2 } from "lucide-react";
 import HomeProductCard from "@/Components/ProductCard/HomeProductCard";
 import FileUploadButton from "@/Components/FileUpload/FIleUploadButton";
+import { orderBy } from "lodash";
 const SectionMapping = ({ sections, setsections }) => {
   const containerRef = useRef(null);
   const [products, setproducts] = useState([]);
@@ -82,6 +83,8 @@ const SectionMapping = ({ sections, setsections }) => {
     onSubmit: () => {},
   });
 
+  console.log(formik.values);
+
   const addSection = (values, sections) => {
     formik.submitForm();
     formik.validateForm().then((errors) => {
@@ -96,8 +99,10 @@ const SectionMapping = ({ sections, setsections }) => {
         if (values.id) {
           const id = values.id;
           setsections(
-            sections.map((val, index) =>
-              index.toString() === id ? values : val
+            orderBy(
+              sections.map((val, index) => (index === id ? values : val)),
+              (section) => section.section,
+              "asc"
             )
           );
         } else {
@@ -106,8 +111,14 @@ const SectionMapping = ({ sections, setsections }) => {
           ).length;
           const equalSize = 100 / (sectionRowsLength + 1);
           setsections(
-            [...sections, values].map((val) =>
-              val.section === values.section ? { ...val, size: equalSize } : val
+            orderBy(
+              [...sections, values].map((val) =>
+                val.section === values.section
+                  ? { ...val, size: equalSize }
+                  : val
+              ),
+              (section) => section.section,
+              "asc"
             )
           );
         }
@@ -124,7 +135,6 @@ const SectionMapping = ({ sections, setsections }) => {
     });
   }, []);
   useEffect(() => {
-    console.log(sections);
     const sectionArray = sections.reduce(
       (acc, curr) =>
         (acc = acc.includes(curr.section) ? acc : [...acc, curr.section]),
@@ -362,15 +372,27 @@ const SectionMapping = ({ sections, setsections }) => {
               cellRenderer: ({ data, node }) => (
                 <div className="flex gap-2 items-center font-bold h-[32.5714px]">
                   <button
-                    onClick={() => formik.setValues({ id: node.id, ...data })}
+                    onClick={() => {
+                      formik.setValues({
+                        id:
+                          sections.findIndex(
+                            ({ section }) => section === activeSection
+                          ) + parseInt(node.id),
+                        ...data,
+                      });
+                    }}
                   >
                     <EditIcon type="button" size={20} />
                   </button>
                   <button
                     onClick={() =>
                       setsections(
-                        sections.filter(
-                          (val, index) => index.toString() !== node.id
+                        orderBy(
+                          sections.filter(
+                            (val, index) => index.toString() !== node.id
+                          ),
+                          (section) => section.section,
+                          "asc"
                         )
                       )
                     }
@@ -440,7 +462,9 @@ const SectionMapping = ({ sections, setsections }) => {
                 }
                 return val;
               });
-              setsections(newResizedSection);
+              setsections(
+                orderBy(newResizedSection, (section) => section.section, "asc")
+              );
             }}
           >
             {rows.map(

@@ -34,15 +34,16 @@ const CategoryPage = () => {
     getCategory().then(({ data }) => {
       setcategory(data);
       const categoryElem = data.reduce((acc, { name, subFilter }) => {
-        const val = subFilter.find(({ _id }) => _id === categoryId);
+        const val = subFilter.find(({ _id }) => categoryId.includes(_id));
         if (val) {
-          return (acc += name + " : " + val.name);
+          return (acc +=
+            (acc.length > 0 ? " | " : "") + name + " : " + val.name);
         }
         return acc;
       }, "");
       setlabel(categoryElem);
     });
-  }, []);
+  }, [categoryId]);
 
   useEffect(() => {
     setfilteredProducts(
@@ -196,10 +197,11 @@ const CategoryPage = () => {
                       <Checkbox
                         inputId={id}
                         checked={
-                          filters.some((i) => i === id) || categoryId === id
+                          filters.some((i) => i === id) ||
+                          categoryId.includes(id)
                         }
                         className="small-checkbox"
-                        disabled={id === categoryId}
+                        disabled={categoryId.includes(id)}
                         onChange={(event) =>
                           setfilters((prev) =>
                             event.checked

@@ -250,3 +250,13 @@ export const matchRoute = (routePath, currentPath) => {
     return part.startsWith(":") || part === currentParts[index];
   });
 };
+
+export function getGstPercentage(price, category) {
+  const slab = category.gstSlabs.find(
+    (s) => price >= s.minPrice && (s.maxPrice == null || price <= s.maxPrice)
+  );
+
+  if (!slab) throw new Error("GST slab not found");
+
+  return slab.gstPercentage;
+}
