@@ -3,11 +3,18 @@ import React, { useEffect, useState } from "react";
 import { getOrdersByType } from "./service";
 import GlobalToast from "@/Components/GlobalToast";
 import dayjs from "dayjs";
-import { getFileUrl, parseValueMap } from "@/lib/utils";
+import { cn, getFileUrl, parseValueMap } from "@/lib/utils";
+import CancelModal from "./CancelModal";
 
 const page = () => {
   const [activeTab, setactiveTab] = useState("Current");
   const [orders, setorders] = useState([]);
+  const [open, setopen] = useState(false);
+  const [dataForCancel, setdataForCancel] = useState({
+    orderId: "",
+    amount: 0,
+    refundableAmount: 0,
+  });
 
   const getVariantName = ({ variantFields, variantName }) => {
     const name = parseValueMap(
@@ -24,7 +31,16 @@ const page = () => {
     return formattedName.slice(0, -3); // Remove the last " / "
   };
 
-  useEffect(() => {
+  const openCancelModal = (amount, _id) => {
+    setdataForCancel({
+      amount,
+      refundableAmount: amount,
+      orderId: _id,
+    });
+    setopen(true);
+  };
+
+  const refreshGrid = (activeTab) => {
     getOrdersByType(activeTab)
       .then(setorders)
       .catch((error) => {
@@ -34,6 +50,10 @@ const page = () => {
           messageType: "error",
         });
       });
+  };
+
+  useEffect(() => {
+    refreshGrid(activeTab);
   }, [activeTab]);
 
   return (
@@ -47,19 +67,43 @@ const page = () => {
       />
       <div className="">
         {orders.map(
-          ({ _id, products, userId, createdAt, status, address, amount }) => (
+          ({
+            _id,
+            products,
+            userId,
+            createdAt,
+            status,
+            address,
+            amount,
+            isRejected,
+          }) => (
             <>
               <div className="order-container" key={_id}>
-                <div className="title">
-                  <h1 className="">Order #:{_id}</h1>
-                  <span className="">
-                    {products.length} Products | By {userId.username} |{" "}
-                    {dayjs(createdAt).format("MMM DD, YYYY")}
-                  </span>
+                <div className="flex justify-between">
+                  <div className="title">
+                    <h1 className="">Order #:{_id}</h1>
+                    <span className="">
+                      {products.length} Products | By {userId.username} |{" "}
+                      {dayjs(createdAt).format("MMM DD, YYYY")}
+                    </span>
+                  </div>
+                  {!isRejected && (
+                    <button
+                      className="cancel-bttn"
+                      onClick={() => openCancelModal(amount, _id)}
+                    >
+                      Cancel Order
+                    </button>
+                  )}
                 </div>
                 <div className="grid grid-cols-4 section-container">
                   <div className="section-name">Status :</div>
-                  <div className="col-span-3 status-name">
+                  <div
+                    className={cn(
+                      "col-span-3 status-name",
+                      isRejected ? "!text-red-600" : ""
+                    )}
+                  >
                     {status.stageName}
                   </div>
                   <div className="section-name">Date of delivery:</div>
@@ -104,11 +148,18 @@ const page = () => {
                   )}
                 </div>
               </div>
-              <div className=""></div>
             </>
           )
         )}
       </div>
+      <CancelModal
+        open={open}
+        setopen={setopen}
+        amount={dataForCancel.amount}
+        refundableAmount={dataForCancel.refundableAmount}
+        orderId={dataForCancel.orderId}
+        refreshGrid={() => refreshGrid(activeTab)}
+      />
     </div>
   );
 };

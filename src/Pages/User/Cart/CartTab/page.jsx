@@ -65,6 +65,12 @@ const CartTab = ({ products, setcurrent, setitems, setproducts, summary }) => {
                     productId.variantValues.find(({ _id }) => _id === variant)
                       .values.discountedPrice
                   }{" "}
+                  <span className="line-through text-xs opacity-70">
+                    {
+                      productId.variantValues.find(({ _id }) => _id === variant)
+                        .values.price
+                    }
+                  </span>
                 </div>
               </div>
             </div>

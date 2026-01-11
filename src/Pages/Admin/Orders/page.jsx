@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const page = () => {
   const navigate = useNavigate();
+  const [type, setType] = useState("unfulfilled");
   const [rows, setrows] = useState([]);
   const columnDefs = [
     {
@@ -84,12 +85,25 @@ const page = () => {
   ];
 
   useEffect(() => {
-    getOrders().then((resp) => setrows(resp));
-  }, []);
+    getOrders({ type }).then((resp) => setrows(resp));
+  }, [type]);
 
   return (
     <>
-      <CustomHeader title={"Orders"}></CustomHeader>
+      <CustomHeader title={"Orders"}>
+        <select
+          className="text-xs outline-none"
+          value={type}
+          onChange={(event) => setType(event.target.value)}
+        >
+          <option value="unfulfilled" className="">
+            Unfulfilled
+          </option>
+          <option value="rejected" className="">
+            Rejected
+          </option>
+        </select>
+      </CustomHeader>
       <AgGrid rows={rows} headCells={columnDefs} />
     </>
   );

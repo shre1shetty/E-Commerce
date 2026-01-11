@@ -46,11 +46,11 @@ const AddModal = ({ open, setOpen, refreshGrid }) => {
           }
         });
       } else {
-        <GlobalToast
-          message={"Mandatory Fields are required"}
-          messageTimer={2500}
-          messageType={"error"}
-        />;
+        GlobalToast({
+          message: "Mandatory Fields are required",
+          messageTimer: 2500,
+          messageType: "error",
+        });
       }
     });
   };

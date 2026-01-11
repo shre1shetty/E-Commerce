@@ -6,6 +6,19 @@
   padding-top: 24px;
 }
 
+.cancelation-details {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cancel-confirmation-text {
+  color: indianred;
+  font-size: 14px;
+  place-self: anchor-center;
+}
+
 .user-sub-header {
   color: rgb(98, 111, 125);
 }
@@ -55,6 +68,15 @@
   padding: 26px 30px;
   border-radius: 10px;
   margin-top: 15px;
+  .cancel-bttn {
+    background-color: red;
+    color: white;
+    height: fit-content;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
   .title {
     border-bottom: 1px solid lightgray;
     padding-bottom: 12px;

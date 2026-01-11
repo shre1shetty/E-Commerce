@@ -2,8 +2,9 @@ import CustomHeader from "@/Components/CustomHeader";
 import React, { useEffect, useState } from "react";
 import AddModal from "./Dialog/AddModal";
 import AgGrid from "@/Components/AgGrid/AgGrid";
-import { getStages } from "./service";
+import { deleteStage, getStages } from "./service";
 import EditModal from "./Dialog/EditModal";
+import GlobalToast from "@/Components/GlobalToast";
 
 const page = () => {
   const [open, setOpen] = useState(false);
@@ -14,6 +15,24 @@ const page = () => {
     getStages().then((res) => {
       if (res) {
         setrows(res.data);
+      }
+    });
+  };
+  const deleteStageById = (id) => {
+    deleteStage(id).then((res) => {
+      if (res) {
+        GlobalToast({
+          message: "Stage added successfully",
+          messageTimer: 2500,
+          messageType: "success",
+        });
+        getRows();
+      } else {
+        GlobalToast({
+          message: "Mandatory Fields are required",
+          messageTimer: 2500,
+          messageType: "error",
+        });
       }
     });
   };
@@ -31,7 +50,10 @@ const page = () => {
             }}
           ></button>
 
-          <button className="fa-regular fa-trash-can m-1 text-base"></button>
+          <button
+            className="fa-regular fa-trash-can m-1 text-base"
+            onClick={() => deleteStageById(params.data._id)}
+          ></button>
         </>
       ),
     },

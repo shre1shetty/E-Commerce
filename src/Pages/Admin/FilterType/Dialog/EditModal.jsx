@@ -20,14 +20,19 @@ import {
   getFileUrl,
 } from "@/lib/utils";
 import FileUploadButton from "@/Components/FileUpload/FIleUploadButton";
-import axios from "axios";
+import * as Yup from "yup";
 
 const EditModal = ({ refreshGrid, children, data = {} }) => {
   const [open, setopen] = useState(false);
   const formik = useFormik({
     initialValues: {
       name: "",
+      image: "",
     },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Please enter a name"),
+      iamge: Yup.string().required("Please select a iamge"),
+    }),
   });
   const submitHandler = (data) => {
     UpdateFilterType(convertToFormData(data)).then((resp) => {

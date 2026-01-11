@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getAdminOrdersById,
@@ -48,12 +48,12 @@ const page = () => {
     }),
   });
 
-  const getVariantImage = (variantValues, variant) => {
-    console.log(variantValues, variant);
+  const getVariantImage = useCallback((variantValues, variant) => {
+    console.log("");
     const imageId = variantValues?.find(({ _id }) => _id === variant)?.values
       .picture;
     return imageId[0] ?? "";
-  };
+  }, []);
 
   const getVariantName = ({ variantFields, variantValues, variant }) => {
     // console.log(variantFields, variantValues, variant);
@@ -76,7 +76,12 @@ const page = () => {
     formik.validateForm().then((errors) => {
       console.log(errors);
       if (Object.keys(errors).length === 0) {
-        proceedToNextStage({ ...data, ...order.userId }).then((resp) => {
+        proceedToNextStage({
+          ...data,
+          ...order.userId,
+          paymentId: order.paymentId,
+          amount: order.amount,
+        }).then((resp) => {
           GlobalToast({
             message: resp?.message,
             messageTimer: 2500,
@@ -98,6 +103,7 @@ const page = () => {
 
   useEffect(() => {
     getAdminOrdersById(id).then((resp) => {
+      delete resp.userId._id;
       setOrder(resp);
     });
     getWorkFlowHistory(id).then(({ data }) => {
@@ -117,7 +123,7 @@ const page = () => {
                 Remarks: {element.remarks || "No Remarks"}
               </p>
               <p style={{ fontSize: "12px", color: "gray" }}>
-                Date: {dayjs(element?.createdAt).format("MMMM DD YYYY HH:MM")}
+                Date: {dayjs(element?.createdAt).format("MMMM DD YYYY HH:mm")}
               </p>
             </div>
           ),
@@ -170,7 +176,7 @@ const page = () => {
               </div>
             </div>
             <div className="text-sm text-slate-500 font-medium">
-              {dayjs(Order.createdAt).format("MMMM DD YYYY HH:MM")}
+              {dayjs(Order.createdAt).format("MMMM DD YYYY HH:mm")}
             </div>
           </div>
         }
@@ -187,55 +193,57 @@ const page = () => {
           <Accordion multiple activeIndex={[0, 1, 2]}>
             <AccordionTab header="Order Items">
               <div className="flex flex-col gap-4">
-                {Order.products?.map(({ productId, variant, quantity }) => (
-                  <div className="order-products">
-                    <div className="image-div">
-                      <img
-                        src={getFileUrl(
-                          getVariantImage(productId.variantValues, variant)
-                        )}
-                        alt=""
-                        className=""
-                      />
-                    </div>
-                    <div className="product-details-div">
-                      <div className="">
-                        <div className="order-product-type">
-                          {productId.productType.name}
-                        </div>
-                        <div className="order-product-name">
-                          {productId.name}
-                        </div>
+                {Order.products?.map(
+                  ({ productId, variant, quantity }, index) => (
+                    <div className="order-products" key={index}>
+                      <div className="image-div">
+                        <img
+                          src={getFileUrl(
+                            getVariantImage(productId.variantValues, variant)
+                          )}
+                          alt=""
+                          className=""
+                        />
                       </div>
+                      <div className="product-details-div">
+                        <div className="">
+                          <div className="order-product-type">
+                            {productId.productType.name}
+                          </div>
+                          <div className="order-product-name">
+                            {productId.name}
+                          </div>
+                        </div>
 
-                      <div className="order-product-variant">
-                        {getVariantName({
-                          ...productId,
-                          variant: variant,
-                        })}
+                        <div className="order-product-variant">
+                          {getVariantName({
+                            ...productId,
+                            variant: variant,
+                          })}
+                        </div>
                       </div>
-                    </div>
-                    <div className="product-price-div">
-                      <div className="price-chip">
-                        {quantity} x ₹
-                        {
-                          productId.variantValues.find(
-                            ({ _id }) => _id === variant
-                          ).values.price
-                        }
-                      </div>
-                      <div className="amount-chip">
-                        ₹
-                        {quantity *
-                          parseInt(
+                      <div className="product-price-div">
+                        <div className="price-chip">
+                          {quantity} x ₹
+                          {
                             productId.variantValues.find(
                               ({ _id }) => _id === variant
                             ).values.price
-                          )}
+                          }
+                        </div>
+                        <div className="amount-chip">
+                          ₹
+                          {quantity *
+                            parseInt(
+                              productId.variantValues.find(
+                                ({ _id }) => _id === variant
+                              ).values.price
+                            )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </AccordionTab>
             <AccordionTab header="Order Summary">
@@ -262,7 +270,7 @@ const page = () => {
                   <label htmlFor="" className="">
                     Tax
                   </label>
-                  <div className="">₹{Order.summary?.Tax ?? 0}</div>
+                  <div className="">₹{Order.summary?.tax ?? 0}</div>
                 </div>
                 <div className="summary-item">
                   <label htmlFor="" className="total">
@@ -358,44 +366,70 @@ const page = () => {
               </div>
             </div>
           </div>
-          <div className="order-action-container">
-            <div className="label-container">
-              <label htmlFor="" className="">
-                Action
-              </label>
-            </div>
-            <div className="order-action">
-              <div className="flex gap-2 pb-4">
-                <SelectElement
-                  options={actionStages}
-                  placeholder="Select Action"
-                  className="w-full"
-                  value={
-                    actionStages.find(
-                      ({ value }) => value === formik.values.workFlowStatusId
-                    ) || null
-                  }
-                  onChange={({ value, statusId }) => {
-                    formik.setFieldValue("workFlowStatusId", value);
-                    formik.setFieldValue("statusId", statusId);
-                  }}
-                />
-                <TextArea
-                  className="text-base !py-2"
-                  autoSize
-                  placeholder="Remarks"
-                  name="remarks"
-                  onChange={formik.handleChange}
-                />
+          <div className="refund-container">
+            <label htmlFor="" className="">
+              Refund status
+            </label>
+            <div className="content">
+              {Order.refund?.completedAt && (
+                <div className="">Refund Id :{Order.refund?.refundId}</div>
+              )}
+              <div className="">Amount : {Order.refund?.amount}</div>
+              <div className="">Status : {Order.refund?.status}</div>
+              <div className="">
+                Initiated At :{" "}
+                {dayjs(Order.refund?.initiatedAt).format("MMMM DD YYYY HH:mm")}
               </div>
-              <Button
-                className="w-full"
-                onClick={() => handleSave(formik.values, Order)}
-              >
-                Submit
-              </Button>
+              {Order.refund?.completedAt && (
+                <div className="">
+                  Completed At :{" "}
+                  {dayjs(Order.refund?.completedAt).format(
+                    "MMMM DD YYYY HH:mm"
+                  )}
+                </div>
+              )}
             </div>
           </div>
+          {!Order.isRejected && (
+            <div className="order-action-container">
+              <div className="label-container">
+                <label htmlFor="" className="">
+                  Action
+                </label>
+              </div>
+              <div className="order-action">
+                <div className="flex gap-2 pb-4">
+                  <SelectElement
+                    options={actionStages}
+                    placeholder="Select Action"
+                    className="w-full"
+                    value={
+                      actionStages.find(
+                        ({ value }) => value === formik.values.workFlowStatusId
+                      ) || null
+                    }
+                    onChange={({ value, statusId }) => {
+                      formik.setFieldValue("workFlowStatusId", value);
+                      formik.setFieldValue("statusId", statusId);
+                    }}
+                  />
+                  <TextArea
+                    className="text-base !py-2"
+                    autoSize
+                    placeholder="Remarks"
+                    name="remarks"
+                    onChange={formik.handleChange}
+                  />
+                </div>
+                <Button
+                  className="w-full"
+                  onClick={() => handleSave(formik.values, Order)}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

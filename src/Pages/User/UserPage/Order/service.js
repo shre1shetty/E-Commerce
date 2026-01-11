@@ -13,3 +13,15 @@ export const getOrdersByType = async (type) => {
     console.log(error);
   }
 };
+
+export const cancelOrder = async (values) => {
+  try {
+    const resp = await AxiosInstance.post(
+      "/WorkFlowDefination/cancelOrder",
+      values
+    );
+    return resp.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

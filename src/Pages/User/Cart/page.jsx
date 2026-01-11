@@ -159,12 +159,26 @@ const page = () => {
           acc +
           quantity *
             productId.variantValues.find(({ _id }) => _id === variant).values
-              .discountedPrice
+              .price
+        );
+      },
+      0
+    );
+    const discount = products.reduce(
+      (acc, { productId, variant, quantity }) => {
+        return (
+          acc +
+          quantity *
+            (productId.variantValues.find(({ _id }) => _id === variant).values
+              .price -
+              productId.variantValues.find(({ _id }) => _id === variant).values
+                .discountedPrice)
         );
       },
       0
     );
     formik.setFieldValue("summary.subTotal", subTotal);
+    formik.setFieldValue("summary.discount", discount);
   }, [products]);
 
   useEffect(() => {

@@ -163,7 +163,7 @@ const Page = () => {
         <div className="">
           <div className="flex gap-2 divide-x-2">
             <div className="relative">
-              <i className="fa fa-search text-sm absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+              <i className="fa-solid fa-search text-sm absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
               <Input
                 className="pl-8 text-gray-500"
                 onChange={(event) => handleSearch(event.target.value)}

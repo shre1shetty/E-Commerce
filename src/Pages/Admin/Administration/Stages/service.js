@@ -29,6 +29,20 @@ export const updateStage = async (data) => {
   }
 };
 
+export const deleteStage = async (id) => {
+  try {
+    const response = await AxiosInstance.post(`/Stage/deleteStage?_id=${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    GlobalToast({
+      message: "Error adding stage",
+      messageTimer: 2500,
+      messageType: "error",
+    });
+  }
+};
+
 export const getStages = async () => {
   try {
     const response = await AxiosInstance.get("/Stage/GetStages");
