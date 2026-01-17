@@ -36,6 +36,7 @@ const page = () => {
   const formik = useFormik({
     initialValues: {
       orderId: id,
+      finalStage: false,
       workFlowStatusId: "",
       statusId: "",
       remarks: "",
@@ -63,7 +64,7 @@ const page = () => {
         acc = { ...acc, [`field${index + 1}`]: curr.field };
         return acc;
       }, {}),
-      variantField.slice(0, -7) // Remove "Variant" from the end
+      variantField.slice(0, -7), // Remove "Variant" from the end
     );
     let formattedName = "";
     for (const [key, value] of Object.entries(name)) {
@@ -134,11 +135,12 @@ const page = () => {
         if (index == 0) {
           getNextStage(element.stageFrom).then((resp) => {
             setactionStages(
-              resp.map(({ stageName, _id, stageTo }) => ({
+              resp.map(({ stageName, _id, stageTo, finalStage }) => ({
                 label: stageName,
                 value: _id,
                 statusId: stageTo,
-              }))
+                finalStage: finalStage,
+              })),
             );
           });
         }
@@ -168,8 +170,8 @@ const page = () => {
                   Order.status?.firstStage
                     ? "error-chip"
                     : Order.status?.finalStage
-                    ? "success-chip"
-                    : "regular-chip"
+                      ? "success-chip"
+                      : "regular-chip"
                 }
               >
                 {Order.status?.stageName}
@@ -199,7 +201,7 @@ const page = () => {
                       <div className="image-div">
                         <img
                           src={getFileUrl(
-                            getVariantImage(productId.variantValues, variant)
+                            getVariantImage(productId.variantValues, variant),
                           )}
                           alt=""
                           className=""
@@ -227,7 +229,7 @@ const page = () => {
                           {quantity} x ₹
                           {
                             productId.variantValues.find(
-                              ({ _id }) => _id === variant
+                              ({ _id }) => _id === variant,
                             ).values.price
                           }
                         </div>
@@ -236,13 +238,13 @@ const page = () => {
                           {quantity *
                             parseInt(
                               productId.variantValues.find(
-                                ({ _id }) => _id === variant
-                              ).values.price
+                                ({ _id }) => _id === variant,
+                              ).values.price,
                             )}
                         </div>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </AccordionTab>
@@ -384,13 +386,13 @@ const page = () => {
                 <div className="">
                   Completed At :{" "}
                   {dayjs(Order.refund?.completedAt).format(
-                    "MMMM DD YYYY HH:mm"
+                    "MMMM DD YYYY HH:mm",
                   )}
                 </div>
               )}
             </div>
           </div>
-          {!Order.isRejected && (
+          {!Order.isRejected && !Order.isCompleted && (
             <div className="order-action-container">
               <div className="label-container">
                 <label htmlFor="" className="">
@@ -405,12 +407,13 @@ const page = () => {
                     className="w-full"
                     value={
                       actionStages.find(
-                        ({ value }) => value === formik.values.workFlowStatusId
+                        ({ value }) => value === formik.values.workFlowStatusId,
                       ) || null
                     }
-                    onChange={({ value, statusId }) => {
+                    onChange={({ value, statusId, finalStage }) => {
                       formik.setFieldValue("workFlowStatusId", value);
                       formik.setFieldValue("statusId", statusId);
+                      formik.setFieldValue("finalStage", finalStage);
                     }}
                   />
                   <TextArea

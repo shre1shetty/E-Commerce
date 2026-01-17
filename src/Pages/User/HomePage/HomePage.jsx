@@ -54,17 +54,17 @@ const HomePage = () => {
           headerElement.rows.map(({ file, url }) => ({
             file,
             url,
-          }))
+          })),
         );
         setcategory(
           category.map((value) => ({
             ...value,
             image: getFileUrl(value.image),
-          }))
+          })),
         );
         setstickyPanel(stickyPanel);
         setsections(groupBy(sections, "section"));
-      }
+      },
     );
   }, [location.pathname]);
 
@@ -161,12 +161,14 @@ const HomePage = () => {
                       alt=""
                       className=""
                     />
-                    <div className="transparent-overlay">
-                      <p className="overlay-header">
-                        {overlayText} <ArrowUpRightIcon />
-                      </p>
-                      <p className="overlay-text">{overlaySubText}</p>
-                    </div>
+                    {overlaySubText.trim().length > 0 && (
+                      <div className="transparent-overlay">
+                        <p className="overlay-header">
+                          {overlayText} <ArrowUpRightIcon />
+                        </p>
+                        <p className="overlay-text">{overlaySubText}</p>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div
@@ -189,10 +191,10 @@ const HomePage = () => {
                           image={Shoe1}
                           label={product.name}
                           price={parseInt(
-                            product.variantValues[0].values.price
+                            product.variantValues[0].values.price,
                           )}
                           discountedPrice={parseInt(
-                            product.variantValues[0].values.discountedPrice
+                            product.variantValues[0].values.discountedPrice,
                           )}
                           discountPrice={product.price}
                           filters={product.variantFields}
@@ -203,7 +205,7 @@ const HomePage = () => {
                       ))}
                     </div>
                   </div>
-                )
+                ),
             )}
           </div>
         ))}

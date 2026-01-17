@@ -1,9 +1,10 @@
 import AppBreadcrumb from "@/Components/BreadCrumb/AppBreadCrumb";
 import { getFooter, getLogo } from "@/Router/service";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "@/Components/Footer/Footer";
 import NavBar from "@/Components/NavBar/NavBar";
+import Loader from "@/Components/Loader/Loader";
 
 const UserLayout = () => {
   const [logo, setlogo] = useState(null);
@@ -21,7 +22,9 @@ const UserLayout = () => {
       <div className={"grow"}>
         <div className={"px-2 md:px-[19px] h-full"}>
           <AppBreadcrumb />
-          <Outlet />
+          <Suspense fallback={<Loader />}>
+            <Outlet />
+          </Suspense>
         </div>
       </div>
       <Footer logo={logo} footerDetails={footerDetails} />

@@ -37,7 +37,7 @@ const page = () => {
   const { id } = useParams();
   const wishList = useSelector((state) => state.data.wishlist.wishlist);
   const isWishListed = wishList?.some(
-    (val) => val.toString() === id.toString()
+    (val) => val.toString() === id.toString(),
   );
   const { setopen } = useContext(loginStateContext);
   const [selectedVariant, setselectedVariant] = useState({});
@@ -119,7 +119,7 @@ const page = () => {
       addToCart({ userId, productId, quantity, price, variant }).then(
         (resp) => {
           dispatch(setCount(resp.products.length));
-        }
+        },
       );
     }
   }
@@ -132,7 +132,7 @@ const page = () => {
       addToCart({ userId, productId, quantity, price, variant }).then(
         (resp) => {
           dispatch(setCount(resp.products.length));
-        }
+        },
       );
       navigate("/Cart");
     }
@@ -168,13 +168,13 @@ const page = () => {
           resp.variantFields.reduce((acc, field) => {
             acc[field.field] = field.value[0];
             return acc;
-          }, {})
+          }, {}),
         );
       });
       getRatingsByproductId(id).then((resp) => {
         setreviews(resp);
         setreviewImages(
-          resp.reduce((acc, curr) => [...acc, ...curr.pictures], [])
+          resp.reduce((acc, curr) => [...acc, ...curr.pictures], []),
         );
       });
     }
@@ -182,14 +182,10 @@ const page = () => {
   useEffect(() => {
     // console.log(selectedVariantField);
     const selectedVariant = product.variantValues?.find(({ name }) =>
-      Object.values(selectedVariantField)?.every((val) => name.includes(val))
+      Object.values(selectedVariantField)?.every((val) => name.includes(val)),
     );
     setselectedImage(selectedVariant?.values?.picture[0]);
     setselectedVariant(selectedVariant || {});
-  }, [selectedVariantField]);
-
-  useEffect(() => {
-    console.log(selectedVariantField);
   }, [selectedVariantField]);
 
   return (
@@ -290,8 +286,8 @@ const page = () => {
           </div>
           <span className="text-xs">MRP incl. of all taxes</span>
           <div className="flex gap-2 items-end mt-2 leading-[normal] text-[#7e5600]">
-            <Rate allowHalf value={4.5} disabled />
-            <span className="text-xs">1299902 reviews</span>
+            <Rate allowHalf value={product.ratingSum} disabled />
+            <span className="text-xs">{product.ratingCount} reviews</span>
           </div>
           <div className="my-6 flex flex-col gap-4">
             {product.variantFields?.map(({ field, flag, value }) => (

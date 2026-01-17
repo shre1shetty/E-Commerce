@@ -69,8 +69,8 @@ const page = () => {
             data.status.firstStage
               ? "error-chip"
               : data.status.finalStage
-              ? "success-chip"
-              : "regular-chip"
+                ? "success-chip"
+                : "regular-chip"
           }
         >
           {data.status.stageName}
@@ -98,6 +98,9 @@ const page = () => {
         >
           <option value="unfulfilled" className="">
             Unfulfilled
+          </option>
+          <option value="fulfilled" className="">
+            Fulfilled
           </option>
           <option value="rejected" className="">
             Rejected
