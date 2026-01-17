@@ -77,13 +77,11 @@ const LoginModal = ({ open, setopen }) => {
             if (values.role === "admin") {
               dispatch(setRole("admin"));
               LS.set("Role", "admin");
-              AxiosInstance.defaults.headers.common[
-                "Authorization"
-              ] = `Bearer ${values.accessToken}`;
-              AxiosInstanceforUpload.defaults.headers.common[
-                "Authorization"
-              ] = `Bearer ${values.accessToken}`;
-              navigate("/Overview");
+              AxiosInstance.defaults.headers.common["Authorization"] =
+                `Bearer ${values.accessToken}`;
+              AxiosInstanceforUpload.defaults.headers.common["Authorization"] =
+                `Bearer ${values.accessToken}`;
+              navigate("/admin/Overview");
             }
             AxiosInstance.post("/Wishlist/getWishlistByUser", {
               userId: values._id,
@@ -93,7 +91,7 @@ const LoginModal = ({ open, setopen }) => {
             AxiosInstance.get(`/Cart/getCartCount?userId=${values._id}`).then(
               (resp) => {
                 dispatch(setCount(resp.data.count ?? 0));
-              }
+              },
             );
             setopen(false);
           } else {
@@ -130,12 +128,11 @@ const LoginModal = ({ open, setopen }) => {
             LS.set("email", values.user.email);
             LS.set("contactNumber", values.user.contactNumber);
             if (values.user.role === "admin") {
-              AxiosInstance.defaults.headers.common[
-                "Authorization"
-              ] = `Bearer ${res.data.accessToken}`;
+              AxiosInstance.defaults.headers.common["Authorization"] =
+                `Bearer ${res.data.accessToken}`;
               dispatch(setRole("admin"));
               LS.set("Role", "admin");
-              navigate("/Overview");
+              navigate("/admin/Overview");
             }
             setopen(false);
           } else {

@@ -209,7 +209,7 @@ const OverView = () => {
           <>
             <img
               className="max-sm:hidden absolute top-0 right-2 h-[90px]"
-              src="./Representative.png"
+              src="/Representative.png"
             />
             <div className="max-sm:hidden chat-bubble">
               Hi {userName.slice(0, 1).toUpperCase() + userName.slice(1)}{" "}
@@ -532,7 +532,7 @@ const OverView = () => {
                         </p>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -620,8 +620,8 @@ const OverView = () => {
                         activeIndex === null
                           ? 80 // normal
                           : activeIndex === index
-                          ? 80 // slightly bigger
-                          : 40 // smaller
+                            ? 80 // slightly bigger
+                            : 40 // smaller
                       }
                       opacity={
                         activeIndex === null || activeIndex === index ? 1 : 0.5
