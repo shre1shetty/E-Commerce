@@ -87,10 +87,10 @@ const EditPage = () => {
               const pictureArray = await Promise.all(
                 value.values.picture.map(async (fileId) => {
                   const response = await fetchImageWithMetadata(
-                    `${import.meta.env.VITE_BASE_URL}/file?id=${fileId}`
+                    `${import.meta.env.VITE_BASE_URL}/file?id=${fileId}`,
                   );
                   return response;
-                })
+                }),
               );
               return {
                 ...value,
@@ -99,7 +99,7 @@ const EditPage = () => {
                   picture: pictureArray,
                 },
               };
-            })
+            }),
           );
           formik.setFieldValue(key, newValues);
         } else {
@@ -109,7 +109,7 @@ const EditPage = () => {
     });
     getFilterType().then((resp) => {
       setfilterOptions(
-        convertForSelect({ data: resp, label: "name", value: "_id" })
+        convertForSelect({ data: resp, label: "name", value: "_id" }),
       );
     });
   }, []);
@@ -123,7 +123,7 @@ const EditPage = () => {
       "AdditionalSpecification",
       formik.values.AdditionalSpecification
         ? [...formik.values.AdditionalSpecification, { key: field, value }]
-        : [{ key: field, value }]
+        : [{ key: field, value }],
     );
     SpecificationFormik.resetForm();
   };
@@ -143,7 +143,7 @@ const EditPage = () => {
       <div
         className={cn(
           "grid h-[calc(100vh-120px)] gap-4 relative pb-2",
-          showPreview ? "grid-cols-4" : "grid-cols-2"
+          showPreview ? "grid-cols-4" : "grid-cols-2",
         )}
       >
         <div className="col-span-3 text-lg font-medium text-gray-600 py-2 overflow-hidden">
@@ -171,7 +171,6 @@ const EditPage = () => {
                       className="form-control"
                       value={formik.values.name}
                       name="name"
-                      disabled
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                     />
@@ -198,7 +197,7 @@ const EditPage = () => {
                 <div
                   className={cn(
                     "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                    showPreview ? "grid-cols-3" : "grid-cols-4",
                   )}
                 >
                   <div className="">
@@ -274,7 +273,7 @@ const EditPage = () => {
                       onChange={(event) => {
                         formik.setFieldValue(
                           "tags",
-                          event.target.value.split(",")
+                          event.target.value.split(","),
                         );
                       }}
                     />
@@ -288,7 +287,7 @@ const EditPage = () => {
                 <div
                   className={cn(
                     "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                    showPreview ? "grid-cols-3" : "grid-cols-4",
                   )}
                 >
                   {formik.values.variantFields?.map((data, index) => (
@@ -307,7 +306,7 @@ const EditPage = () => {
                           formik.setFieldValue(
                             "variantFields",
                             formik.values.variantFields.some(
-                              ({ field }) => field === data.field
+                              ({ field }) => field === data.field,
                             )
                               ? formik.values.variantFields.map((val) =>
                                   val.field === data.field
@@ -316,7 +315,7 @@ const EditPage = () => {
                                         value: event.target.value.split(","),
                                         flag: data.flag,
                                       }
-                                    : val
+                                    : val,
                                 )
                               : [
                                   ...formik.values.variantFields,
@@ -325,7 +324,7 @@ const EditPage = () => {
                                     value: event.target.value.split(","),
                                     flag: data.flag,
                                   },
-                                ]
+                                ],
                           );
                         }}
                       />
@@ -373,7 +372,7 @@ const EditPage = () => {
                     <div
                       className={cn(
                         "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                        showPreview ? "grid-cols-3" : "grid-cols-4"
+                        showPreview ? "grid-cols-3" : "grid-cols-4",
                       )}
                     >
                       {formik.values.AdditionalSpecification?.map(
@@ -396,8 +395,8 @@ const EditPage = () => {
                                               key,
                                               value: event.target.value,
                                             }
-                                          : val
-                                    )
+                                          : val,
+                                    ),
                                   );
                                 }}
                               />
@@ -407,8 +406,8 @@ const EditPage = () => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.filter(
-                                      (val) => val.key !== key
-                                    )
+                                      (val) => val.key !== key,
+                                    ),
                                   );
                                 }}
                               >
@@ -416,7 +415,7 @@ const EditPage = () => {
                               </Button>
                             </div>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   )}
@@ -447,13 +446,13 @@ const EditPage = () => {
                                   data.name.includes(
                                     variant.name.slice(
                                       variant.name.indexOf(
-                                        formik.values.variantFields[1].field
+                                        formik.values.variantFields[1].field,
                                       ),
-                                      -7
-                                    )
-                                  )
+                                      -7,
+                                    ),
+                                  ),
                                 ).values,
-                              }))
+                              })),
                             );
                           }}
                         />
@@ -466,7 +465,7 @@ const EditPage = () => {
                               formik.values.variantValues?.find(
                                 (value) =>
                                   value.name ===
-                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`
+                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`,
                               ) ?? formik.values
                             }
                             value1={val}
@@ -483,8 +482,8 @@ const EditPage = () => {
                                         ...value,
                                         values: values,
                                       }
-                                    : value
-                                )
+                                    : value,
+                                ),
                               );
                             }}
                           />

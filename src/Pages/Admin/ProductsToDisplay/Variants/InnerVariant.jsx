@@ -36,7 +36,7 @@ const InnerVariant = ({
       formik.setFieldValue("price", baseValues.values.price);
       formik.setFieldValue(
         "discountedPrice",
-        baseValues.values.discountedPrice
+        baseValues.values.discountedPrice,
       );
       formik.setFieldValue("inStock", baseValues.values.inStock);
       formik.setFieldValue("picture", baseValues.values.picture ?? []);
@@ -119,7 +119,7 @@ const InnerVariant = ({
               <input
                 type="file"
                 className="absolute opacity-0 top-0 left-0 right-0 bottom-0 cursor-pointer"
-                accept=".png"
+                accept=".webp"
                 onChange={(event) => {
                   event.target.files[0] &&
                     formik.setFieldValue("picture", [
@@ -148,8 +148,8 @@ const InnerVariant = ({
                   formik.setFieldValue(
                     "picture",
                     formik.values.picture.filter(
-                      (val, index1) => index1 !== index
-                    )
+                      (val, index1) => index1 !== index,
+                    ),
                   )
                 }
               >
