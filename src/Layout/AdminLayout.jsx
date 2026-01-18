@@ -9,7 +9,7 @@ import React, { Suspense } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   Command,
   CommandEmpty,
