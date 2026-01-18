@@ -4,6 +4,9 @@ import { TokenStore } from "./TokenStore";
 
 export const AdminAxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    "X-Store-Domain": window.location.hostname,
+  },
 });
 AdminAxiosInstance.defaults.headers.common["Content-Type"] = "application/json";
 AdminAxiosInstance.interceptors.request.use((config) => {
