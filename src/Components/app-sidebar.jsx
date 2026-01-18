@@ -35,9 +35,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { setRole } from "@/Redux/Slice/UserSlice";
 import { useDispatch } from "react-redux";
-import { setCount } from "@/Redux/Slice/CountSlice";
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -166,7 +164,7 @@ export function AppSidebar({ ...props }) {
         <div
           className={cn(
             "sidebar-header flex  items-center gap-2 text-lg text-[#7e8394] overflow-hidden",
-            "h-8"
+            "h-8",
           )}
         >
           <img src={Logo} alt="" className="h-8 w-8" />

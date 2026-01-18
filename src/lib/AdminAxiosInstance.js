@@ -23,14 +23,13 @@ AdminAxiosInstance.interceptors.response.use(
       const { data } = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/User/refreshToken`,
         import.meta.env.PROD ? {} : { refreshToken: LS.get("refreshToken") },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       const newToken = data.accessToken;
 
       // update axios instance
-      AdminAxiosInstance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${newToken}`;
+      AdminAxiosInstance.defaults.headers.common["Authorization"] =
+        `Bearer ${newToken}`;
 
       TokenStore.setToken(newToken);
 
@@ -39,9 +38,10 @@ AdminAxiosInstance.interceptors.response.use(
 
       return AdminAxiosInstance(originalRequest);
     }
-
-    LS.clear();
-    window.location.href = import.meta.env.BASE_URL;
+    if (import.meta.env.PROD) {
+      LS.clear();
+      window.location.href = import.meta.env.BASE_URL;
+    }
     return Promise.reject(err);
-  }
+  },
 );

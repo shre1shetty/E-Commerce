@@ -38,6 +38,7 @@ import GlobalToast from "@/Components/GlobalToast";
 import { MultiSelect } from "react-multi-select-component";
 import { getVariant } from "../Variant/service";
 import { getFilterType } from "../FilterType/service";
+import * as yup from "yup";
 const Create = () => {
   const [InventoryItems, setInventoryItems] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
@@ -49,6 +50,19 @@ const Create = () => {
   const [showPreview, setshowPreview] = useState(false);
   const [variantFields, setvariantFields] = useState([]);
   const navigate = useNavigate();
+  const variantSchema = yup.object({
+    value: yup
+      .array()
+      .of(yup.string())
+      .test(
+        "unique",
+        "Values must be unique",
+        (list) => new Set(list).size === list?.length,
+      )
+      .min(1, "At least one value is required")
+      .required("Value array is required"),
+  });
+
   const formik = useFormik({
     initialValues: {
       tags: [],
@@ -56,6 +70,9 @@ const Create = () => {
       variantValues: [],
       category: [],
     },
+    validationSchema: yup.object({
+      variantFields: yup.array().of(variantSchema),
+    }),
   });
   const SpecificationFormik = useFormik({
     initialValues: {
@@ -73,35 +90,39 @@ const Create = () => {
         field: field.name,
         value: values ? values[field.name].split(",") : [],
         flag: field.flag,
-      }))
+      })),
     );
   }
 
   const handleAdd = (data) => {
-    delete data._id;
-    const formData = convertToFormData(data);
-    addProduct(formData).then((resp) => {
-      if (resp.statusCode === 200) {
-        GlobalToast({
-          message: resp.statusMsg,
-          messageTimer: 2000,
-          messageType: "success",
-        });
-        navigate(-1);
-      } else {
-        GlobalToast({
-          message: resp.statusMsg,
-          messageTimer: 2000,
-          messageType: "error",
-        });
-      }
+    formik.submitForm();
+    formik.validateForm().then((errors) => {
+      console.log(errors);
     });
+    // delete data._id;
+    // const formData = convertToFormData(data);
+    // addProduct(formData).then((resp) => {
+    //   if (resp.statusCode === 200) {
+    //     GlobalToast({
+    //       message: resp.statusMsg,
+    //       messageTimer: 2000,
+    //       messageType: "success",
+    //     });
+    //     navigate(-1);
+    //   } else {
+    //     GlobalToast({
+    //       message: resp.statusMsg,
+    //       messageTimer: 2000,
+    //       messageType: "error",
+    //     });
+    //   }
+    // });
   };
 
   useEffect(() => {
     getInventory().then((resp) => {
       setInventoryItems(
-        convertForSelect({ data: resp, label: "name", value: "_id" })
+        convertForSelect({ data: resp, label: "name", value: "_id" }),
       );
       setoriginalInventory(resp);
     });
@@ -116,7 +137,7 @@ const Create = () => {
     });
     getFilterType().then((resp) => {
       setfilterOptions(
-        convertForSelect({ data: resp, label: "name", value: "_id" })
+        convertForSelect({ data: resp, label: "name", value: "_id" }),
       );
     });
   }, []);
@@ -124,7 +145,7 @@ const Create = () => {
   useEffect(() => {
     if (formik.values.name !== "" && formik.values.name) {
       const selectedOption = originalInventory.find(
-        (data) => data.name === formik.values.name
+        (data) => data.name === formik.values.name,
       );
       Object.keys({
         description: "",
@@ -138,7 +159,7 @@ const Create = () => {
         const categIds = filterOptions.filter(({ label }) =>
           selectedOption.category
             .split(",")
-            .some((val) => label.toLowerCase() === val.toLowerCase())
+            .some((val) => label.toLowerCase() === val.toLowerCase()),
         );
         formik.setFieldValue("category", categIds);
       }
@@ -154,7 +175,7 @@ const Create = () => {
           data: formik.values.variantFields,
           price: 0,
           inStock: 0,
-        })
+        }),
       );
     }
   }, [formik.values.variantFields]);
@@ -168,7 +189,7 @@ const Create = () => {
       "AdditionalSpecification",
       formik.values.AdditionalSpecification
         ? [...formik.values.AdditionalSpecification, { [field]: value }]
-        : [{ [field]: value }]
+        : [{ [field]: value }],
     );
     SpecificationFormik.resetForm();
   };
@@ -188,7 +209,7 @@ const Create = () => {
       <div
         className={cn(
           "grid h-[calc(100vh-120px)] gap-4 relative pb-2",
-          showPreview ? "grid-cols-3" : "grid-cols-2"
+          showPreview ? "grid-cols-3" : "grid-cols-2",
         )}
       >
         <div className="col-span-2 text-lg font-medium text-gray-600 py-2 overflow-hidden">
@@ -215,7 +236,7 @@ const Create = () => {
                       <SelectElement
                         options={InventoryItems}
                         value={InventoryItems.find(
-                          (data) => data.label === formik.values.name
+                          (data) => data.label === formik.values.name,
                         )}
                         onChange={(data) =>
                           formik.setFieldValue("name", data.label)
@@ -230,7 +251,7 @@ const Create = () => {
                         options={variants.options}
                         name={"productType"}
                         value={variants.options?.find(
-                          (data) => data.value === formik.values.productType
+                          (data) => data.value === formik.values.productType,
                         )}
                         onChange={(data) => {
                           formik.setFieldValue("productType", data.value);
@@ -261,7 +282,7 @@ const Create = () => {
                 <div
                   className={cn(
                     "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                    showPreview ? "grid-cols-3" : "grid-cols-4",
                   )}
                 >
                   <div className="">
@@ -337,7 +358,7 @@ const Create = () => {
                       onChange={(event) => {
                         formik.setFieldValue(
                           "tags",
-                          event.target.value.split(",")
+                          event.target.value.split(","),
                         );
                       }}
                     />
@@ -352,7 +373,7 @@ const Create = () => {
                 <div
                   className={cn(
                     "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                    showPreview ? "grid-cols-3" : "grid-cols-4"
+                    showPreview ? "grid-cols-3" : "grid-cols-4",
                   )}
                 >
                   {variantFields?.map((data, index) => (
@@ -371,7 +392,7 @@ const Create = () => {
                           formik.setFieldValue(
                             "variantFields",
                             formik.values.variantFields.some(
-                              ({ field }) => field === data.name
+                              ({ field }) => field === data.name,
                             )
                               ? formik.values.variantFields.map((val) =>
                                   val.field === data.name
@@ -380,7 +401,7 @@ const Create = () => {
                                         value: event.target.value.split(","),
                                         flag: data.flag,
                                       }
-                                    : val
+                                    : val,
                                 )
                               : [
                                   ...formik.values.variantFields,
@@ -389,7 +410,7 @@ const Create = () => {
                                     value: event.target.value.split(","),
                                     flag: data.flag,
                                   },
-                                ]
+                                ],
                           );
                         }}
                       />
@@ -437,7 +458,7 @@ const Create = () => {
                     <div
                       className={cn(
                         "p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 grid gap-2",
-                        showPreview ? "grid-cols-3" : "grid-cols-4"
+                        showPreview ? "grid-cols-3" : "grid-cols-4",
                       )}
                     >
                       {formik.values.AdditionalSpecification?.map(
@@ -460,8 +481,8 @@ const Create = () => {
                                               key,
                                               value: event.target.value,
                                             }
-                                          : val
-                                    )
+                                          : val,
+                                    ),
                                   );
                                 }}
                               />
@@ -471,8 +492,8 @@ const Create = () => {
                                   formik.setFieldValue(
                                     "AdditionalSpecification",
                                     formik.values.AdditionalSpecification.filter(
-                                      (val) => val.key !== key
-                                    )
+                                      (val) => val.key !== key,
+                                    ),
                                   );
                                 }}
                               >
@@ -480,7 +501,7 @@ const Create = () => {
                               </Button>
                             </div>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   )}
@@ -511,13 +532,13 @@ const Create = () => {
                                   data.name.includes(
                                     variant.name.slice(
                                       variant.name.indexOf(
-                                        formik.values.variantFields[1].field
+                                        formik.values.variantFields[1].field,
                                       ),
-                                      -7
-                                    )
-                                  )
+                                      -7,
+                                    ),
+                                  ),
                                 ).values,
-                              }))
+                              })),
                             );
                           }}
                         />
@@ -530,7 +551,7 @@ const Create = () => {
                               formik.values.variantValues?.find(
                                 (value) =>
                                   value.name ===
-                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`
+                                  `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`,
                               ) ?? formik.values
                             }
                             value1={val}
@@ -541,7 +562,7 @@ const Create = () => {
                               const name = `${formik.values.variantFields[0].field}${val}${formik.values.variantFields[1].field}${val2}Variant`;
                               if (
                                 formik.values.variantValues.some(
-                                  (value) => value.name === name
+                                  (value) => value.name === name,
                                 )
                               ) {
                                 formik.setFieldValue(
@@ -552,8 +573,8 @@ const Create = () => {
                                           name: name,
                                           values: values,
                                         }
-                                      : value
-                                  )
+                                      : value,
+                                  ),
                                 );
                               } else {
                                 formik.setFieldValue("variantValues", [

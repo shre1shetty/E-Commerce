@@ -29,6 +29,8 @@ function App() {
     console.log(themeColor);
     if (themeColor) {
       document.documentElement.style.setProperty("--user-theme", themeColor);
+    } else {
+      document.documentElement.style.setProperty("--user-theme", "black");
     }
   }, [themeColor]);
   return (

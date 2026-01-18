@@ -11,14 +11,13 @@
 }
 
 .navbar-search-container {
-  flex-grow: 1;
   position: relative;
   color: slategrey;
+  max-width: 990px;
   input {
     width: 100%;
     padding: 8px 36px;
     border-radius: 6px;
-    max-width: 990px;
     font-size: 12px;
     outline: none;
   }
@@ -27,4 +26,8 @@
     top: 9px;
     left: 9px;
   }
+}
+
+.no-shadow {
+  box-shadow: none !important;
 }

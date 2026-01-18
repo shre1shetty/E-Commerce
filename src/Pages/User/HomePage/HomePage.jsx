@@ -99,21 +99,23 @@ const HomePage = () => {
           <div style={{ width: `${sizes.header1}%` }}>
             <Slider slidesPerView={1} slides={slides} />
           </div>
-          <div
-            className="flex flex-col gap-2"
-            style={{ width: `${sizes.header2}%` }}
-          >
-            {subHeader.map(({ file, size, url }) => (
-              <img
-                key={url}
-                src={getFileUrl(file)}
-                alt=""
-                style={{ height: `${size}%` }}
-                className="w-full"
-                onClick={() => navigate(url)}
-              />
-            ))}
-          </div>
+          {subHeader?.length > 0 && (
+            <div
+              className="flex flex-col gap-2"
+              style={{ width: `${sizes.header2}%` }}
+            >
+              {subHeader.map(({ file, size, url }) => (
+                <img
+                  key={url}
+                  src={getFileUrl(file)}
+                  alt=""
+                  style={{ height: `${size}%` }}
+                  className="w-full"
+                  onClick={() => navigate(url)}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <DividerWithText>Top Sales On Top Products</DividerWithText>
         <div className=" ">

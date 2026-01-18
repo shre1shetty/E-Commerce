@@ -360,6 +360,16 @@ body {
   border: 1px solid red;
 }
 
+.errorClass {
+  .dropdown-container {
+    border: unset !important;
+    box-shadow: none !important;
+    .dropdown-heading {
+      border: 1px solid red;
+    }
+  }
+}
+
 .errorClass.p-inputwrapper {
   border: none;
   .p-inputnumber-input {

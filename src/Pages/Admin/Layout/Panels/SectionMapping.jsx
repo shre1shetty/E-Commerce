@@ -102,12 +102,12 @@ const SectionMapping = ({ sections, setsections }) => {
             orderBy(
               sections.map((val, index) => (index === id ? values : val)),
               (section) => section.section,
-              "asc"
-            )
+              "asc",
+            ),
           );
         } else {
           const sectionRowsLength = sections.filter(
-            ({ section }) => section === values.section
+            ({ section }) => section === values.section,
           ).length;
           const equalSize = 100 / (sectionRowsLength + 1);
           setsections(
@@ -115,11 +115,11 @@ const SectionMapping = ({ sections, setsections }) => {
               [...sections, values].map((val) =>
                 val.section === values.section
                   ? { ...val, size: equalSize }
-                  : val
+                  : val,
               ),
               (section) => section.section,
-              "asc"
-            )
+              "asc",
+            ),
           );
         }
         formik.resetForm();
@@ -130,7 +130,7 @@ const SectionMapping = ({ sections, setsections }) => {
   useEffect(() => {
     getProducts().then((resp) => {
       setproducts(
-        convertForSelect({ data: resp, label: "name", value: "_id" })
+        convertForSelect({ data: resp, label: "name", value: "_id" }),
       );
     });
   }, []);
@@ -138,10 +138,10 @@ const SectionMapping = ({ sections, setsections }) => {
     const sectionArray = sections.reduce(
       (acc, curr) =>
         (acc = acc.includes(curr.section) ? acc : [...acc, curr.section]),
-      []
+      [],
     );
     setsectionNames(sectionArray);
-    if (sectionArray.length > 0) {
+    if (sectionArray.length > 0 && activeSection === "") {
       setactiveSection(sectionArray[0]);
     }
   }, [sections]);
@@ -181,7 +181,7 @@ const SectionMapping = ({ sections, setsections }) => {
             errorFlag={formik.touched.type && formik.errors.type}
             options={sectionTypes}
             value={sectionTypes.find(
-              ({ value }) => value === formik.values.type
+              ({ value }) => value === formik.values.type,
             )}
             onChange={({ value }) => formik.setFieldValue("type", value)}
           />
@@ -376,7 +376,7 @@ const SectionMapping = ({ sections, setsections }) => {
                       formik.setValues({
                         id:
                           sections.findIndex(
-                            ({ section }) => section === activeSection
+                            ({ section }) => section === activeSection,
                           ) + parseInt(node.id),
                         ...data,
                       });
@@ -389,11 +389,11 @@ const SectionMapping = ({ sections, setsections }) => {
                       setsections(
                         orderBy(
                           sections.filter(
-                            (val, index) => index.toString() !== node.id
+                            (val, index) => index.toString() !== node.id,
                           ),
                           (section) => section.section,
-                          "asc"
-                        )
+                          "asc",
+                        ),
                       )
                     }
                   >
@@ -451,7 +451,7 @@ const SectionMapping = ({ sections, setsections }) => {
             onResize={(pixelSizes) => {
               const [size1, size2] = handleResize(
                 pixelSizes,
-                containerRef.current?.offsetWidth
+                containerRef.current?.offsetWidth,
               );
               let flag = 0;
               const newResizedSection = sections.map((val) => {
@@ -463,7 +463,7 @@ const SectionMapping = ({ sections, setsections }) => {
                 return val;
               });
               setsections(
-                orderBy(newResizedSection, (section) => section.section, "asc")
+                orderBy(newResizedSection, (section) => section.section, "asc"),
               );
             }}
           >
@@ -495,7 +495,7 @@ const SectionMapping = ({ sections, setsections }) => {
                     </div>
                   )}
                 </Splitter.Panel>
-              )
+              ),
             )}
           </Splitter>
         </div>

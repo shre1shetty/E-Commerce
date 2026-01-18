@@ -35,14 +35,14 @@ const NavBar = ({ logo }) => {
         {navBarData.map((item) => (
           <HoverCard>
             <HoverCardTrigger className="h-8 cursor-pointer data-[state=open]:border-b-2 data-[state=open]:border-[var(--user-theme)] hidden md:flex items-center navbarText">
-              <Link to={`/Category/${item._id}`} className="">
+              <Link to={`/Category/${item._id}`} className="text-nowrap">
                 {item.name}
               </Link>
             </HoverCardTrigger>
             <HoverCardContent className="flex gap-6 w-fit min-w-[200px] justify-around">
               {item.otherFilters.map((filter) => (
                 <div className="category-context">
-                  <span className="">{filter.name}</span>
+                  <span className="text-nowrap">{filter.name}</span>
                   {filter.subFilter.map(({ name, _id }) => (
                     <Link to={`/Category/${item._id},${_id}`} className="">
                       {name}
