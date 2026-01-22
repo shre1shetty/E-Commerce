@@ -17,19 +17,14 @@
   .bento[data-type="Banner"] {
     height: 225px;
   }
-
-  .transparent-overlay {
-    bottom: -25% !important;
-  }
 }
 
 .transparent-overlay {
   justify-content: end;
   position: absolute;
-  bottom: -10%;
+  top: calc(100% - 70px);
   left: 0;
   width: 100%;
-  height: 100%;
   background: linear-gradient(
     to top,
     color-mix(in oklab, var(--user-theme), transparent 60%),

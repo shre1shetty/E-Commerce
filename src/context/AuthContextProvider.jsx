@@ -19,7 +19,7 @@ const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     const refresh = async () => {
-      if (window.location.pathname === import.meta.env.BASE_URL) {
+      if (!window.location.pathname.includes("admin")) {
         setAuthReady(true);
         return;
       }
@@ -39,9 +39,8 @@ const AuthContextProvider = ({ children }) => {
           // AdminAxiosInstance.defaults.headers.common[
           //   "Authorization"
           // ] = `Bearer ${res.data.accessToken}`;
-          AdminAxiosInstanceforUpload.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${res.data.accessToken}`;
+          AdminAxiosInstanceforUpload.defaults.headers.common["Authorization"] =
+            `Bearer ${res.data.accessToken}`;
         }
       } catch (error) {
         // best-effort logout on error
@@ -49,7 +48,7 @@ const AuthContextProvider = ({ children }) => {
           await AxiosInstance.post(
             "/User/logout",
             {},
-            { withCredentials: true }
+            { withCredentials: true },
           );
         } catch (e) {
           // ignore

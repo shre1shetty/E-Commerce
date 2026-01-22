@@ -9,6 +9,7 @@ import "primereact/resources/primereact.min.css"; //core css
 import AuthContextProvider from "./context/AuthContextProvider";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { AxiosInstance } from "./lib/AxiosInstance";
+import MainSkeleton from "./Components/Skeleton/MainSkeleton";
 function App() {
   ReactGA.initialize("G-D61EQSNRHJ", {
     gaOptions: {
@@ -16,6 +17,7 @@ function App() {
     },
   });
   const [themeColor, setThemeColor] = useState(null);
+  const [loading, setloading] = useState(false);
   useEffect(() => {
     async function fetchTheme() {
       const res = await AxiosInstance("/Theme/getUserTheme");
@@ -26,17 +28,17 @@ function App() {
 
   // 2. Apply theme before paint
   useLayoutEffect(() => {
-    console.log(themeColor);
     if (themeColor) {
+      setloading(false);
       document.documentElement.style.setProperty("--user-theme", themeColor);
     } else {
-      document.documentElement.style.setProperty("--user-theme", "black");
+      setloading(true);
     }
   }, [themeColor]);
   return (
     <AuthContextProvider>
       <ToastContainer />
-      <RouteContainer />
+      {loading ? <MainSkeleton /> : <RouteContainer />}
     </AuthContextProvider>
   );
 }

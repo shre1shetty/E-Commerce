@@ -69,3 +69,55 @@
   font-weight: 600;
   padding: 8px 18px;
 }
+
+.skeleton-icon,
+.skeleton-searchbar,
+.skeleton-navbuttons,
+.skeleton-header,
+.skeleton-category,
+.skeleton-divider,
+.skeleton-category-header {
+  background-color: #bababa;
+}
+
+.skeleton-icon {
+  height: 40px;
+  width: 80px;
+  border-radius: 12px;
+}
+
+.skeleton-searchbar {
+  height: 40px;
+  width: 600px;
+  border-radius: 20px;
+}
+
+.skeleton-navbuttons {
+  height: 40px;
+  width: 40px;
+  border-radius: 999px;
+}
+
+.skeleton-header {
+  height: 400px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.skeleton-category {
+  height: 120px;
+  width: 120px;
+  border-radius: 999px;
+}
+
+.skeleton-divider {
+  height: 5px;
+  width: 100%;
+}
+
+.skeleton-category-header {
+  height: 40px;
+  width: 180px;
+}

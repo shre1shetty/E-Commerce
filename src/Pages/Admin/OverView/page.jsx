@@ -491,7 +491,7 @@ const OverView = () => {
                     <>
                       <div className="top-product-1" key={index}>
                         <img src={getFileUrl(img)} alt="" className="" />
-                        <p className="whitespace-nowrap">
+                        <p className="whitespace-nowrap overflow-hidden text-ellipsis">
                           <span className="">#{index + 1} </span>
                           {name}
                         </p>

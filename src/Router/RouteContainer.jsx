@@ -1,4 +1,10 @@
-import React, { createContext, Suspense, useEffect, useState } from "react";
+import React, {
+  createContext,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import AdminRoutes from "./Routes";
 import "./Router.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -20,6 +26,8 @@ import LoginModal from "@/Pages/Login/LoginModal";
 import UserLayout from "@/Layout/UserLayout";
 import HomePage from "@/Pages/User/HomePage/HomePage";
 import AdminLayout from "@/Layout/AdminLayout";
+import { AuthContext } from "@/context/AuthContextProvider";
+import ScrollToTop from "@/Components/ScrollToTop/ScrollToTop";
 
 export const loginStateContext = createContext({
   open: false,
@@ -29,11 +37,11 @@ const RouteContainer = () => {
   const [logo, setlogo] = useState(null);
   const [open, setopen] = useState(false);
   const [footerDetails, setfooterDetails] = useState({});
-  const role = useSelector((state) => state.data.role.role);
+  const { role } = useContext(AuthContext); //useSelector((state) => state.data.role.role);
   const ContextValue = { open, setopen };
-
   return (
     <BrowserRouter basename="/">
+      <ScrollToTop />
       <div className="main-div">
         <loginStateContext.Provider value={ContextValue}>
           <Routes>

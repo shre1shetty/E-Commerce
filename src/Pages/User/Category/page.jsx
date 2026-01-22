@@ -26,7 +26,7 @@ const CategoryPage = () => {
         (acc, cur) => {
           return Math.max(acc, cur.price);
         },
-        [0]
+        [0],
       );
       setmaxValue(max);
       setvalue([0, max]);
@@ -52,8 +52,8 @@ const CategoryPage = () => {
           (filters.length === 0 ||
             category.some(({ value }) => filters.includes(value))) &&
           price >= value[0] &&
-          price <= value[1]
-      )
+          price <= value[1],
+      ),
     );
   }, [filters, products, value]);
   return (
@@ -98,127 +98,134 @@ const CategoryPage = () => {
         <div
           className={`${
             showFilter
-              ? "w-[40%] min-w-[220px] md:w-1/5 border-l pl-4 border-slate-600 text-[#00003b]"
+              ? "w-[40%] min-w-[220px] md:w-1/5 px-2 text-[#00003b] border border-[#cfcfcf]"
               : "w-0"
-          } max-sm:absolute max-sm:top-0 max-sm:right-0 bg-white h-full overflow-x-hidden transition-all duration-300 min-h-[560px]`}
+          } max-sm:absolute max-sm:top-0 max-sm:right-0 bg-white overflow-x-hidden h-fit md:h-full md:min-h-[560px]  rounded-md`}
         >
-          <div className="price-range border-b-2 pb-3">
-            <label htmlFor="range" className="range-label">
-              Price
-            </label>
-            <div className=" mt-3">
-              <div className="card flex justify-center px-3">
-                <Slider
-                  id="range"
-                  min={0}
-                  max={parseInt(maxValue)}
-                  value={value}
-                  onChange={(e) => setvalue(e.value)}
-                  className="w-full"
-                  range
-                />
-              </div>
-              <div className="flex justify-between items-center gap-2 mt-3">
-                <div className="price-div">
-                  <InputNumber
-                    inputId="currency-india"
-                    min={0}
-                    value={value[0]}
-                    onValueChange={(e) =>
-                      setvalue((prev) => [e.value, prev[1]])
-                    }
-                    mode="currency"
-                    currency="INR"
-                    locale="en-IN"
-                  />
-                </div>
-                <span className="font-bold text-lg">-</span>
-                <div className="price-div">
-                  <InputNumber
-                    inputId="currency-india"
-                    min={0}
-                    value={value[1]}
-                    max={maxValue}
-                    onValueChange={(e) =>
-                      setvalue((prev) => [prev[0], e.value])
-                    }
-                    mode="currency"
-                    currency="INR"
-                    locale="en-IN"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="category-container">
-            {category.map(({ name, _id, subFilter }) => (
-              <div
-                className="py-3 border-b-2 flex flex-col justify-center"
-                key={_id}
-              >
-                <div className="flex justify-between font-semibold text-xs">
-                  <div
-                    className="flex items-center gap-2 cursor-pointer"
-                    onClick={() =>
-                      setopenCategory((prev) => ({
-                        ...prev,
-                        [_id]: !prev[_id],
-                      }))
-                    }
-                  >
-                    <label htmlFor="" className=" cursor-pointer">
-                      {name}
-                    </label>
-                    <ChevronDown size={12} />
+          {showFilter && (
+            <>
+              <div className="price-range border-b-2 pb-3">
+                <label htmlFor="range" className="range-label">
+                  Price
+                </label>
+                <div className=" mt-3">
+                  <div className="card flex justify-center px-3">
+                    <Slider
+                      id="range"
+                      min={0}
+                      max={parseInt(maxValue)}
+                      value={value}
+                      onChange={(e) => setvalue(e.value)}
+                      className="w-full"
+                      range
+                    />
                   </div>
-                  <button
-                    className=""
-                    onClick={() =>
-                      setfilters((prev) =>
-                        prev.filter(
-                          (id) => !subFilter.some(({ _id }) => _id === id)
-                        )
-                      )
-                    }
-                  >
-                    Reset
-                  </button>
-                </div>
-                <div
-                  className={`flex flex-col gap-2 collapse-div overflow-hidden ${
-                    openCategory[_id] ? "h-full mt-3" : "h-0"
-                  }`}
-                >
-                  {subFilter.map(({ name: _name, _id: id }) => (
-                    <div
-                      className={`flex items-center gap-2 text-[10px] `}
-                      key={id}
-                    >
-                      <Checkbox
-                        inputId={id}
-                        checked={
-                          filters.some((i) => i === id) ||
-                          categoryId.includes(id)
+                  <div className="flex justify-between items-center gap-2 mt-3">
+                    <div className="price-div">
+                      <InputNumber
+                        inputId="currency-india"
+                        min={0}
+                        value={value[0]}
+                        onValueChange={(e) =>
+                          setvalue((prev) => [e.value, prev[1]])
                         }
-                        className="small-checkbox"
-                        disabled={categoryId.includes(id)}
-                        onChange={(event) =>
+                        mode="currency"
+                        currency="INR"
+                        locale="en-IN"
+                      />
+                    </div>
+                    <span className="font-bold text-lg">-</span>
+                    <div className="price-div">
+                      <InputNumber
+                        inputId="currency-india"
+                        min={0}
+                        value={value[1]}
+                        max={maxValue}
+                        onValueChange={(e) =>
+                          setvalue((prev) => [prev[0], e.value])
+                        }
+                        mode="currency"
+                        currency="INR"
+                        locale="en-IN"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="category-container">
+                {category.map(({ name, _id, subFilter }) => (
+                  <div
+                    className="py-3 border-b-2 flex flex-col justify-center"
+                    key={_id}
+                  >
+                    <div className="flex justify-between font-semibold text-xs">
+                      <div
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() =>
+                          setopenCategory((prev) => ({
+                            ...prev,
+                            [_id]: !prev[_id],
+                          }))
+                        }
+                      >
+                        <label htmlFor="" className=" cursor-pointer">
+                          {name}
+                        </label>
+                        <ChevronDown size={12} />
+                      </div>
+                      <button
+                        className=""
+                        onClick={() =>
                           setfilters((prev) =>
-                            event.checked
-                              ? [...prev, id]
-                              : prev.filter((i) => i !== id)
+                            prev.filter(
+                              (id) => !subFilter.some(({ _id }) => _id === id),
+                            ),
                           )
                         }
-                      />
-                      <label htmlFor={id} className="font-medium text-gray-500">
-                        {_name}
-                      </label>
+                      >
+                        Reset
+                      </button>
                     </div>
-                  ))}
-                </div>
+                    <div
+                      className={`flex flex-col gap-2 collapse-div overflow-hidden ${
+                        openCategory[_id] ? "h-full mt-3" : "h-0"
+                      }`}
+                    >
+                      {subFilter.map(({ name: _name, _id: id }) => (
+                        <div
+                          className={`flex items-center gap-2 text-[10px] `}
+                          key={id}
+                        >
+                          <Checkbox
+                            inputId={id}
+                            checked={
+                              filters.some((i) => i === id) ||
+                              categoryId.includes(id)
+                            }
+                            className="small-checkbox"
+                            disabled={categoryId.includes(id)}
+                            onChange={(event) =>
+                              setfilters((prev) =>
+                                event.checked
+                                  ? [...prev, id]
+                                  : prev.filter((i) => i !== id),
+                              )
+                            }
+                          />
+                          <label
+                            htmlFor={id}
+                            className="font-medium text-gray-500"
+                          >
+                            {_name}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>
