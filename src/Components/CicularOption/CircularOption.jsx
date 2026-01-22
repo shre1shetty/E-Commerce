@@ -3,7 +3,7 @@ import React from "react";
 const CircularOption = ({ onClick, image, children }) => {
   return (
     <div
-      className="bg-[#fffaef] border-2 border-b-0 shadow-[0px_0px_8px_2px_lightgray] border-[var(--user-theme)] border-e w-[100px] md:w-[120px] lg:w-[140px] h-[60px] md:h-[120px] lg:h-[140px] rounded-full relative bg-cover bg-center cursor-pointer p-1 hover:scale-[1.1]"
+      className="bg-[#fffaef] border-2 border-b-0 shadow-[0px_0px_8px_2px_lightgray] border-[var(--user-theme)] border-e w-[100px] md:w-[120px] lg:w-[140px] h-[100px] md:h-[120px] lg:h-[140px] rounded-full relative bg-cover bg-center cursor-pointer p-1 hover:scale-[1.1]"
       onClick={onClick}
     >
       <img
