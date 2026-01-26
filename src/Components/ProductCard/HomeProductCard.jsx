@@ -137,11 +137,11 @@ const HomeProductCard = ({
         </div>
       </div>
       <div className="addtoCart">
-        <button className="">
-          <ShoppingBag
-            size={14}
-            onClick={() => (onClick ? onClick() : navigate(`/Product/${id}`))}
-          />
+        <button
+          className=""
+          onClick={() => (onClick ? onClick() : navigate(`/Product/${id}`))}
+        >
+          <ShoppingBag size={14} />
         </button>
       </div>
       <div className="top-product-name">

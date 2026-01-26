@@ -43,7 +43,7 @@ export const forgetPassStateContext = createContext({
 const RouteContainer = () => {
   const [open, setopen] = useState(false);
   const [openModal, setopenModal] = useState(false);
-  const { role } = useContext(AuthContext); //useSelector((state) => state.data.role.role);
+  const role = useSelector((state) => state.data.role.role);
   const ContextValue = { open, setopen };
   const forgetPassContextValue = { openModal, setopenModal };
   return (

@@ -38,8 +38,10 @@ AdminAxiosInstanceforUpload.interceptors.response.use(
       TokenStore.setToken(res.data.accessToken);
       return AdminAxiosInstanceforUpload(originalRequest);
     }
-    // LS.clear();
-    // window.location.href = import.meta.env.BASE_URL;
+    if (import.meta.env.PROD) {
+      LS.clear();
+      window.location.href = import.meta.env.BASE_URL;
+    }
     return Promise.reject(err);
   },
 );
