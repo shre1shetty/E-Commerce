@@ -488,16 +488,14 @@ const OverView = () => {
               <div className="top-products-list-container">
                 <Carousel autoplay={{ dotDuration: true }} autoplaySpeed={2000}>
                   {topProducts.map(({ name, price, img }, index) => (
-                    <>
-                      <div className="top-product-1" key={index}>
-                        <img src={getFileUrl(img)} alt="" className="" />
-                        <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                          <span className="">#{index + 1} </span>
-                          {name}
-                        </p>
-                        <p className="text-[10px] text-slate-500">₹{price}</p>
-                      </div>
-                    </>
+                    <div className="top-product-1" key={index}>
+                      <img src={getFileUrl(img)} alt="" className="" />
+                      <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                        <span className="">#{index + 1} </span>
+                        {name}
+                      </p>
+                      <p className="text-[10px] text-slate-500">₹{price}</p>
+                    </div>
                   ))}
                 </Carousel>
               </div>
@@ -514,7 +512,7 @@ const OverView = () => {
                         <User size={16} color="#916d00" />
                       </span>
                       <div className="comment-details">
-                        <p className="user-name">
+                        <div className="user-name">
                           {username}
                           <Rate
                             allowHalf
@@ -525,7 +523,7 @@ const OverView = () => {
                               marginLeft: 5,
                             }}
                           />
-                        </p>
+                        </div>
                         <p className="comment-text">{comment}</p>
                         <p className="comment-date">
                           {dayjs(createdAt).format("YYYY-MM-DD")}

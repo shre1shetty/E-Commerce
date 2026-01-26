@@ -31,12 +31,12 @@ const RatingModal = ({ image, variant, name, open, setopen, id }) => {
     },
     beforeUpload: (file) => {
       const fileExt = file.name.split(".").pop().toLowerCase();
-      const validType = ["jpg", "png"].includes(fileExt);
+      const validType = ["jpg", "png", "webp"].includes(fileExt);
       if (validType) {
         setFileList((prev) => [...prev, file]);
       } else {
         GlobalToast({
-          message: "Invalid format only jpg and png are allowed",
+          message: "Invalid format only jpg,webp and png are allowed",
           messageTimer: 1200,
           messageType: "error",
         });
@@ -134,7 +134,11 @@ const RatingModal = ({ image, variant, name, open, setopen, id }) => {
               />
             </div>
             <div className="">
-              <Dragger className="min-h-28" accept={".png,.jpg"} {...props}>
+              <Dragger
+                className="min-h-28"
+                accept={".png,.jpg,.webp"}
+                {...props}
+              >
                 <p className="ant-upload-drag-icon flex justify-center items-center">
                   <CloudUploadIcon color="#727272" />
                 </p>

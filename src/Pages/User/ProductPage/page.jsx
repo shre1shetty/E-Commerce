@@ -187,7 +187,6 @@ const page = () => {
     setselectedImage(selectedVariant?.values?.picture[0]);
     setselectedVariant(selectedVariant || {});
   }, [selectedVariantField]);
-
   return (
     <div>
       <div className=""></div>
@@ -286,7 +285,7 @@ const page = () => {
           </div>
           <span className="text-xs">MRP incl. of all taxes</span>
           <div className="flex gap-2 items-end mt-2 leading-[normal] text-[#7e5600]">
-            <Rate allowHalf value={product.ratingSum} disabled />
+            <Rate allowHalf value={product.avgRating} disabled />
             <span className="text-xs">{product.ratingCount} reviews</span>
           </div>
           <div className="my-6 flex flex-col gap-4">
@@ -345,7 +344,9 @@ const page = () => {
                 <label htmlFor="" className="">
                   Ratings & Reviews
                 </label>
-                <span className="text-xs mt-1">(1299902 reviews)</span>
+                <span className="text-xs mt-1">
+                  ({product.ratingCount} reviews)
+                </span>
               </div>
 
               <button className="" onClick={() => setopenRatings(true)}>

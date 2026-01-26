@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/Components/ui/dialog";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./index.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -17,7 +17,9 @@ import { AdminAxiosInstanceforUpload as AxiosInstanceforUpload } from "@/lib/Adm
 import { setWishList } from "@/Redux/Slice/WishlistSlice";
 import { Segmented } from "antd";
 import { setCount } from "@/Redux/Slice/CountSlice";
+import { forgetPassStateContext } from "@/Router/RouteContainer";
 const LoginModal = ({ open, setopen }) => {
+  const { setopenModal } = useContext(forgetPassStateContext);
   const navigate = useNavigate();
   const [loginSignup, setloginSignup] = useState("Login");
   const dispatch = useDispatch();
@@ -226,9 +228,17 @@ const LoginModal = ({ open, setopen }) => {
                 />
               </div>
               <div className="flex text-center items-center justify-center mt-4">
-                <a href="" className="text-[13px] text-[var(--user-theme)]">
+                <button
+                  type="button"
+                  className="text-[13px] text-[var(--user-theme)]"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setopenModal(true);
+                    setopen(false);
+                  }}
+                >
                   Forgot your password ?
-                </a>
+                </button>
               </div>
               <div className="flex items-center justify-center mt-4">
                 <button

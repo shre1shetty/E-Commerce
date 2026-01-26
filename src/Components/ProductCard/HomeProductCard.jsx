@@ -25,7 +25,7 @@ const HomeProductCard = ({
   const navigate = useNavigate();
   const wishList = useSelector((state) => state.data.wishlist.wishlist);
   const isWishListed = wishList?.some(
-    (val) => val.toString() === id.toString()
+    (val) => val.toString() === id.toString(),
   );
   const dispatch = useDispatch();
   const [productPrice, setproductPrice] = useState(price);
@@ -36,13 +36,13 @@ const HomeProductCard = ({
   const handleFilterChange = (color, variantValues, variant1, variant2) => {
     const val = variantValues.find(({ name }) =>
       name.includes(
-        `${variant1.name}${variant1.value}${variant2.name}${variant2.value}`
-      )
+        `${variant1.name}${variant1.value}${variant2.name}${variant2.value}`,
+      ),
     );
     setproductImage(
       isString(val?.values.picture[0])
         ? getFileUrl(val?.values.picture[0])
-        : URL.createObjectURL(val?.values.picture[0])
+        : URL.createObjectURL(val?.values.picture[0]),
     );
     setproductPrice(val?.values.price);
     setproductDiscPrice(val?.values.discountedPrice);
@@ -82,12 +82,13 @@ const HomeProductCard = ({
     if (variantValues[0]?.values?.picture.length > 0) {
       let image = variantValues.find(({ name }) =>
         name.includes(
-          `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`
-        )
+          `${filters[0]?.field}${filters[0]?.value[0]}${filters[1]?.field}${filters[1]?.value[0]}`,
+        ),
       )?.values?.picture[0];
-      setproductImage(
-        isString(image) ? getFileUrl(image) : URL.createObjectURL(image)
-      );
+      if (image)
+        setproductImage(
+          isString(image) ? getFileUrl(image) : URL.createObjectURL(image),
+        );
     }
   }, [filters]);
 
@@ -98,7 +99,7 @@ const HomeProductCard = ({
     >
       <div className="w-full h-[180px] md:h-[200px] hover:scale-[1.02] relative">
         <img
-          src={productImage ? productImage : ""}
+          src={productImage}
           alt=""
           className="h-full w-full block rounded-md card-image"
         />
@@ -107,8 +108,9 @@ const HomeProductCard = ({
         <div className="flex overflow-hidden rounded-lg items-end ">
           {filters
             .find(({ field }) => field === "Colors")
-            ?.value.map((color) => (
+            ?.value.map((color, index) => (
               <div
+                key={index}
                 className="h-1 min-w-3 hover:h-1.5"
                 style={{ backgroundColor: color }}
                 onClick={() => {
@@ -120,7 +122,7 @@ const HomeProductCard = ({
                       color,
                       variantValues,
                       { name: "Colors", value: color },
-                      variant2
+                      variant2,
                     );
                   } else {
                     setvariant2({ name: filters[1]?.field, value: color });

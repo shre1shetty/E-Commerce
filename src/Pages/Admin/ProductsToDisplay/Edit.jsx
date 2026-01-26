@@ -14,6 +14,7 @@ import {
   convertToBase64toFile,
   convertToFormData,
   fetchImageWithMetadata,
+  generateCombinations,
   getFileUrl,
 } from "@/lib/utils";
 import { useFormik } from "formik";
@@ -37,42 +38,133 @@ import { InputTextarea } from "primereact/inputtextarea";
 import GlobalToast from "@/Components/GlobalToast";
 import { getFilterType } from "../FilterType/service";
 import { MultiSelect } from "react-multi-select-component";
+import * as yup from "yup";
+import ErrorMessage from "@/Components/ErrorMessage/ErrorMessage";
 const EditPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterOptions, setfilterOptions] = useState([]);
   const [showPreview, setshowPreview] = useState(false);
+  const [loading, setloading] = useState(false);
   const navigate = useNavigate();
+  const variantSchema = yup.object({
+    value: yup
+      .array()
+      .of(yup.string().required("Please enter a value"))
+      .test(
+        "unique",
+        "Values must be unique",
+        (list) => new Set(list).size === list?.length,
+      )
+      .min(1, "At least one value is required")
+      .required("Value array is required"),
+  });
+
+  const variantValueSchema = yup.object({
+    purchasePrice: yup
+      .number()
+      .typeError("Please enter numeric value")
+      .required("Please enter purchase price"),
+    price: yup
+      .number()
+      .typeError("Please enter numeric value")
+      .required("Please enter price"),
+    discountedPrice: yup
+      .number()
+      .typeError("Please enter numeric value")
+      .required("Please enter discounted purchase price"),
+    inStock: yup
+      .number()
+      .typeError("Please enter numeric value")
+      .required("Please enter items in stock"),
+    picture: yup.array().min(1, "At least one picture is required"),
+  });
+
+  const variantValuesSchema = yup.object({
+    values: variantValueSchema,
+  });
+
   const formik = useFormik({
     initialValues: {
+      name: "",
+      description: "",
+      productType: "",
+      price: "",
+      brand: "",
+      fabric: "",
       tags: [],
-      category: [],
       variantFields: [],
+      variantValues: [],
+      category: [],
     },
+    validationSchema: yup.object({
+      name: yup.string().max(50).required("Enter Name"),
+      description: yup.string().max(500).required("Enter Description"),
+      productType: yup.string().required("Please select product type"),
+      category: yup
+        .array()
+        .min(1, "Select atleast one category")
+        .required("Select a category"),
+      price: yup
+        .number()
+        .typeError("Enter numeric value")
+        .required("Please enter price"),
+      brand: yup.string().required("Brand name is required"),
+      fabric: yup.string().required("Fabric/Material is required"),
+      variantFields: yup.array().of(variantSchema),
+      variantValues: yup.array().of(variantValuesSchema),
+    }),
+    onSubmit: () => {},
   });
+
   const SpecificationFormik = useFormik({
     initialValues: {
       field: "",
       value: "",
     },
+    validationSchema: yup.object({
+      field: yup.string().required("Field is required"),
+      value: yup.string().required("Value is required"),
+    }),
+    onSubmit: () => {},
   });
 
   const handleUpdate = (data) => {
+    formik.validateForm();
     delete data._id;
-    const formData = convertToFormData(data);
-    console.log(Object.fromEntries(formData.entries()));
-    updateProduct(searchParams.get("id"), formData).then((resp) => {
-      if (resp.statusCode === 200) {
-        GlobalToast({
-          message: resp.statusMsg,
-          messageTimer: 2000,
-          messageType: "success",
-        });
-        navigate(-1);
+    formik.submitForm();
+    formik.validateForm().then((errors) => {
+      console.log(errors);
+      if (Object.keys(errors).length > 0) {
+        if (Object.keys(errors).includes("variantValues")) {
+          GlobalToast({
+            message: "Fill all fields in variants",
+            messageTimer: 1000,
+            messageType: "error",
+          });
+        } else {
+          GlobalToast({
+            message: "Enter mandatory fields",
+            messageTimer: 1000,
+            messageType: "error",
+          });
+        }
       } else {
-        GlobalToast({
-          message: resp.statusMsg,
-          messageTimer: 2000,
-          messageType: "error",
+        const formData = convertToFormData(data);
+        updateProduct(searchParams.get("id"), formData).then((resp) => {
+          if (resp.statusCode === 200) {
+            GlobalToast({
+              message: resp.statusMsg,
+              messageTimer: 2000,
+              messageType: "success",
+            });
+            navigate(-1);
+          } else {
+            GlobalToast({
+              message: resp.statusMsg,
+              messageTimer: 2000,
+              messageType: "error",
+            });
+          }
         });
       }
     });
@@ -117,6 +209,19 @@ const EditPage = () => {
   useEffect(() => {
     console.log(formik.values);
   }, [formik.values]);
+
+  useEffect(() => {
+    if (formik.values.variantFields[0]?.value.length > 0) {
+      formik.setFieldValue(
+        "variantValues",
+        generateCombinations({
+          data: formik.values.variantFields,
+          price: formik.values.price,
+          inStock: 0,
+        }),
+      );
+    }
+  }, [formik.values.variantFields, formik.values.price]);
 
   const handleAddSpecifiction = ({ field, value }) => {
     formik.setFieldValue(
@@ -163,28 +268,49 @@ const EditPage = () => {
                 </label>
                 <div className="p-4 border border-[#d5d5d5] rounded-md text-sm text-gray-700 mb-1 flex flex-col gap-2">
                   <div className="w-1/3">
-                    <label htmlFor="" className="form-label">
+                    <label htmlFor="" className="form-label mandatory">
                       Name
                     </label>
                     <Input
                       type="text"
-                      className="form-control"
+                      className={cn(
+                        "form-control",
+                        formik.touched.name && formik.errors.name
+                          ? "errorClass"
+                          : "",
+                      )}
                       value={formik.values.name}
                       name="name"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                     />
+                    <ErrorMessage
+                      message={formik.errors.name}
+                      isVisible={formik.touched.name && formik.errors.name}
+                    />
                   </div>
                   <div className="w-2/3">
-                    <label htmlFor="" className="form-label">
+                    <label htmlFor="" className="form-label mandatory">
                       Description
                     </label>
                     <InputTextarea
                       autoResize
-                      className="p-2 text-sm text-gray-700"
+                      className={cn(
+                        "form-control",
+                        formik.touched.description && formik.errors.description
+                          ? "errorClass"
+                          : "",
+                      )}
                       name="description"
                       value={formik.values.description ?? ""}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    <ErrorMessage
+                      isVisible={
+                        formik.touched.description && formik.errors.description
+                      }
+                      message={formik.errors.description}
                     />
                   </div>
                 </div>
@@ -206,51 +332,83 @@ const EditPage = () => {
                     </label>
                     <Input
                       name="price"
+                      className={cn(
+                        "form-control",
+                        formik.touched.price && formik.errors.price
+                          ? "errorClass"
+                          : "",
+                      )}
                       value={formik.values.price ?? ""}
+                      onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                  </div>
-                  <div className="inStock">
-                    <label htmlFor="" className="form-label">
-                      In Stock
-                    </label>
-                    <Input
-                      name="inStock"
-                      value={formik.values.inStock ?? ""}
-                      onChange={formik.handleChange}
+                    <ErrorMessage
+                      isVisible={formik.touched.price && formik.errors.price}
+                      message={formik.errors.price}
                     />
                   </div>
                   <div className="">
-                    <label htmlFor="" className="form-label">
+                    <label htmlFor="" className="form-label mandatory">
                       Category
                     </label>
                     <MultiSelect
                       options={filterOptions}
                       value={formik.values.category}
+                      className={
+                        formik.touched.category && formik.errors.category
+                          ? "errorClass"
+                          : ""
+                      }
                       onChange={(data) =>
                         formik.setFieldValue("category", data)
                       }
                       labelledBy="Select"
                     />
+                    <ErrorMessage
+                      message={formik.errors.category}
+                      isVisible={
+                        formik.touched.category && formik.errors.category
+                      }
+                    />
                   </div>
                   <div className="">
-                    <label htmlFor="brand" className="form-label">
+                    <label htmlFor="brand" className="form-label mandatory">
                       Brand
                     </label>
                     <Input
                       name="brand"
+                      className={
+                        formik.touched.brand && formik.errors.brand
+                          ? "errorClass"
+                          : ""
+                      }
                       value={formik.values.brand ?? ""}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    <ErrorMessage
+                      message={formik.errors.brand}
+                      isVisible={formik.touched.brand && formik.errors.brand}
                     />
                   </div>
                   <div className="">
-                    <label htmlFor="fabric" className="form-label">
-                      Fabric
+                    <label htmlFor="fabric" className="form-label mandatory">
+                      Fabric / Material Type
                     </label>
                     <Input
                       name="fabric"
+                      className={
+                        formik.touched.fabric && formik.errors.fabric
+                          ? "errorClass"
+                          : ""
+                      }
                       value={formik.values.fabric ?? ""}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    <ErrorMessage
+                      message={formik.errors.fabric}
+                      isVisible={formik.touched.fabric && formik.errors.fabric}
                     />
                   </div>
                   <div className="">
@@ -296,12 +454,21 @@ const EditPage = () => {
                         {data.field}
                       </label>
                       <Input
-                        name={data.field}
+                        name={`variantFields[${index}].value`}
+                        className={
+                          formik.touched?.variantFields?.length > 0 &&
+                          formik.touched?.variantFields[index]?.value &&
+                          formik.errors?.variantFields?.length > 0 &&
+                          formik.errors?.variantFields[index]?.value
+                            ? "form-control errorClass"
+                            : "form-control"
+                        }
                         value={
                           formik.values.variantFields
                             .find((val) => val.field === data.field)
                             ?.value.join(",") ?? ""
                         }
+                        onBlur={formik.handleBlur}
                         onChange={(event) => {
                           formik.setFieldValue(
                             "variantFields",
@@ -328,6 +495,19 @@ const EditPage = () => {
                           );
                         }}
                       />
+                      <ErrorMessage
+                        isVisible={
+                          formik.touched?.variantFields?.length > 0 &&
+                          formik.touched?.variantFields[index]?.value &&
+                          formik.errors?.variantFields?.length > 0 &&
+                          formik.errors?.variantFields[index]?.value
+                        }
+                        message={
+                          formik.errors?.variantFields?.length > 0
+                            ? formik.errors.variantFields[index]?.value
+                            : ""
+                        }
+                      />
                     </div>
                   ))}
                 </div>
@@ -345,8 +525,23 @@ const EditPage = () => {
                       </label>
                       <Input
                         name="field"
+                        className={cn(
+                          "form-control",
+                          SpecificationFormik.touched.field &&
+                            SpecificationFormik.touched.field
+                            ? "errorClass"
+                            : "",
+                        )}
                         value={SpecificationFormik.values.field}
                         onChange={SpecificationFormik.handleChange}
+                        onBlur={SpecificationFormik.handleBlur}
+                      />
+                      <ErrorMessage
+                        message={SpecificationFormik.errors.field}
+                        isVisible={
+                          SpecificationFormik.touched.field &&
+                          SpecificationFormik.errors.field
+                        }
                       />
                     </div>
                     <div className="">
@@ -355,8 +550,23 @@ const EditPage = () => {
                       </label>
                       <Input
                         name="value"
+                        className={cn(
+                          "form-control",
+                          SpecificationFormik.touched.value &&
+                            SpecificationFormik.touched.value
+                            ? "errorClass"
+                            : "",
+                        )}
                         value={SpecificationFormik.values.value}
                         onChange={SpecificationFormik.handleChange}
+                        onBlur={SpecificationFormik.handleBlur}
+                      />
+                      <ErrorMessage
+                        message={SpecificationFormik.errors.value}
+                        isVisible={
+                          SpecificationFormik.touched.value &&
+                          SpecificationFormik.errors.value
+                        }
                       />
                     </div>
                     <Button

@@ -71,7 +71,7 @@ export function NavMain({ items, open }) {
               </SidebarMenuItem>
             </Collapsible>
           ) : (
-            <SidebarMenuButton asChild tooltip={item.title}>
+            <SidebarMenuButton asChild tooltip={item.title} key={item.title}>
               <div
                 className={
                   window.location.pathname.replace("/", "") ===
@@ -86,7 +86,7 @@ export function NavMain({ items, open }) {
                 {/* {open && <span className="">{item.title}</span>} */}
               </div>
             </SidebarMenuButton>
-          )
+          ),
         )}
       </SidebarMenu>
     </SidebarGroup>

@@ -119,11 +119,14 @@ const HomePage = () => {
         </div>
         <DividerWithText>Top Sales On Top Products</DividerWithText>
         <div className=" ">
-          <text className="text-2xl font-bold text-[#353434]">
-            Our Category
-          </text>
-          <div className="flex gap-1 md:gap-4 lg:gap-6 mt-4">
-            <CircularOption image={TopDiscount}>Top Discounts</CircularOption>
+          <p className="text-2xl font-bold text-[#353434]">Our Category</p>
+          <div className="flex gap-1 md:gap-4 lg:gap-6 my-4">
+            <CircularOption
+              image={TopDiscount}
+              onClick={() => navigate(`/Search/?TopDiscount=true`)}
+            >
+              Top Discounts
+            </CircularOption>
             {category.map(({ image, label, value }) => (
               <CircularOption
                 image={image}
@@ -137,22 +140,26 @@ const HomePage = () => {
         {Object.values(sections).map((section) => (
           <div className="flex flex-col md:flex-row gap-4">
             {section.map(
-              ({
-                categoryName,
-                gap,
-                overlaySubText,
-                overlayText,
-                prodPerRow,
-                products,
-                size,
-                type,
-                overlayBgImage,
-              }) =>
+              (
+                {
+                  categoryName,
+                  gap,
+                  overlaySubText,
+                  overlayText,
+                  prodPerRow,
+                  products,
+                  size,
+                  type,
+                  overlayBgImage,
+                },
+                index,
+              ) =>
                 type === "Banner" ? (
                   <div
                     className="bento"
                     data-type={type}
                     style={{ width: `${size}%` }}
+                    key={index}
                   >
                     <img
                       src={
@@ -177,6 +184,7 @@ const HomePage = () => {
                     className="bento"
                     data-type={type}
                     style={{ width: `${size}%` }}
+                    key={index}
                   >
                     <text className="text-2xl font-bold text-[#353434]">
                       {categoryName}
@@ -189,6 +197,7 @@ const HomePage = () => {
                     >
                       {products.map((product) => (
                         <HomeProductCard
+                          key={product._id}
                           id={product._id}
                           image={Shoe1}
                           label={product.name}

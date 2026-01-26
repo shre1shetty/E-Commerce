@@ -28,35 +28,45 @@ import HomePage from "@/Pages/User/HomePage/HomePage";
 import AdminLayout from "@/Layout/AdminLayout";
 import { AuthContext } from "@/context/AuthContextProvider";
 import ScrollToTop from "@/Components/ScrollToTop/ScrollToTop";
+import ForgetPassModal from "@/Components/Modal/ForgetPassModal";
 
 export const loginStateContext = createContext({
   open: false,
   setopen: () => {},
 });
+
+export const forgetPassStateContext = createContext({
+  openModal: false,
+  setopenModal: () => {},
+});
+
 const RouteContainer = () => {
-  const [logo, setlogo] = useState(null);
   const [open, setopen] = useState(false);
-  const [footerDetails, setfooterDetails] = useState({});
+  const [openModal, setopenModal] = useState(false);
   const { role } = useContext(AuthContext); //useSelector((state) => state.data.role.role);
   const ContextValue = { open, setopen };
+  const forgetPassContextValue = { openModal, setopenModal };
   return (
     <BrowserRouter basename="/">
       <ScrollToTop />
       <div className="main-div">
-        <loginStateContext.Provider value={ContextValue}>
-          <Routes>
-            {role === "admin" && (
-              <Route path="/admin" element={<AdminLayout />}>
-                {AdminRoutes}
-              </Route>
-            )}
-            {/*  */}
-            <Route element={<UserLayout />}>{UserRouter}</Route>
-            <Route path="*" element={<div>No page found</div>} />
-          </Routes>
+        <forgetPassStateContext.Provider value={forgetPassContextValue}>
+          <loginStateContext.Provider value={ContextValue}>
+            <Routes>
+              {role === "admin" && (
+                <Route path="/admin" element={<AdminLayout />}>
+                  {AdminRoutes}
+                </Route>
+              )}
+              {/*  */}
+              <Route element={<UserLayout />}>{UserRouter}</Route>
+              <Route path="*" element={<div>No page found</div>} />
+            </Routes>
 
-          <LoginModal open={open} setopen={setopen} />
-        </loginStateContext.Provider>
+            <LoginModal open={open} setopen={setopen} />
+            <ForgetPassModal open={openModal} setopen={setopenModal} />
+          </loginStateContext.Provider>
+        </forgetPassStateContext.Provider>
       </div>
     </BrowserRouter>
   );

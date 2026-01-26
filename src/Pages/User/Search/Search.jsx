@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getProducts } from "./service";
 import RegularProductCard from "@/Components/ProductCard/RegularProductCard";
-import { getFileUrl } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
 import "./index.css";
 import { getCategory } from "../Category/service";
 import { Checkbox } from "primereact/checkbox";
@@ -33,7 +33,7 @@ const Search = () => {
           (acc, cur) => {
             return Math.max(acc, cur.price);
           },
-          [0]
+          [0],
         );
         setmaxValue(max);
         setvalue([0, max]);
@@ -50,8 +50,8 @@ const Search = () => {
           (filters.length == 0 ||
             category.some(({ value }) => filters.includes(value))) &&
           price >= value[0] &&
-          price <= value[1]
-      )
+          price <= value[1],
+      ),
     );
   }, [filters, products, value]);
   return (
@@ -62,14 +62,14 @@ const Search = () => {
           <span className="text-[var(--user-theme)]">{label}</span>
         </label>
         <div className="search-page-button-section">
-          <div className="search-page-label-select">
+          {/* <div className="search-page-label-select">
             <label className="">Sort By</label>
             <select className="" id="">
               <option value="">Price</option>
               <option value="">Popularity</option>
               <option value="">Discount</option>
             </select>
-          </div>
+          </div> */}
 
           <button
             className="filter"
@@ -79,8 +79,8 @@ const Search = () => {
           </button>
         </div>
       </div>
-      <div className="flex gap-2">
-        <div className="search-products-container" data-showFilter={showFilter}>
+      <div className="flex sm:gap-1 md:gap-2 relative">
+        <div className="search-products-container" data-showfilter={showFilter}>
           {filteredProducts.map((product) => (
             <RegularProductCard
               key={product._id}
@@ -92,9 +92,9 @@ const Search = () => {
         <div
           className={`${
             showFilter
-              ? "w-[40%] min-w-[220px] md:w-1/5 border-l pl-4 border-slate-600 text-[#00003b]"
+              ? "w-[40%] min-w-[220px] md:w-1/5 px-2 text-[#00003b] border border-[#cfcfcf]"
               : "w-0"
-          } overflow-x-hidden transition-all duration-300 min-h-[560px]`}
+          } max-sm:absolute max-sm:top-0 max-sm:right-0 bg-white overflow-x-hidden h-fit md:h-full md:min-h-[560px]  rounded-md`}
         >
           <div className="price-range border-b-2 pb-3">
             <label htmlFor="range" className="range-label">
@@ -145,9 +145,12 @@ const Search = () => {
             </div>
           </div>
           <div className="category-container">
-            {category.map(({ name, _id, subFilter }) => (
+            {category.map(({ name, _id, subFilter }, index) => (
               <div
-                className="py-3 border-b-2 flex flex-col justify-center"
+                className={cn(
+                  "py-3 flex flex-col justify-center",
+                  index === category.length - 1 ? "border-b-0" : "border-b-2",
+                )}
                 key={_id}
               >
                 <div className="flex justify-between font-semibold text-xs">
@@ -170,8 +173,8 @@ const Search = () => {
                     onClick={() =>
                       setfilters((prev) =>
                         prev.filter(
-                          (id) => !subFilter.some(({ _id }) => _id === id)
-                        )
+                          (id) => !subFilter.some(({ _id }) => _id === id),
+                        ),
                       )
                     }
                   >
@@ -196,7 +199,7 @@ const Search = () => {
                           setfilters((prev) =>
                             event.checked
                               ? [...prev, id]
-                              : prev.filter((i) => i !== id)
+                              : prev.filter((i) => i !== id),
                           )
                         }
                       />

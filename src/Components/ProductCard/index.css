@@ -281,8 +281,46 @@
 
 .detail-price {
   color: #484848;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
+  .original-price {
+    color: slategray;
+    text-decoration: line-through;
+    font-size: 12px;
+    margin: 0 3px;
+    font-weight: 600;
+  }
+  .discount-percent {
+    color: green;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+@media not all and (min-width: 640px) {
+  .detail-price {
+    font-size: 12px;
+    .original-price,
+    .discount-percent {
+      font-size: 10px;
+    }
+  }
+  .details-div {
+    padding: 14px 10px;
+  }
+  .detail-name {
+    width: 100%;
+  }
+  .detail-description {
+    font-size: 8px;
+    line-height: 8px;
+  }
+  .variant-container {
+    flex-direction: row !important;
+    position: static !important;
+    height: auto !important;
+    margin-top: 2px;
+  }
 }
 
 .text-flag {

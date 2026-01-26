@@ -23,7 +23,7 @@ const RegularProductCard = ({
   const dispatch = useDispatch();
   const wishList = useSelector((state) => state.data.wishlist.wishlist);
   const isWishListed = wishList?.some(
-    (val) => val.toString() === _id.toString()
+    (val) => val.toString() === _id.toString(),
   );
   const navigate = useNavigate();
   const getVariantField = ({ flag, value }) => {
@@ -120,7 +120,15 @@ const RegularProductCard = ({
                 ? description.slice(0, 42) + "..."
                 : description}
             </p>
-            <p className="detail-price">₹{price}</p>
+            <p className="detail-price">
+              ₹{variantValues[0].values.discountedPrice}
+              <span className="original-price">
+                ₹{variantValues[0].values.price}
+              </span>
+              <span className="discount-percent">
+                {variantValues[0].values.discountPercent}% off
+              </span>
+            </p>
           </div>
           <div className="variant-container">
             {variantFields.map(getVariantField)}

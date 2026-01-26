@@ -7,7 +7,7 @@ import { ArrowDown, ChevronDown, Menu } from "lucide-react";
 import { Slider } from "primereact/slider";
 import { Checkbox } from "primereact/checkbox";
 import { InputNumber } from "primereact/inputnumber";
-import { getFileUrl } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
 const CategoryPage = () => {
   const { id: categoryId } = useParams();
   const [products, setproducts] = useState([]);
@@ -153,9 +153,14 @@ const CategoryPage = () => {
                 </div>
               </div>
               <div className="category-container">
-                {category.map(({ name, _id, subFilter }) => (
+                {category.map(({ name, _id, subFilter }, index) => (
                   <div
-                    className="py-3 border-b-2 flex flex-col justify-center"
+                    className={cn(
+                      "py-3 flex flex-col justify-center",
+                      index === category.length - 1
+                        ? "border-b-0"
+                        : "border-b-2",
+                    )}
                     key={_id}
                   >
                     <div className="flex justify-between font-semibold text-xs">

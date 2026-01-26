@@ -94,7 +94,7 @@ const RawCreate = () => {
     },
     validationSchema: yup.object({
       name: yup.string().max(50).required("Enter Name"),
-      description: yup.string().max(100).required("Enter Description"),
+      description: yup.string().max(500).required("Enter Description"),
       productType: yup.string().required("Please select product type"),
       category: yup
         .array()
